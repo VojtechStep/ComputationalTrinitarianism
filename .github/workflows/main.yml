@@ -20,7 +20,7 @@ jobs:
             (require 'org) \
             (with-current-buffer \
               (find-file \"ComputationalTrinitarianism.org\") \
-              (org-latex-export-to-pdf))"
+              (org-latex-export-to-pdf)))"
       - name: Store pdf
         uses: actions/upload-artifact@v2
         with:
