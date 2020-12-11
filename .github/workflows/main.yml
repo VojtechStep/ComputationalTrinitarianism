@@ -14,14 +14,13 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Export to PDF
-        run: >
-          emacs --batch --eval="
-          (progn
-            (require 'org)
-            (with-current-buffer
-              (find-file \"ComputationalTrinitarianism.org\")
-              (org-latex-export-to-pdf))
-          "
+        run: |
+          emacs --batch --eval=" \
+          (progn \
+            (require 'org) \
+            (with-current-buffer \
+              (find-file \"ComputationalTrinitarianism.org\") \
+              (org-latex-export-to-pdf))"
       - name: Store pdf
         uses: actions/upload-artifact@v2
         with:
