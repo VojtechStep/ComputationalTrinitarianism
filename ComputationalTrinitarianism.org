@@ -1,0 +1,16 @@
+#+TITLE: Computational Trinitarianism
+#+AUTHOR: Vojtěch Štěpančík
+
+Here be dragons.
+
+* Introduction
+
+* Logic
+
+* Type theory
+
+* Logic and Type theory
+
+* Category theory
+
+* Types and Category theory
