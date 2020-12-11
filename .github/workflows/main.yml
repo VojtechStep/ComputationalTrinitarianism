@@ -1,0 +1,24 @@
+name: Pdf export
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: purcell/setup-emacs@master
+        with:
+          version: 27.1
+
+      - uses: actions/checkout@2
+
+      - name: Export to PDF
+        run: >
+          emacs --batch --eval="
+          (progn
+            (require 'org)
+            (with-current-buffer
+              (find-file \"ComputationalTrinitarianism.org\")
+              (org-latex-export-to-pdf))
+          "
