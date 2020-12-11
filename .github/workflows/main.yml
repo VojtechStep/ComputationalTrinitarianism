@@ -21,12 +21,29 @@ jobs:
             (with-current-buffer \
               (find-file \"ComputationalTrinitarianism.org\") \
               (org-latex-export-to-latex)))"
+
       - name: Compile to PDF
         uses: xu-cheng/latex-action@v2
         with:
           root_file: ComputationalTrinitarianism.tex
-      - name: Store pdf
-        uses: actions/upload-artifact@v2
+
+      - name: Create Release
+        id: release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          name: pdf
-          path: ComputationalTrinitarianism.pdf
+          tag_name: ${{ github.ref }}
+          release_name: v${{ github.ref }}
+          draft: false
+          prerelease: true
+
+      - name: Populate Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.release.outputs.upload_url }}
+          asset_path: /ComputationalTrinitarianism.pdf
+          asset_name: ComputationalTrinitarianism.pdf
+          asset_content_type: application/pdf
