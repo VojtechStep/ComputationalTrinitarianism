@@ -11,7 +11,7 @@ jobs:
         with:
           version: 27.1
 
-      - uses: actions/checkout@2
+      - uses: actions/checkout@v2
 
       - name: Export to PDF
         run: >
