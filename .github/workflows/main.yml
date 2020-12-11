@@ -22,3 +22,8 @@ jobs:
               (find-file \"ComputationalTrinitarianism.org\")
               (org-latex-export-to-pdf))
           "
+      - name: Store pdf
+        uses: actions/upload-artifact@v2
+        with:
+          name: pdf
+          path: ComputationalTrinitarianism.pdf
