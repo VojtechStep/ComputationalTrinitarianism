@@ -13,14 +13,18 @@ jobs:
 
       - uses: actions/checkout@v2
 
-      - name: Export to PDF
+      - name: Export to LaTeX
         run: |
           emacs --batch --eval=" \
           (progn \
             (require 'org) \
             (with-current-buffer \
               (find-file \"ComputationalTrinitarianism.org\") \
-              (org-latex-export-to-pdf)))"
+              (org-latex-export-to-latex)))"
+      - name: Compile to PDF
+        uses: xu-cheng/latex-action@v2
+        with:
+          root_file: ComputationalTrinitarianism.tex
       - name: Store pdf
         uses: actions/upload-artifact@v2
         with:
