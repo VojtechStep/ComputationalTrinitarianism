@@ -3,14 +3,20 @@
 
 Here be dragons.
 
+@@latex: \newpage@@
 * Introduction
 
+@@latex: \newpage@@
 * Logic
 
+@@latex: \newpage@@
 * Type theory
 
+@@latex: \newpage@@
 * Logic and Type theory
 
+@@latex: \newpage@@
 * Category theory
 
+@@latex: \newpage@@
 * Types and Category theory
