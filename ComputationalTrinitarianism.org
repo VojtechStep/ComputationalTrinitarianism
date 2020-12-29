@@ -1,10 +1,24 @@
 #+TITLE: Computational Trinitarianism
 #+AUTHOR: Vojtěch Štěpančík
 #+latex_header: \usepackage{amsthm}
+#+latex_header: \usepackage{tikz-cd}
 
 #+begin_export latex
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
+
+% Generic category
+\newcommand{\Cat}[1]{\mathcal{#1}}
+% Class of objects in a category
+\newcommand{\Obj}[1]{\mathcal{O}(\Cat{#1})}
+% Class of arrows in a category
+\newcommand{\Arr}[1]{hom(\Cat{#1})}
+% Source of an arrow
+\newcommand{\src}[1]{src(#1)}
+% Destination of an arrow
+\newcommand{\dest}[1]{dest(#1)}
+% Arrow composition
+\newcommand{\comp}[2]{#1 \circ #2}
 #+end_export
 
 @@latex: \newpage@@
@@ -22,5 +36,60 @@
 @@latex: \newpage@@
 * Category theory
 
+This chapter introduces concepts from category theory necessary to introduce categorical semantics for the calculus defined above.
+
+#+name: category-def
+#+begin_definition
+A *category* $\Cat{K}$ is a pair of classes, namely the class of its objects, denoted $\Obj{K}$, and the class of the arrows between these objects, denoted $\Arr{K}$, with the following structure:
+
+1. For every arrow $a \in \Arr{K}$, we can identify the source $\src a \in \Obj{K}$ and destination $\dest a \in \Obj{K}$ of that arrow. We often denote such an arrow graphically, so that if $\src a = X$ and $\dest a = Y$, we write
+   \begin{tikzcd} X \arrow[r, "a"] & Y \end{tikzcd}
+   or
+   $a: X \to Y$.
+2. For every object $X \in \Obj{K}$, there exists an arrow $id_X \in \Arr{K}$, called the identity arrow (or simply identity) on X, such that $\src{id_X} = \dest {id_X} = X$. We omit the subscript in situations where it can be inferred from the context.
+3. For all arrows $a, b \in \Arr{K}$ where $\dest a = \src b$, their composition, denoted $\comp b a: \src a \to \dest b$ is also an arrow in $\Arr{K}$.
+
+   1. This composition operator is associative. That is, for $a: X \to Y$, $b: Y \to Z$, $c: Z \to W$ in $\Arr{K}$, it is true that $\comp c (\comp b a) = \comp {(\comp c b)} a$
+
+   2. The identity arrows are identities with respect to the composition operator. That is, for $a: X \to Y$ in $\Arr{K}$, the equality $\comp a id_X = a = \comp {id_Y} a$ holds.
+#+end_definition
+
+#+begin_definition
+A *small category*
+#+end_definition
+^ ?
+
+#+begin_definition
+A *functor* $F$ from $\Cat{K}$ to $\Cat{L}$, denoted $F: \Cat{K} \to \Cat{L}$, is a mapping between the categories $\Cat{K}$ and $\Cat{L}$, subject to the following properties:
+
+1. To each object $X \in \Obj{K}$, it assigns an object $F(X) \in \Obj{L}$, often denoted just $FX$.
+2. $F$ preserves sources and destinations, that is, to each arrow $a: X \to X' \in \Arr{K}$, it assigns an arrow $F(a): F(X) \to F(X')$, also denoted $Fa$.
+3. $F$ preserves identity arrows, so for every object $X \in \Obj{K}$, it holds true that $F(id_X) = id_{F(X)}$.
+4. $F$ preserves composition, so that for every pair of arrows $a: X \to Y, b: Y \to Z$ in $\Arr{K}$, the mapping of their composition under $F$ is the composition of their mapping under $F$, which is described by the following equivalence: $F(\comp b a) = \comp{F(b)}{F(a)}$.
+#+end_definition
+
+#+begin_definition
+A *final object* is
+#+end_definition
+(also known as terminal object)
+
+#+begin_definition
+A *categorical product* is
+#+end_definition
+
+#+begin_definition
+An *exponential object* is
+#+end_definition
+
+#+begin_definition
+A *closed Cartesian category* is
+#+end_definition
+
 @@latex: \newpage@@
 * Types and Category theory
+
+* TODO List of common variable names
+
+* COMMENT TODO:
+- Motivations for definitions
+- Examples for categories
