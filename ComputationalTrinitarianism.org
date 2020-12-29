@@ -1,7 +1,11 @@
 #+TITLE: Computational Trinitarianism
 #+AUTHOR: Vojtěch Štěpančík
+#+latex_header: \usepackage{amsthm}
 
-Here be dragons.
+#+begin_export latex
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}[section]
+#+end_export
 
 @@latex: \newpage@@
 * Introduction
