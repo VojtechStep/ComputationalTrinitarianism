@@ -30,10 +30,10 @@ This paper introduces the concept of /computational trinitarianism/, a term coin
 
 The usefulness of this idea is that new discoveries in one of the above mentioned fields have equivalents in the others, and finding these may provide new insights, triggering feedback loops and leading to more profound understandings of mathematics (TODO: wording?).
 
-In the following sections, we focus on the links between the implicational fragment of intuitionistic propositional logic, the simply typed λ-calculus, and closed Cartesian categories.  
+In the following sections, we focus on the links between the implicational fragment of intuitionistic propositional logic, the simply typed \lambda-calculus, and closed Cartesian categories.
 
 [[*Logic][Section 1]] introduces the logic used in the rest of the paper.
-[[*Type theory][Section 2]] contains a summary of basic concepts of type theory, and presents the reader with a formulation of the simply typed λ-calculus.
+[[*Type theory][Section 2]] contains a summary of basic concepts of type theory, and presents the reader with a formulation of the simply typed \lambda-calculus.
 In [[*Logic and Type theory][Section 3]], we note the correspondence between the logic and calculus described in preceding sections.
 In order to define the categorical semantics of the calculus, first an introduction to category theory is provided in [[*Category theory][Section 4]], leading to the definition and explanation of the class of categories called Cartesian closed, and then the semantics are described in [[Types and Category theory][Section 5]].
 
