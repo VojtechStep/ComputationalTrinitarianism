@@ -19,6 +19,8 @@
 \newcommand{\dest}[1]{dest(#1)}
 % Arrow composition
 \newcommand{\comp}[2]{#1 \circ #2}
+% Product factorizing morphism
+\newcommand{\prodfact}[2]{\langle #1, #2 \rangle}
 #+end_export
 
 @@latex: \newpage@@
@@ -26,7 +28,7 @@
 :PROPERTIES:
 :UNNUMBERED:
 :END:
-This paper introduces the concept of /computational trinitarianism/, a term coined by Harper in \cite{HarperHT}, which presents a correspondence between ideas in logic, type theory, and category theory.
+This paper introduces the concept of /computational trinitarianism/, a term coined by Harper in a blog post \cite{HarperHT}, which presents a correspondence between ideas in logic, type theory, and category theory.
 
 The usefulness of this idea is that new discoveries in one of the above mentioned fields have equivalents in the others, and finding these may provide new insights, triggering feedback loops and leading to more profound understandings of mathematics (TODO: wording?).
 
@@ -70,7 +72,7 @@ A *category* $\Cat{K}$ is a pair of classes, namely the class of its objects, de
 Examples:
 
 #+begin_definition
-A *small category*
+A *locally small category* is a category in which the class of arrows between any two objects forms a set.
 #+end_definition
 ^ ?
 
@@ -78,26 +80,39 @@ A *small category*
 A *functor* $F$ from $\Cat{K}$ to $\Cat{L}$, denoted $F: \Cat{K} \to \Cat{L}$, is a mapping between the categories $\Cat{K}$ and $\Cat{L}$, subject to the following properties:
 
 1. To each object $X \in \Obj{K}$, it assigns an object $F(X) \in \Obj{L}$, often denoted just $FX$.
-2. $F$ preserves sources and destinations, that is, to each arrow $a: X \to X' \in \Arr{K}$, it assigns an arrow $F(a): F(X) \to F(X')$, also denoted $Fa$.
+2. To each arrow $a: X \to X' \in \Arr{K}$, it assigns an arrow $F(a): F(X) \to F(X') \in \Arr{L}$, often denoted just $Fa$.
 3. $F$ preserves identity arrows, so for every object $X \in \Obj{K}$, it holds true that $F(id_X) = id_{F(X)}$.
 4. $F$ preserves composition, so that for every pair of arrows $a: X \to Y, b: Y \to Z$ in $\Arr{K}$, the mapping of their composition under $F$ is the composition of their mapping under $F$, which is described by the following equivalence: $F(\comp b a) = \comp{F(b)}{F(a)}$.
 #+end_definition
 
-#+begin_definition
-A *final object* is
-#+end_definition
-(also known as terminal object)
+Examples:
 
 #+begin_definition
-A *categorical product* is
+A *final object* (also called *terminal object*) is an object for which there is exactly one arrow pointing to it from any other object in the same category.
+#+end_definition
+
+Examples:
+
+#+begin_definition
+A *categorical product* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X \times Y$, equipped with two arrows, $\pi_X: X \times Y \to X$ and $\pi_Y: X \times Y \to Y$, satisfying the following property:
+
+For every other object $W \in \Obj{K}$ and a pair of arrows $p: W \to X$ and $q: W \to Y$, there exists a unique arrow $m: W \to X \times Y$ that factorizes $p$ and $q$ through $X \times Y$. That is to say, $p = \comp{\pi_X}{m}$ and $q = \comp{\pi_Y}{m}$. This factorizing arrow is also denoted $\prodfact{p}{q}$.
+#+end_definition
+
+Examples:
+
+#+begin_definition
+An *exponential* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X^Y$, equipped with an arrow $eval: X^Y \times Y \to X$, satisfying the following property:
+
+For every other object $Z$ in $\Obj{K}$ and an arrow $h: Z \times Y \to X$, there exists a unique arrow $h^\flat: Z \to X^Y$
 #+end_definition
 
 #+begin_definition
-An *exponential object* is
-#+end_definition
+A *closed Cartesian category* $\Cat{K}$ is a category satisfying the following properties:
 
-#+begin_definition
-A *closed Cartesian category* is
+1. $\Cat{K}$ has a terminal object
+2. For each pair of objects $X, Y \in \Obj{K}$, their product $X \times Y$ exists in $\Cat{K}$
+3. For each pair of objects $X, Y \in \Obj{K}$, their exponent $X^Y$ exists in $\Cat{K}$
 #+end_definition
 
 @@latex: \newpage@@
