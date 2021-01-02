@@ -20,7 +20,7 @@
 % Arrow composition
 \newcommand{\comp}[2]{#1 \circ #2}
 % Hom set
-\newcommand{\hom}[2]{hom(#1, #2)}
+\newcommand{\homset}[2]{hom(#1, #2)}
 % Product factorizing morphism
 \newcommand{\prodfact}[2]{\langle #1, #2 \rangle}
 #+end_export
@@ -93,7 +93,7 @@ A *locally small category* is a category in which the class of arrows between an
 
 (TODO: Do we even need to define what a functor is?)
 #+begin_definition
-A *hom-set* for a locally small category is the set of arrows $a: X \to Y$ for fixed $X$ and $Y$, denoted $\hom{X}{Y}$.
+A *hom-set* for a locally small category is the set of arrows $a: X \to Y$ for fixed $X$ and $Y$, denoted $\homset{X}{Y}$.
 #+end_definition
 
 #+begin_definition
