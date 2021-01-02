@@ -112,6 +112,8 @@ A *final object* (also called *terminal object*) is an object for which there is
 #+end_definition
 
 Examples:
+- singleton set in *Set*
+- maximal element in a poset
 
 #+begin_definition
 A *categorical product* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X \times Y$, equipped with two arrows, $\pi_X: X \times Y \to X$ and $\pi_Y: X \times Y \to Y$, satisfying the following property:
@@ -120,6 +122,8 @@ For every other object $W \in \Obj{K}$ and a pair of arrows $p: W \to X$ and $q:
 #+end_definition
 
 Examples:
+- Cartesian product in *Set*
+- meet in a poset
 
 #+begin_definition
 An *exponential* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X^Y$, equipped with an arrow $eval: X^Y \times Y \to X$, satisfying the following property:
