@@ -81,7 +81,7 @@ Since the requirements for being a category are quite lax, we can find many exam
 
 The category of sets, denoted *Set*, has sets for objects and set functions for arrows. We can see that 1. is satisfied by the fact that functions have a domain and a codomain associated with them. Futhermore, the identity function is defined for every set, and also behaves as an identity for function composition, which is associative, making *Set* a category.
 
-A non-obvious observation is that every poset $P(A, \le)$ can be looked at as a category. The objects are the elements of the underlying set $A$, and an arrow between $x, y \in A$ either exists when $x \le y$, or it doesn't. Because the relation $\le$ is reflexive, it holds for every x in $A$ that $x \le x$, and because it is transitive, we know that if there is an arrow from $x$ to $y$ ($x \le y$) and one from $y$ to $z$ ($y \le z$), then there is also an arrow from $x$ to $z$ ($x \le z$). Since there can only be one arrow between any two objects, associativity and identity element are guaranteed for free.
+A non-obvious observation is that every poset $P(A, \le)$ can be looked at as a category. The objects are the elements of the underlying set $A$, and an arrow between $x, y \in A$ either exists when $x \le y$, or it doesn't. Because the relation $\le$ is reflexive, it holds for every x in $A$ that $x \le x$, and because it is transitive, we know that if there is an arrow from $x$ to $y$ ($x \le y$) and one from $y$ to $z$ ($y \le z$), then there is also an arrow from $x$ to $z$ ($x \le z$). Since there can only be one arrow between any two objects, associativity and identity element are guaranteed for free. Categories which only permit one or zero arrows from one object to another are also called /thin/ or /posetal/.
 
 Other examples of categories include those whose objects are some predefined algebras and the arrows are homomorphisms in said algebra, i.e. *Mon* for the category of monoids or *Grp* for the category of groups.
 
@@ -90,30 +90,21 @@ Other examples of categories include those whose objects are some predefined alg
 A *locally small category* is a category in which the class of arrows between any two objects forms a set.
 #+end_definition
 
-
-(TODO: Do we even need to define what a functor is?)
 #+begin_definition
 A *hom-set* for a locally small category is the set of arrows $a: X \to Y$ for fixed $X$ and $Y$, denoted $\homset{X}{Y}$.
 #+end_definition
 
-#+begin_definition
-A *functor* $F$ from $\Cat{K}$ to $\Cat{L}$, denoted $F: \Cat{K} \to \Cat{L}$, is a mapping between the categories $\Cat{K}$ and $\Cat{L}$, subject to the following properties:
+# (TODO: Do we even need to define what a functor is?)
+# #+begin_definition
+# A *functor* $F$ from $\Cat{K}$ to $\Cat{L}$, denoted $F: \Cat{K} \to \Cat{L}$, is a mapping between the categories $\Cat{K}$ and $\Cat{L}$, subject to the following properties:
 
-1. To each object $X \in \Obj{K}$, it assigns an object $F(X) \in \Obj{L}$, often denoted just $FX$.
-2. To each arrow $a: X \to X' \in \Arr{K}$, it assigns an arrow $F(a): F(X) \to F(X') \in \Arr{L}$, often denoted just $Fa$.
-3. $F$ preserves identity arrows, so for every object $X \in \Obj{K}$, it holds true that $F(id_X) = id_{F(X)}$.
-4. $F$ preserves composition, so that for every pair of arrows $a: X \to Y, b: Y \to Z$ in $\Arr{K}$, the mapping of their composition under $F$ is the composition of their mapping under $F$, which is described by the following equivalence: $F(\comp b a) = \comp{F(b)}{F(a)}$.
-#+end_definition
+# 1. To each object $X \in \Obj{K}$, it assigns an object $F(X) \in \Obj{L}$, often denoted just $FX$.
+# 2. To each arrow $a: X \to X' \in \Arr{K}$, it assigns an arrow $F(a): F(X) \to F(X') \in \Arr{L}$, often denoted just $Fa$.
+# 3. $F$ preserves identity arrows, so for every object $X \in \Obj{K}$, it holds true that $F(id_X) = id_{F(X)}$.
+# 4. $F$ preserves composition, so that for every pair of arrows $a: X \to Y, b: Y \to Z$ in $\Arr{K}$, the mapping of their composition under $F$ is the composition of their mapping under $F$, which is described by the following equivalence: $F(\comp b a) = \comp{F(b)}{F(a)}$.
+# #+end_definition
 
-Examples:
-
-#+begin_definition
-A *final object* (also called *terminal object*) is an object for which there is exactly one arrow pointing to it from any other object in the same category.
-#+end_definition
-
-Examples:
-- singleton set in *Set*
-- maximal element in a poset
+Now that we are able to talk about categories and objects, we can define operations on them. One such operation we need for the purposes of this paper is the product, which is a generalization of the Cartesian product from set theory, lifted into categories.
 
 #+begin_definition
 A *categorical product* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X \times Y$, equipped with two arrows, $\pi_X: X \times Y \to X$ and $\pi_Y: X \times Y \to Y$, satisfying the following property:
@@ -121,15 +112,29 @@ A *categorical product* of two objects $X$ and $Y$ in a category $\Cat{K}$ is an
 For every other object $W \in \Obj{K}$ and a pair of arrows $p: W \to X$ and $q: W \to Y$, there exists a unique arrow $m: W \to X \times Y$ that factorizes $p$ and $q$ through $X \times Y$. That is to say, $p = \comp{\pi_X}{m}$ and $q = \comp{\pi_Y}{m}$. This factorizing arrow is also denoted $\prodfact{p}{q}$.
 #+end_definition
 
+We can see why the Cartesian product of two sets $X$ and $Y$ is the product of the corresponding objects in the category *Set*: First of all, the Cartesian product $X \times Y$ is itself a set, so it is a valid object in *Set*, and we can look at individual members of any tuple therein, giving us the two projection into its components. Secondly, if we are given another set $W$ with functions $p$ and $q$ into $X$ and $Y$ respectively, we can construct a function into the product by taking the images under both $p$ and $q$ and packaging them into a tuple: $m(w) = (p(w), q(w))$. It's trivial to see that the arrows line up.
+
+Another example that may not be obvious at first is the meet of two objects in a posetal category. The definition of a posetal category tells us that a factoring arrow either exists or doesn't, so the definition amounts to finding an object that is less than $X$ and $Y$ and with the property that every other object that is less than both $X$ and $Y$ is also less than the product, which is exactly the definition of a meet.
+
+#+begin_definition
+A *final object* (also called *terminal object* or *1*) is an object for which there is exactly one arrow pointing to it from any other object in the same category.
+#+end_definition
 Examples:
-- Cartesian product in *Set*
-- meet in a poset
+
+- singleton set in *Set*
+- maximal element in a poset
 
 #+begin_definition
 An *exponential* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X^Y$, equipped with an arrow $eval: X^Y \times Y \to X$, satisfying the following property:
 
 For every other object $Z$ in $\Obj{K}$ and an arrow $h: Z \times Y \to X$, there exists a unique arrow $h^\flat: Z \to X^Y$
 #+end_definition
+
+
+
+Examples:
+- a function set in *Set*
+- ... TODO: mention others?
 
 #+begin_definition
 A *closed Cartesian category* $\Cat{K}$ is a category satisfying the following properties:
