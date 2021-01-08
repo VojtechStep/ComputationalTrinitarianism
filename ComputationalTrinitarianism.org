@@ -65,7 +65,7 @@ A *category* $\Cat{K}$ is a pair of classes, namely the class of its objects, de
    \begin{tikzcd} X \arrow[r, "a"] & Y \end{tikzcd}
    or
    $a: X \to Y$.
-2. For every object $X \in \Obj{K}$, there exists an arrow $id_X \in \Arr{K}$, called the identity arrow (or simply identity) on X, such that $\src{id_X} = \dest {id_X} = X$. We omit the subscript in situations where it can be inferred from the context.
+2. For every object $X \in \Obj{K}$, there exists an arrow $id_X \in \Arr{K}$, called the identity arrow (or simply identity) on X, such that $\src{id_X} = \dest {id_X} = X$. We omit the subscript in situations where it can be inferred from context.
 3. For all arrows $a, b \in \Arr{K}$ where $\dest a = \src b$, their composition, denoted $\comp b a: \src a \to \dest b$ is also an arrow in $\Arr{K}$.
 
    1. This composition operator is associative. That is, for $a: X \to Y$, $b: Y \to Z$, $c: Z \to W$ in $\Arr{K}$, it is true that $\comp c (\comp b a) = \comp {(\comp c b)} a$
@@ -79,20 +79,20 @@ We can think of a category as a collection of some unknown objects with arrows b
 
 Since the requirements for being a category are quite lax, we can find many examples, some of which are listed below.
 
-The category of sets, denoted *Set*, has sets for objects and set functions for arrows. We can see that 1. is satisfied by the fact that functions have a domain and a codomain associated with them. Futhermore, the identity function is defined for every set, and also behaves as an identity for function composition, which is associative, making *Set* a category.
+The category of sets, denoted *Set*, has sets for objects and set functions for arrows. We can see that 1. is satisfied by the fact that functions have a domain and a codomain associated with them. Furthermore, the identity function is defined for every set, and also behaves as an identity for function composition, which is associative, making *Set* a category.
 
 A non-obvious observation is that every poset $P(A, \le)$ can be looked at as a category. The objects are the elements of the underlying set $A$, and an arrow between $x, y \in A$ either exists when $x \le y$, or it doesn't. Because the relation $\le$ is reflexive, it holds for every x in $A$ that $x \le x$, and because it is transitive, we know that if there is an arrow from $x$ to $y$ ($x \le y$) and one from $y$ to $z$ ($y \le z$), then there is also an arrow from $x$ to $z$ ($x \le z$). Since there can only be one arrow between any two objects, associativity and identity element are guaranteed for free. Categories which only permit one or zero arrows from one object to another are also called /thin/ or /posetal/.
 
 Other examples of categories include those whose objects are some predefined algebras and the arrows are homomorphisms in said algebra, i.e. *Mon* for the category of monoids or *Grp* for the category of groups.
 
-(TODO: Move the definitions to when they are needed and explained?)
-#+begin_definition
-A *locally small category* is a category in which the class of arrows between any two objects forms a set.
-#+end_definition
+# (TODO: Move the definitions to when they are needed and explained?)
+# #+begin_definition
+# A *locally small category* is a category in which the class of arrows between any two objects forms a set.
+# #+end_definition
 
-#+begin_definition
-A *hom-set* for a locally small category is the set of arrows $a: X \to Y$ for fixed $X$ and $Y$, denoted $\homset{X}{Y}$.
-#+end_definition
+# #+begin_definition
+# A *hom-set* for a locally small category is the set of arrows $a: X \to Y$ for fixed $X$ and $Y$, denoted $\homset{X}{Y}$.
+# #+end_definition
 
 # (TODO: Do we even need to define what a functor is?)
 # #+begin_definition
@@ -104,7 +104,7 @@ A *hom-set* for a locally small category is the set of arrows $a: X \to Y$ for f
 # 4. $F$ preserves composition, so that for every pair of arrows $a: X \to Y, b: Y \to Z$ in $\Arr{K}$, the mapping of their composition under $F$ is the composition of their mapping under $F$, which is described by the following equivalence: $F(\comp b a) = \comp{F(b)}{F(a)}$.
 # #+end_definition
 
-Now that we are able to talk about categories and objects, we can define operations on them. One such operation we need for the purposes of this paper is the product, which is a generalization of the Cartesian product from set theory, lifted into categories.
+Equipped with a notion of a category, we can define operations on objects in an arbitrary category. One such operation we need for the purposes of this paper is the product, which is a generalization of the Cartesian product from set theory, lifted into categories.
 
 #+begin_definition
 A *categorical product* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X \times Y$, equipped with two arrows, $\pi_X: X \times Y \to X$ and $\pi_Y: X \times Y \to Y$, satisfying the following property:
@@ -112,17 +112,22 @@ A *categorical product* of two objects $X$ and $Y$ in a category $\Cat{K}$ is an
 For every other object $W \in \Obj{K}$ and a pair of arrows $p: W \to X$ and $q: W \to Y$, there exists a unique arrow $m: W \to X \times Y$ that factorizes $p$ and $q$ through $X \times Y$. That is to say, $p = \comp{\pi_X}{m}$ and $q = \comp{\pi_Y}{m}$. This factorizing arrow is also denoted $\prodfact{p}{q}$.
 #+end_definition
 
-We can see why the Cartesian product of two sets $X$ and $Y$ is the product of the corresponding objects in the category *Set*: First of all, the Cartesian product $X \times Y$ is itself a set, so it is a valid object in *Set*, and we can look at individual members of any tuple therein, giving us the two projection into its components. Secondly, if we are given another set $W$ with functions $p$ and $q$ into $X$ and $Y$ respectively, we can construct a function into the product by taking the images under both $p$ and $q$ and packaging them into a tuple: $m(w) = (p(w), q(w))$. It's trivial to see that the arrows line up.
+We can see why the Cartesian product of two sets $X$ and $Y$ is the product of the corresponding objects in the category *Set*: First of all, the Cartesian product $X \times Y$ is itself a set, so it is a valid object in *Set*, and we can look at individual members of any tuple therein, giving us the two projection onto its components. Secondly, if we are given another set $W$ with functions $p$ and $q$ into $X$ and $Y$ respectively, we can construct a function into the product by taking the images under both $p$ and $q$ and packaging them into a tuple: $m(w) = (p(w), q(w))$. It's trivial to see that the arrows line up.
 
 Another example that may not be obvious at first is the meet of two objects in a posetal category. The definition of a posetal category tells us that a factoring arrow either exists or doesn't, so the definition amounts to finding an object that is less than $X$ and $Y$ and with the property that every other object that is less than both $X$ and $Y$ is also less than the product, which is exactly the definition of a meet.
 
-#+begin_definition
-A *final object* (also called *terminal object* or *1*) is an object for which there is exactly one arrow pointing to it from any other object in the same category.
-#+end_definition
-Examples:
+The binary product can be naturally extended to a product of any finite number of objects greater than two.
 
-- singleton set in *Set*
-- maximal element in a poset
+#+begin_definition
+A *final object* (also called *terminal object* or $1$) is an object for which there is exactly one arrow pointing to it from every other object in the same category.
+#+end_definition
+
+In *Set*, the final object is the singleton set, since from every other set, there is a function projecting every element to the single element of the singleton set.
+Similarly in a posetal category, the final object is such an element that all other objects are less than or equal, which amounts to the definition of the greatest element.
+
+The final object is the identity element for the categorical product, that is to say $X \times 1 = X = 1 \times X$. Given any object $X$, we have the identity arrow $id_X: X \to X$, and the unique arrow going to $1$, denoted $const_X: X \to 1$. Then, for every other object $Y$ and a pair of arrows $p: Y \to X$ and $q: Y \to 1$, we reason that $q = const_Y$, because there is only one arrow from $Y$ to $1$, and that the factoring arrow is $p$ itself, since the identity can be composed with arrows without effect, achieving $p = \comp{p}{id_X}$.
+
+Having an identity element to the categorical product, we can intuitively define nullary and unary products of an object $X$ as the final object and $X$ itself, respectively.
 
 #+begin_definition
 An *exponential* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X^Y$, equipped with an arrow $eval: X^Y \times Y \to X$, satisfying the following property:
@@ -130,19 +135,17 @@ An *exponential* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another o
 For every other object $Z$ in $\Obj{K}$ and an arrow $h: Z \times Y \to X$, there exists a unique arrow $h^\flat: Z \to X^Y$
 #+end_definition
 
+Exponentials serve as an abstraction of functions, allowing one to represent arrows between two objects as another object in the same category. This is hinted at by the suggestive naming of the arrow $eval$, whose name stems from its role of taking a "function" object and an "argument" object, and "applying" the second to the first. In this light, the property in the definition can be seen as introducing currying, a term familiar to many functional programmers, which states that a function taking a tuple, essentially two arguments, can be partially applied, or provided with just one argument, returning another function that needs to be supplied with the other argument in order to be evaluated.
 
-
-Examples:
-- a function set in *Set*
-- ... TODO: mention others?
 
 #+begin_definition
 A *closed Cartesian category* $\Cat{K}$ is a category satisfying the following properties:
 
-1. $\Cat{K}$ has a terminal object
-2. For each pair of objects $X, Y \in \Obj{K}$, their product $X \times Y$ exists in $\Cat{K}$
-3. For each pair of objects $X, Y \in \Obj{K}$, their exponent $X^Y$ exists in $\Cat{K}$
+1. $\Cat{K}$ has all finite products
+2. For every pair of objects $X, Y \in \Obj{K}$, their exponent $X^Y$ exists in $\Cat{K}$
 #+end_definition
+
+A closed Cartesian category is therefore a category that has a final object, all binary products, and the arrows between two objects have a concrete representation in the form of another object in the category.
 
 @@latex: \newpage@@
 * Types and Category theory
@@ -160,7 +163,8 @@ A *closed Cartesian category* $\Cat{K}$ is a category satisfying the following p
 \bibliographystyle{unsrt}
 #+end_export
 
-* COMMENT TODO [1/3]
+* COMMENT TODO [1/4]
 - [ ] Examples of transferred ideas in [[*Introduction][Introduction]]
 - [ ] Motivations for definitions
 - [X] Examples for categories
+- [ ] Unify writing style -> narrative vs impersonal declarative
