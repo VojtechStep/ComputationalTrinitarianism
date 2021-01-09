@@ -50,6 +50,10 @@ In order to define the categorical semantics of the calculus, first an introduct
 @@latex: \newpage@@
 * Logic
 
+Intuitionistic logic is a system that differs from classical logic by being construction-aware. To give an example, in classical logic, a proposition is intrinsically either true or false, so the formula $A \lor \neg A$ (/A or not A/) is true for all formulas $A$. This is called the law of excluded middle, and it does not universally hold in intuitionistic logic. That is because in intuitionistic logic, to assert that a proposition is true means to present a proof of the proposition according to the derivation rules of the specific logic. What it means is that to proclaim $A \lor \neg A$ to be true, one would actually need to devise either a proof of $A$ or a proof of $\neg A$. In this way, every proposition that is not an assumption must be accompanied by a proof "constructed" from proofs of its subformulas.
+
+Proofs are constructed by applying derivation rules. For every connective in the specific logic, the derivation rules describe a way to introduce a formula with the connective (introduction rules, or construction), and a way to reduce a formula using the connective so that it doesn't contain it any longer (elimination rules, or deconstruction).
+
 #+caption: dem'z the rules
 #+attr_latex: :options [!h]
 #+begin_figure
