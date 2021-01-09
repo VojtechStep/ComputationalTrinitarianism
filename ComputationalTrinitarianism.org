@@ -2,10 +2,16 @@
 #+AUTHOR: Vojtěch Štěpančík
 #+latex_header: \usepackage{amsthm}
 #+latex_header: \usepackage{tikz-cd}
+#+latex_header: \usepackage{prftree}
 
 #+begin_export latex
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
+
+% Introduction rule
+\newcommand{\Intro}[1]{$#1$-I}
+% Elimination rule
+\newcommand{\Elim}[1]{$#1$-E}
 
 % Generic category
 \newcommand{\Cat}[1]{\mathcal{#1}}
@@ -43,6 +49,41 @@ In order to define the categorical semantics of the calculus, first an introduct
 
 @@latex: \newpage@@
 * Logic
+
+#+caption: dem'z the rules
+#+attr_latex: :options [!h]
+#+begin_figure
+$$
+\prftree[r]{Id}
+{A \vdash A}
+$$
+
+$$
+\prftree[r]{\Intro{\land}}
+{\Gamma \vdash A}
+{\Delta \vdash B}
+{\Gamma, \Delta \vdash A \land B}
+\hspace{1cm}
+\prftree[r]{\Elim{\land}$_1$}
+{\Gamma \vdash A \land B}
+{\Gamma \vdash A}
+\hspace{1cm}
+\prftree[r]{\Elim{\land}$_2$}
+{\Gamma \vdash A \land B}
+{\Gamma \vdash B}
+$$
+
+$$
+\prftree[r]{\Intro{\to}}
+{\Gamma, A \vdash B}
+{\Gamma \vdash A \to B}
+\hspace{1cm}
+\prftree[r]{\Elim{\to}}
+{\Gamma \vdash A \vdash B}
+{\Delta \vdash A}
+{\Gamma, \Delta \vdash B}
+$$
+#+end_figure
 
 @@latex: \newpage@@
 * Type theory
