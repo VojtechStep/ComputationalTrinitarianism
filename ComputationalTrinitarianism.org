@@ -9,7 +9,7 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
-\newcommand{\stl}{\lambda^{\to}_{\land}}
+\newcommand{\stl}{\lambda^{\to}_{\ProdTypeCon}}
 
 % Introduction rule
 \newcommand{\Intro}[1]{$#1$-I}
@@ -112,6 +112,17 @@ $$
 
 * Type theory
 
+Type theory is a study of formal systems in which a terms has an associated label called /type/, and rules for constructing the terms include the description of their behavior on the types.
+
+More precisely, in constructive mathematics, a mathematical object is created by construction, and the type of an object is the type of construction used to create it \cite{bauerSE}.
+
+One such type system is the simply typed \lambda-calculus, or STLC, which extends the untyped \lambda-calculus by introducing a set of /base types/, and inductively generates all its types with the $\to$ binary type operator, where the type $A \to B$ is the type of functions from type $A$ to type $B$. A term $t$ of type $A$ is expressed as $t: A$.
+
+The STLC recognizes three forms for its terms, very much like the untyped \lambda-calculus. These are /variables/, of the form $x: A$, where $x$ is an atom and $A$ is a type, then /abstractions/, which represent functions, and have the form $\lambda x.t: A \to B$, where $x: A$, $t: B$, and $x$ is a free variable in $t$, becoming bound by the abstraction. Finally, abstractions can be used in an /application/, which, given the terms $f: A \to B$ and $t: A$, yields the term $f(t): B$. Application forms can be further simplified by performing /\(\beta\)-reduction/, defined using term substitution as $(\lambda x.t)(s) \to t[s/x]$, where free occurrences of $x$ in $t$ are rewritten to $s$. Performing a reduction is synonymous with /evaluating/ a program.
+
+@@latex:\newpage@@
+We define an extension of the simply typed \lambda-calculus by introducing the binary product type operator $\ProdTypeCon$, producing types of the form $\ProdType{A}{B}$, which represent tuples of one object of type $A$ and one object of type $B$. We call this extension the \(\stl\)-calculus, and the construction rules are listed in Figure [[fig:type_derivation]].
+
 #+name: fig:type_derivation
 #+caption: Derivation rules for the \(\stl\)-calculus
 #+begin_figure
@@ -144,11 +155,15 @@ $$
 \prftree[r]{\Elim{\to}}
 {\Gamma \vdash f: A \to B}
 {\Delta \vdash t: A}
-{\Gamma, \Delta \vdash ft: B}
+{\Gamma, \Delta \vdash f(t): B}
 $$
 #+end_figure
 
-@@latex: \newpage@@
+The new forms introduced are /tuples/, written as $\prodfact{x}{y}: \ProdType{A}{B}$, which represent a pair of terms, and left and right /projections/, written as $\ProdTypeFst{t}: A$ and $\ProdTypeSnd{t}: B$, respectively, assuming a term $t: \ProdType{A}{B}$. This new syntax allows for more redundant forms of terms, which can be simplified using /\(\pi\)-reduction/ via the evaluation steps $\ProdTypeFst{\prodfact{x}{y}} \to x$ and $\ProdTypeSnd{\prodfact{x}{y}} \to y$.
+
+(TODO: maybe research more on whether $f(t): A$ and $fst(t)$ are valid, or if we need to introduce the concept of canonical representations)
+
+The language is once again described with derivation rules, with zero or more antecedents above and one conclusion below the line. The context in a judgment now stands for a collection of typed variables, and contains the variables that are free in the term on the right side of the turnstile. In this way, the \Intro{\to} rule can be intuitively interpreted by taking a variable $x: A$, and instead of treating it as free, we remove it from the context and bind it with an abstraction.
 * Logic and Type theory
 
 @@latex: \newpage@@
@@ -233,10 +248,13 @@ A closed Cartesian category is therefore a category that has a final object, all
 * Types and Category theory
 
 * TODO List of common variable names
+| Proposition, Type    | $A$, $B$               |
+| Context              | \Gamma, \Delta         |
+| Variable             | $x$, $y$               |
+| Term                 | $s$, $t$               |
 | Category             | $\Cat{K}$, $\Cat{L}$   |
 | Object in a category | $X$, $Y$, $X'$         |
 | Arrow in a category  | $a$, $b$, $a'$, $id_X$ |
-| Functor              | $F$, $G$               |
 | Final object         | $T$                    |
 
 
@@ -245,9 +263,9 @@ A closed Cartesian category is therefore a category that has a final object, all
 \bibliographystyle{apacite}
 #+end_export
 
-* COMMENT TODO [1/6]
+* COMMENT TODO [2/6]
 - [ ] Examples of transferred ideas in [[*Introduction][Introduction]]
-- [ ] Proof reduction
+- [X] Proof reduction
 - [ ] Motivations for definitions
 - [X] Examples for categories
 - [ ] Unify writing style -> narrative vs impersonal declarative
