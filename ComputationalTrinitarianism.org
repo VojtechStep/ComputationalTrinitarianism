@@ -84,7 +84,7 @@ $$
 $$
 \prftree[r]{\Intro{\land}}
 {\Gamma \vdash A}
-{\hspace{0.1cm}}
+{}
 {\Delta \vdash B}
 {\Gamma, \Delta \vdash A \land B}
 \hspace{1cm}
@@ -104,9 +104,49 @@ $$
 \hspace{1cm}
 \prftree[r]{\Elim{\to}}
 {\Gamma \vdash A \to B}
-{\hspace{0.1cm}}
+{}
 {\Delta \vdash A}
 {\Gamma, \Delta \vdash B}
+$$
+#+end_figure
+
+@@latex:\newpage@@
+Sometimes, when building a new proof from existing parts, we can produce proofs with redundancies. This happens when a rule for introducing a connective is applied, and then the connective is eliminated in the very next step. To simplify proofs, we introduce rewriting rules for proof reduction, which are described in Figure [[fig:proof_reduct]].
+
+Two reduction rules for the conjunction exist, but only one is shown, the other is defined symmetrically. It describes a situation where an existing proof of $A$ is combined with a proof of $B$ to prove the conjunction, and then asks for $A$ back. In that case, there is no reason for $B$ to appear at all, and the proof can forget that branch altogether.
+
+The idea behind reduction of implication is that if there is a proof of $A$ in some context $\Delta$, and another proof has $A$ as an assumption, then one can directly substitute the assumption of $A$ for its proof in the derivation tree for $B$, merging the assumption contexts.
+
+(TODO: explicitly mention weakening and contraction)
+
+#+name: fig:proof_reduct
+#+caption: Proof reduction rules
+#+begin_figure
+$$
+\prftree[r]{\Elim{\land}$_1$}
+{\prftree[r]{\Intro{\land}}
+{A \vdash A}
+{}
+{B \vdash B}
+{A,B \vdash A \land B}}
+{A,B \vdash A}
+\hspace{1cm}\Rightarrow\hspace{1cm}
+\prftree[r]{Id}
+{A \vdash A}
+{A \vdash A}
+$$
+
+$$
+\prftree[r]{\Elim{\to}}
+{\prftree[r]{\Intro{\to}}
+{\Gamma, A \vdash B}
+{\Gamma \vdash A \to B}}
+{}
+{\Delta \vdash A}
+{\hspace{1.5em}}
+{\Gamma, \Delta \vdash B}
+\hspace{1cm}\Rightarrow\hspace{1cm}
+\Gamma, \Delta \vdash B
 $$
 #+end_figure
 
@@ -134,7 +174,7 @@ $$
 $$
 \prftree[r]{\Intro{\ProdTypeCon}}
 {\Gamma \vdash x: A}
-{\hspace{0.1cm}}
+{}
 {\Delta \vdash y: B}
 {\Gamma, \Delta \vdash \prodfact{x}{y}: \ProdType{A}{B}}
 \hspace{0.5cm}
