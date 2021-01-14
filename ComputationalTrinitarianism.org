@@ -207,6 +207,12 @@ The language is once again described with derivation rules, with zero or more pr
 
 * Logic and Type theory
 
+Looking at figures [[fig:logic_derivations]] and [[fig:type_derivation]], one can observe some similarity. Indeed, if we were to remove the terms from the derivation rules for the \(\stl\)-calculus, the two would be exactly the same. In other words, the /types/ serve the same role as /propositions/, which is where the idea of "propositions are types" came from.
+
+However, the correspondence goes deeper. Every form of a term in the calculus has exactly one rule that creates it, therefore looking at the program in the conclusion of a derivation tree has one-to-one correspondence with the tree itself. Since the tree is how intuitionistic logic represents a proof, one comes to the conclusion that "programs are proofs". A corollary of this statement is that determining whether a proposition in the logic is provable is the same as deciding if a type in the corresponding type theory is inhabitable.
+
+The final level of the correspondence is one between the reduction operations of proofs and terms. \pi-reductions of a term correspond to a reduction of a proof that introduces and then throws away a conjunction, and reducing a implication in a proof has the exact same effect as substituting the argument variable with its value in the term under \beta-reduction.
+
 @@latex: \newpage@@
 * Category theory
 
