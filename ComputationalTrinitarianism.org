@@ -163,7 +163,8 @@ The new forms introduced are /tuples/, written as $\prodfact{x}{y}: \ProdType{A}
 
 (TODO: maybe research more on whether $f(t): A$ and $fst(t)$ are valid, or if we need to introduce the concept of canonical representations)
 
-The language is once again described with derivation rules, with zero or more antecedents above and one conclusion below the line. The context in a judgment now stands for a collection of typed variables, and contains the variables that are free in the term on the right side of the turnstile. In this way, the \Intro{\to} rule can be intuitively interpreted by taking a variable $x: A$, and instead of treating it as free, we remove it from the context and bind it with an abstraction.
+The language is once again described with derivation rules, with zero or more premises above and one conclusion below the line. The context in a judgment now stands for a collection of typed variables, and contains the variables that are free in the term on the right side of the turnstile. In this way, the \Intro{\to} rule can be intuitively interpreted by taking a variable $x: A$, and instead of treating it as free, we remove it from the context and bind it with an abstraction.
+
 * Logic and Type theory
 
 @@latex: \newpage@@
