@@ -9,6 +9,8 @@
 \theoremstyle{definition}
 \newtheorem{definition}{Definition}[section]
 
+\newcommand{\stl}{\lambda^{\to}_{\land}}
+
 % Introduction rule
 \newcommand{\Intro}[1]{$#1$-I}
 % Elimination rule
@@ -47,10 +49,10 @@ This paper introduces the concept of /computational trinitarianism/, a term coin
 
 The usefulness of this idea is that new discoveries in one of the above mentioned fields have equivalents in the others, and finding these may provide new insights, triggering feedback loops and leading to more profound understandings of mathematics (TODO: wording?).
 
-In the following sections, we focus on the links between the implicational fragment of intuitionistic propositional logic, the simply typed \lambda-calculus, and closed Cartesian categories.
+In the following sections, we focus on the links between the meet-implicational fragment of intuitionistic propositional logic, further referred to as intuitionistic logic, the simply typed \lambda-calculus with product types, further referred to as \(\stl\)-calculus, and closed Cartesian categories.
 
 [[*Logic][Section 1]] introduces the logic used in the rest of the paper.
-[[*Type theory][Section 2]] contains a summary of basic concepts of type theory, and presents the reader with a formulation of the simply typed \lambda-calculus.
+[[*Type theory][Section 2]] contains a summary of basic concepts of type theory, and presents the reader with a formulation of the \(\stl\)-calculus.
 In [[*Logic and Type theory][Section 3]], we note the correspondence between the logic and calculus described in preceding sections.
 In order to define the categorical semantics of the calculus, first an introduction to category theory is provided in [[*Category theory][Section 4]], leading to the definition and explanation of the class of categories called Cartesian closed, and then the semantics are described in [[Types and Category theory][Section 5]].
 
@@ -111,6 +113,7 @@ $$
 * Type theory
 
 #+name: fig:type_derivation
+#+caption: Derivation rules for the \(\stl\)-calculus
 #+begin_figure
 $$
 \prftree[r]{Id}
@@ -182,25 +185,6 @@ The category of sets, denoted *Set*, has sets for objects and set functions for 
 A non-obvious observation is that every poset $P(A, \le)$ can be looked at as a category. The objects are the elements of the underlying set $A$, and an arrow between $x, y \in A$ either exists when $x \le y$, or it doesn't. Because the relation $\le$ is reflexive, it holds for every x in $A$ that $x \le x$, and because it is transitive, we know that if there is an arrow from $x$ to $y$ ($x \le y$) and one from $y$ to $z$ ($y \le z$), then there is also an arrow from $x$ to $z$ ($x \le z$). Since there can only be one arrow between any two objects, associativity and identity element are guaranteed for free. Categories which only permit one or zero arrows from one object to another are also called /thin/ or /posetal/.
 
 Other examples of categories include those whose objects are some predefined algebras and the arrows are homomorphisms in said algebra, i.e. *Mon* for the category of monoids or *Grp* for the category of groups.
-
-# (TODO: Move the definitions to when they are needed and explained?)
-# #+begin_definition
-# A *locally small category* is a category in which the class of arrows between any two objects forms a set.
-# #+end_definition
-
-# #+begin_definition
-# A *hom-set* for a locally small category is the set of arrows $a: X \to Y$ for fixed $X$ and $Y$, denoted $\homset{X}{Y}$.
-# #+end_definition
-
-# (TODO: Do we even need to define what a functor is?)
-# #+begin_definition
-# A *functor* $F$ from $\Cat{K}$ to $\Cat{L}$, denoted $F: \Cat{K} \to \Cat{L}$, is a mapping between the categories $\Cat{K}$ and $\Cat{L}$, subject to the following properties:
-
-# 1. To each object $X \in \Obj{K}$, it assigns an object $F(X) \in \Obj{L}$, often denoted just $FX$.
-# 2. To each arrow $a: X \to X' \in \Arr{K}$, it assigns an arrow $F(a): F(X) \to F(X') \in \Arr{L}$, often denoted just $Fa$.
-# 3. $F$ preserves identity arrows, so for every object $X \in \Obj{K}$, it holds true that $F(id_X) = id_{F(X)}$.
-# 4. $F$ preserves composition, so that for every pair of arrows $a: X \to Y, b: Y \to Z$ in $\Arr{K}$, the mapping of their composition under $F$ is the composition of their mapping under $F$, which is described by the following equivalence: $F(\comp b a) = \comp{F(b)}{F(a)}$.
-# #+end_definition
 
 Equipped with a notion of a category, we can define operations on objects in an arbitrary category. One such operation we need for the purposes of this paper is the product, which is a generalization of the Cartesian product from set theory, lifted into categories.
 
