@@ -14,6 +14,12 @@
 % Elimination rule
 \newcommand{\Elim}[1]{$#1$-E}
 
+% Product type
+\newcommand{\ProdTypeCon}{\land}
+\newcommand{\ProdType}[2]{#1 \ProdTypeCon #2}
+\newcommand{\ProdTypeFst}[1]{fst(#1)}
+\newcommand{\ProdTypeSnd}[1]{snd(#1)}
+
 % Generic category
 \newcommand{\Cat}[1]{\mathcal{#1}}
 % Class of objects in a category
@@ -103,6 +109,41 @@ $$
 #+end_figure
 
 * Type theory
+
+#+name: fig:type_derivation
+#+begin_figure
+$$
+\prftree[r]{Id}
+{x: A \vdash x: A}
+$$
+
+$$
+\prftree[r]{\Intro{\ProdTypeCon}}
+{\Gamma \vdash x: A}
+{\hspace{0.1cm}}
+{\Delta \vdash y: B}
+{\Gamma, \Delta \vdash \prodfact{x}{y}: \ProdType{A}{B}}
+\hspace{0.5cm}
+\prftree[r]{\Elim{\ProdTypeCon}$_1$}
+{\Gamma \vdash t: \ProdType{A}{B}}
+{\Gamma \vdash \ProdTypeFst{t}: A}
+\hspace{0.5cm}
+\prftree[r]{\Elim{\ProdTypeCon}$_2$}
+{\Gamma \vdash t: \ProdType{A}{B}}
+{\Gamma \vdash \ProdTypeSnd{t}: B}
+$$
+
+$$
+\prftree[r]{\Intro{\to}}
+{\Gamma, x: A \vdash t: B}
+{\Gamma \vdash \lambda x.t: A \to B}
+\hspace{0.5cm}
+\prftree[r]{\Elim{\to}}
+{\Gamma \vdash f: A \to B}
+{\Delta \vdash t: A}
+{\Gamma, \Delta \vdash ft: B}
+$$
+#+end_figure
 
 @@latex: \newpage@@
 * Logic and Type theory
