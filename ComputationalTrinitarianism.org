@@ -1,8 +1,11 @@
 #+TITLE: Computational Trinitarianism
 #+AUTHOR: Vojtěch Štěpančík
+#+STARTUP: showall
+#+latex_header: \usepackage[doublespacing]{setspace}
 #+latex_header: \usepackage{amsthm}
 #+latex_header: \usepackage{tikz-cd}
 #+latex_header: \usepackage{prftree}
+#+latex_header: \usepackage{stmaryrd}
 #+latex_header: \usepackage{apacite}
 
 #+begin_export latex
@@ -38,6 +41,12 @@
 \newcommand{\homset}[2]{hom(#1, #2)}
 % Product factorizing morphism
 \newcommand{\prodfact}[2]{\langle #1, #2 \rangle}
+
+% Interpretation
+\newcommand{\Int}[1]{\llbracket #1 \rrbracket}
+
+% Definition
+\newcommand{\Def}{\equiv_{def}}
 #+end_export
 
 @@latex: \newpage@@
@@ -289,12 +298,54 @@ A *closed Cartesian category* $\Cat{K}$ is a category satisfying the following p
 2. For every pair of objects $X, Y \in \Obj{K}$, their exponent $X^Y$ exists in $\Cat{K}$
 #+end_definition
 
-A closed Cartesian category is therefore a category that has a final object, all binary products, and the arrows between two objects have a concrete representation in the form of another object in the category.
+A closed Cartesian category (or /CCC/ for short) is therefore a category that has a final object, all binary products, and the arrows between two objects have a concrete representation in the form of another object in the category.
 
-@@latex: \newpage@@
 * Types and Category theory
 
-* TODO List of common variable names
+Closed Cartesian categories offer a categorical model for the \(\stl\)-calculus, which is more general than the conventional set-theoretical interpretation.
+
+We interpret types in the calculus as objects in a general CCC. A product type $\ProdType{A}{B}$ is represented by the categorical product $A \times B$. A function type $A \to B$ is represented by the exponential $B^A$.
+
+Contexts are interpreted as categorical products of the objects corresponding to the types of the variables it contains. Terms in a context $\Gamma \vdash t: A$ are the arrows in the category, and go from the object representing $\Gamma$ to the object representing $A$.
+
+The identity arrow, defined on every object, is guaranteed by the derivation rule Id, which states that every variable can be used to deduce itself, and its term is $x: A \vdash x: A$.
+
+Arrow composition is defined by term substitution. Two terms-in-contexts $x: A \vdash t: B$ and $y: B \vdash s: C$ correspond to the arrows $\Int{x: A \vdash t: B}: A \to B$ and $\Int{y: B \vdash s: C}: B \to C$, and their composition corresponds to the term $\Int{x: A \vdash s[t/y]: C}: A \to C$, in which occurrences of the variable $y: B$ have been substituted by the term $t: B$.
+
+With three terms $x: A \vdash t: B$, $y: B \vdash s: C$ and $z: C \vdash u: D$, and their respective interpretations as arrows called $a$, $b$ and $c$, we can perform the substitution in two different orders, either $x: A \vdash (u[s/z])[t/y]: D$, corresponding to $\comp{{(\comp{h}{g})}}{f}$, or $x: A \vdash u[s[t/y]/z]: D$, corresponding to $\comp{h}{(\comp{g}{f})}$. Structural induction shows that these two terms are indeed syntactically equal, so the composition is associative.
+
+The identity arrow does indeed behave like the left and right identity to composition, which can be shown by posing $id_A: A \to A \Def \Int{x: A \vdash x: A}$, $a: A \to B \Def \Int{x: A \vdash t: B}$ and $id_B: B \to B \Def \Int{y: B \vdash y: B}$, and verifying that $\comp{id_B}{a} \Def \Int{x: A \vdash y[t/y]: B}$ is the same as $a$, and similarly for $\comp{a}{id_A} \Def \Int{x: A \vdash t[x/x]}$.
+
+Moving onto the product constructs of the calculus, the introduction is rationalized by the factorizing property of the product. Given two terms $\Gamma \vdash x: A$ and $\Delta \vdash y: B$, one can extend their corresponding arrows to begin in the object $\Gamma \times \Delta$ by using appropriate projections, and then the term $\Gamma, \Delta \vdash \prodfact{x}{y}: \ProdType{A}{B}$ has the unique representation by the factorizing arrow $\prodfact{\comp{\Int{\Gamma \vdash x: A}}{\pi_1}}{\comp{\Int{\Delta \vdash y: B}}{\pi_2}}$. A diagram of the \Intro{\ProdTypeCon} rule is shown in Figure [[fig:product_intro_diag]]. The product elimination rules are identified with the projection arrows from the categorical product.
+
+(FIXME: centralize figure)
+
+#+name: fig:product_intro_diag
+#+caption: \Intro{\ProdTypeCon} rule
+#+begin_figure
+\begin{tikzcd}
+  &                                               & \Gamma \times \Delta \arrow[ld, "\pi_1"] \arrow[rd, "\pi_2"] \arrow[dd, "\prodfact{\dots}{\dots}"] &                                               &   \\
+  & \Gamma \arrow[ld, "\Int{\Gamma \vdash x: A}"] &                                                                                                   & \Delta \arrow[rd, "\Int{\Delta \vdash y: B}"] &   \\
+A &                                               & A \times B \arrow[ll, "\pi_1"] \arrow[rr, "\pi_2"]                                                &                                               & B
+\end{tikzcd}
+#+end_figure
+
+Interpretations of the function constructs are backed by the properties of the exponential. Given a term-in-context $\Gamma, x: A \vdash t: B$, the corresponding arrow is $h: \Gamma \times A \to B \Def \Int{\Gamma, x: A \vdash t: B}$, and the appropriate function term $\Gamma \vdash \lambda x.t: A \to B$ is represented by the unique arrow $h^\flat$ that is required to exist by the exponential property, going from $\Gamma$ to $B^A$.
+
+Function application, where one is provided with the terms $\Gamma \vdash f: A \to B$ and $\Delta \vdash t: A$, is interpreted by taking the product object $\Gamma \times \Delta$, mapping it by components to $B^A \times A$ in much the same way as product introduction, and then applying the $eval$ arrow to the object $B$, giving the term $\Gamma, \Delta \vdash f(t)$ the interpretation of $\comp{eval}{\prodfact{\comp{\Int{\Gamma \vdash f: A \to B}}{\pi_1}}{\comp{\Int{\Delta \vdash t: A}}{\pi_2}}}$. A diagram of this composition is shown in Figure [[fig:function_app_diag]].
+
+#+name: fig:function_app_diag
+#+caption: \Elim{\to} rule
+#+begin_figure
+\begin{tikzcd}
+\Gamma \times \Delta \arrow[d, "\prodfact{\dots}{\dots}"'] \arrow[rd, "{\Int{\Gamma, \Delta \vdash f(t): B}} = \comp{eval}{\prodfact{\comp{\Int{\Gamma \vdash f: A \to B}}{\pi_1}}{\comp{\Int{\Delta \vdash t: A}}{\pi_2}}}"] &   \\
+B^A \times A \arrow[r, "eval"'] & B
+\end{tikzcd}
+#+end_figure
+
+
+* Appendix A: List of common variable names
+
 | Proposition, Type    | $A$, $B$               |
 | Context              | \Gamma, \Delta         |
 | Variable             | $x$, $y$               |
@@ -310,10 +361,10 @@ A closed Cartesian category is therefore a category that has a final object, all
 \bibliographystyle{apacite}
 #+end_export
 
-* COMMENT TODO [2/6]
+* COMMENT TODO [3/6]
 - [ ] Examples of transferred ideas in [[*Introduction][Introduction]]
 - [X] Proof reduction
-- [ ] Motivations for definitions
+- [X] Motivations for definitions
 - [X] Examples for categories
 - [ ] Unify writing style -> narrative vs impersonal declarative
 - [ ] Sources
