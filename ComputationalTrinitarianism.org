@@ -72,9 +72,11 @@ Intuitionistic logic is a system that differs from classical logic by being cons
 
 Proofs are constructed by sequencing derivation rules. For every connective in the specific logic, the derivation rules describe a way to introduce a formula with the connective (introduction rules, or construction), and a way to reduce a formula using the connective so that it doesn't contain it any longer (elimination rules, or deconstruction).
 
-A derivation rule consists of a derivation line, above which are placed judgments called /premises/, and below is a judgment called /conclusion/. A judgment has the form $\Gamma \vdash A$, where $\Gamma$ is the /context/, which in set-theoretical interpretations is a set of assumptions, and $A$ is a proposition that is true when the assumptions hold.
+A derivation rule consists of a derivation line, a list of judgments above it and one judgment below. The judgments on top are called /premises/, and the judgment on the bottom is called a /conclusion/.
 
-Contexts can be merged using a comma, joining $\Gamma$ and $\Delta$ into $\Gamma,\Delta$. In a set-theoretical setting, the comma performs a set union with deduplication.
+A judgment has the form $\Gamma \vdash A$, where $\Gamma$ is a list of assumptions called /context/, whose behavior is specified by special deduction rules called /structural/ rules, introduced below, and $A$ is a proposition that is true when the assumptions hold.
+
+Contexts can be merged using a comma, joining $\Gamma$ and $\Delta$ into $\Gamma,\Delta$ with the meaning that for the proposition on the right side of the turnstile to hold, all the assumptions in both \Gamma and \Delta must hold.
 
 Derivation rules give a recipe for rewriting judgments regardless of semantic interpretation, purely in the context of the syntax of the logic it describes.
 
@@ -119,14 +121,33 @@ $$
 $$
 #+end_figure
 
-@@latex:\newpage@@
-Sometimes, when building a new proof from existing parts, we can produce proofs with redundancies. This happens when a rule for introducing a connective is applied, and then the connective is eliminated in the very next step. To simplify proofs, we introduce rewriting rules for proof reduction, which are described in Figure [[fig:proof_reduct]].
+For operating on the context alone, without changing the proposition, we introduce three structural rules, which syntactically encode semantics similar to finite sets. Weakening allows one to add arbitrary assumptions to the context without invalidating the derived proposition. Contraction states that duplicates in the context can be removed. Exchange asserts that the order in which assumptions appear in the context is irrelevant. The formal rules are listed in Figure [[fig:logic_struct]].
+
+#+name: fig:logic_struct
+#+caption: Structural rules for intuitionistic logic
+#+begin_figure
+$$
+\prftree[r]{Weak}
+{\Gamma \vdash A}
+{\Gamma, B \vdash A}
+\hspace{1cm}
+\prftree[r]{Contr}
+{\Gamma, A, A \vdash B}
+{\Gamma, A \vdash B}
+$$
+
+$$
+\prftree[r]{Exch}
+{\Gamma, \Delta \vdash A}
+{\Delta, \Gamma \vdash A}
+$$
+#+end_figure
+
+When building a new proof from existing parts, we can sometimes produce proofs with redundancies. This happens when a rule for introducing a connective is applied, and then the connective is eliminated in the very next step. To simplify proofs, we introduce rewriting rules for proof reduction, which are described in Figure [[fig:proof_reduct]].
 
 Two reduction rules for the conjunction exist, but only one is shown, the other is defined symmetrically. It describes a situation where an existing proof of $A$ is combined with a proof of $B$ to prove the conjunction, and then asks for $A$ back. In that case, there is no reason for $B$ to appear at all, and the proof can forget that branch altogether.
 
 The idea behind reduction of implication is that if there is a proof of $A$ in some context $\Delta$, and another proof has $A$ as an assumption, then one can directly substitute the assumption of $A$ for its proof in the derivation tree for $B$, merging the assumption contexts.
-
-(TODO: explicitly mention weakening and contraction)
 
 #+name: fig:proof_reduct
 #+caption: Proof reduction rules
@@ -140,9 +161,9 @@ $$
 {A,B \vdash A \land B}}
 {A,B \vdash A}
 \hspace{1cm}\Rightarrow\hspace{1cm}
-\prftree[r]{Id}
+\prftree[r]{Weak}
 {A \vdash A}
-{A \vdash A}
+{A, B \vdash A}
 $$
 
 $$
