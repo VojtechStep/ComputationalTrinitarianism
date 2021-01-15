@@ -54,7 +54,7 @@
 :PROPERTIES:
 :UNNUMBERED:
 :END:
-This paper introduces the concept of /computational trinitarianism/, a term coined in \cite{HarperHT}, which presents a correspondence between ideas in logic, type theory, and category theory.
+This paper introduces the concept of /computational trinitarianism/, a term coined in \cite{Harper2011}, which presents a correspondence between ideas in logic, type theory, and category theory.
 
 The usefulness of this idea is that new discoveries in one of the above mentioned fields have equivalents in the others, allowing to transfer results between the respective areas.
 
@@ -68,7 +68,7 @@ In order to define the categorical semantics of the calculus, first an introduct
 @@latex: \newpage@@
 * Logic
 
-Intuitionistic logic is a system that differs from classical logic by being construction-aware. This is reflected in the formulation of the rewriting rules for operating on formulas, which do not include the law of excluded middle from classical logic. The formula $A \lor \neg A$ is always true in classical logic, because every proposition has to be by definition either true or false, but not so in intuitionistic logic. To /construct/ a proof of $A \lor \neg A$, one would actually need to present either a proof of $A$ or a proof of $\neg A$. In this way, every proposition that is not an assumption must be accompanied by a proof "constructed" from proofs of its subformulas.
+Intuitionistic logic is a system that differs from classical logic by being construction-aware. This is reflected in the formulation of the rewriting rules for operating on formulas, which do not include the law of excluded middle from classical logic. The formula $A \lor \neg A$ is always true in classical logic, because every proposition has to be by definition either true or false, but not so in intuitionistic logic. To /construct/ a proof of $A \lor \neg A$, one would actually need to present either a proof of $A$ or a proof of $\neg A$. In this way, every proposition that is not an assumption must be accompanied by a proof "constructed" from proofs of its subformulas. For a more in-depth treatment, see \cite[Chapter 2]{Sorensen2006}.
 
 Proofs are constructed by sequencing derivation rules. For every connective in the specific logic, the derivation rules describe a way to introduce a formula with the connective (introduction rules, or construction), and a way to reduce a formula using the connective so that it doesn't contain it any longer (elimination rules, or deconstruction).
 
@@ -182,15 +182,14 @@ $$
 
 * Type theory
 
-Type theory is a study of formal systems in which terms have an associated label called /type/, and rules for constructing the terms include the description of their behavior on the types.
+Type theory is a study of formal systems in which terms have an associated label called /type/, and rules for constructing the terms include the description of their behavior on the types. For more information on the subject, see \cite{Thompson1991} and \cite{PerLof1980}.
 
-More precisely, in constructive mathematics, a mathematical object is created by construction, and the type of an object is the type of construction used to create it \cite{bauerSE}.
+More precisely, in constructive mathematics, a mathematical object is created by construction, and the type of an object is the type of construction used to create it \cite{Bauer2018}.
 
 One such type system is the simply typed \lambda-calculus, or STLC, which extends the untyped \lambda-calculus by introducing a set of /base types/, and inductively generates all its types with the $\to$ binary type operator, where the type $A \to B$ is the type of functions from type $A$ to type $B$. A term $t$ of type $A$ is expressed as $t: A$.
 
 The STLC recognizes three forms for its terms, very much like the untyped \lambda-calculus. These are /variables/, of the form $x: A$, where $x$ is an atom and $A$ is a type, then /abstractions/, which represent functions, and have the form $\lambda x.t: A \to B$, where $x: A$, $t: B$, and $x$ is a free variable in $t$, becoming bound by the abstraction. Finally, abstractions can be used in an /application/, which, given the terms $f: A \to B$ and $t: A$, yields the term $f(t): B$. Application forms can be further simplified by performing /\(\beta\)-reduction/, defined using term substitution as $(\lambda x.t)(s) \to t[s/x]$, where free occurrences of $x$ in $t$ are rewritten to $s$. Performing a reduction is synonymous with /evaluating/ a program.
 
-@@latex:\newpage@@
 We define an extension of the simply typed \lambda-calculus by introducing the binary product type operator $\ProdTypeCon$, producing types of the form $\ProdType{A}{B}$, which represent tuples of one object of type $A$ and one object of type $B$. We call this extension the \(\stl\)-calculus, and the construction rules are listed in Figure [[fig:type_derivation]].
 
 #+name: fig:type_derivation
@@ -235,16 +234,17 @@ The language is once again described with derivation rules, with zero or more pr
 
 * Logic and Type theory
 
-Looking at figures [[fig:logic_derivations]] and [[fig:type_derivation]], one can observe some similarity. Indeed, if we were to remove the terms from the derivation rules for the \(\stl\)-calculus, the two would be exactly the same. In other words, the /types/ serve the same role as /propositions/, which is where the idea of "propositions are types" came from.
+Looking at figures [[fig:logic_derivations]] and [[fig:type_derivation]], one can observe some similarity. Indeed, if we were to remove the terms from the derivation rules for the \(\stl\)-calculus, the two would be exactly the same. In other words, the /types/ serve the same role as /propositions/, which is where the idea of "propositions are types" came from. Many works have been published on this topic, see for example \cite[Chapter 4]{Sorensen2006} or \cite{Thompson1991}.
 
 However, the correspondence goes deeper. Every form of a term in the calculus has exactly one rule that creates it, therefore looking at the program in the conclusion of a derivation tree has one-to-one correspondence with the tree itself. Since the tree is how intuitionistic logic represents a proof, one comes to the conclusion that "programs are proofs". A corollary of this statement is that determining whether a proposition in the logic is provable is the same as deciding if a type in the corresponding type theory is inhabitable.
 
 The final level of the correspondence is one between the reduction operations of proofs and terms. \pi-reductions of a term correspond to a reduction of a proof that introduces and then throws away a conjunction, and reducing a implication in a proof has the exact same effect as substituting the argument variable with its value in the term under \beta-reduction.
 
-@@latex: \newpage@@
+For a historical overview of the matter see \cite{Wadler2015}.
+
 * Category theory
 
-This chapter introduces concepts from category theory necessary to introduce categorical semantics for the calculus defined above.
+This chapter introduces concepts from category theory necessary to introduce categorical semantics for the calculus defined above. For a more complete reference on category theory, see \cite{Lane1998}, \cite{Adamek1990} or \cite{Barr1990}.
 
 We start by defining what a category even /is/.
 
@@ -321,7 +321,7 @@ A Cartesian closed category is therefore a category that has a final object, all
 
 * Types and Category theory
 
-Cartesian closed categories (CCC's) offer a categorical model for the \(\stl\)-calculus, which is more general than the conventional set-theoretical interpretation.
+Cartesian closed categories (CCC's) offer a categorical model for the \(\stl\)-calculus, which is more general than the conventional set-theoretical interpretation. This section introduces the semantics for this calculus, for a more general treatment see \cite{Crole1993} and \cite{Crole1993der}.
 
 We interpret types in the calculus as objects in a general CCC. A product type $\ProdType{A}{B}$ is represented by the categorical product $A \times B$. A function type $A \to B$ is represented by the exponential $B^A$.
 
@@ -382,8 +382,8 @@ B^A \times A \arrow[r, "eval"'] & B
 \bibliographystyle{apacite}
 #+end_export
 
-* COMMENT TODO [3/4]
+* COMMENT TODO [4/4]
 - [X] Proof reduction
 - [X] Motivations for definitions
 - [X] Examples for categories
-- [ ] Sources
+- [X] Sources
