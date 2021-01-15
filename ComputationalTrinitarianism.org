@@ -231,8 +231,6 @@ $$
 
 The new forms introduced are /tuples/, written as $\prodfact{x}{y}: \ProdType{A}{B}$, which represent a pair of terms, and left and right /projections/, written as $\ProdTypeFst{t}: A$ and $\ProdTypeSnd{t}: B$, respectively, assuming a term $t: \ProdType{A}{B}$. This new syntax allows for more redundant forms of terms, which can be simplified using /\(\pi\)-reduction/ via the evaluation steps $\ProdTypeFst{\prodfact{x}{y}} \to x$ and $\ProdTypeSnd{\prodfact{x}{y}} \to y$.
 
-(TODO: maybe research more on whether $f(t): A$ and $fst(t)$ are valid, or if we need to introduce the concept of canonical representations)
-
 The language is once again described with derivation rules, with zero or more premises above and one conclusion below the line. The context in a judgment now stands for a collection of typed variables, and contains the variables that are free in the term on the right side of the turnstile. In this way, the \Intro{\to} rule can be intuitively interpreted by taking a variable $x: A$, and instead of treating it as free, we remove it from the context and bind it with an abstraction.
 
 * Logic and Type theory
@@ -339,16 +337,16 @@ The identity arrow does indeed behave like the left and right identity to compos
 
 Moving onto the product constructs of the calculus, the introduction is rationalized by the factorizing property of the product. Given two terms $\Gamma \vdash x: A$ and $\Delta \vdash y: B$, one can extend their corresponding arrows to begin in the object $\Gamma \times \Delta$ by using appropriate projections, and then the term $\Gamma, \Delta \vdash \prodfact{x}{y}: \ProdType{A}{B}$ has the unique representation by the factorizing arrow $\prodfact{\comp{\Int{\Gamma \vdash x: A}}{\pi_1}}{\comp{\Int{\Delta \vdash y: B}}{\pi_2}}$. A diagram of the \Intro{\ProdTypeCon} rule is shown in Figure [[fig:product_intro_diag]]. The product elimination rules are identified with the projection arrows from the categorical product.
 
-(FIXME: centralize figure)
-
 #+name: fig:product_intro_diag
 #+caption: \Intro{\ProdTypeCon} rule
 #+begin_figure
+#+begin_displaymath
 \begin{tikzcd}
   &                                               & \Gamma \times \Delta \arrow[ld, "\pi_1"] \arrow[rd, "\pi_2"] \arrow[dd, "\prodfact{\dots}{\dots}"] &                                               &   \\
   & \Gamma \arrow[ld, "\Int{\Gamma \vdash x: A}"] &                                                                                                   & \Delta \arrow[rd, "\Int{\Delta \vdash y: B}"] &   \\
 A &                                               & A \times B \arrow[ll, "\pi_1"] \arrow[rr, "\pi_2"]                                                &                                               & B
 \end{tikzcd}
+#+end_displaymath
 #+end_figure
 
 Interpretations of the function constructs are backed by the properties of the exponential. Given a term-in-context $\Gamma, x: A \vdash t: B$, the corresponding arrow is $h: \Gamma \times A \to B \Def \Int{\Gamma, x: A \vdash t: B}$, and the appropriate function term $\Gamma \vdash \lambda x.t: A \to B$ is represented by the unique arrow $h^\flat$ that is required to exist by the exponential property, going from $\Gamma$ to $B^A$.
@@ -358,10 +356,12 @@ Function application, where one is provided with the terms $\Gamma \vdash f: A \
 #+name: fig:function_app_diag
 #+caption: \Elim{\to} rule
 #+begin_figure
+#+begin_displaymath
 \begin{tikzcd}
 \Gamma \times \Delta \arrow[d, "\prodfact{\dots}{\dots}"'] \arrow[rd, "{\Int{\Gamma, \Delta \vdash f(t): B}} = \comp{eval}{\prodfact{\comp{\Int{\Gamma \vdash f: A \to B}}{\pi_1}}{\comp{\Int{\Delta \vdash t: A}}{\pi_2}}}"] &   \\
 B^A \times A \arrow[r, "eval"'] & B
 \end{tikzcd}
+#+end_displaymath
 #+end_figure
 
 
@@ -382,7 +382,7 @@ B^A \times A \arrow[r, "eval"'] & B
 \bibliographystyle{apacite}
 #+end_export
 
-* COMMENT TODO [3/6]
+* COMMENT TODO [3/4]
 - [X] Proof reduction
 - [X] Motivations for definitions
 - [X] Examples for categories
