@@ -56,19 +56,19 @@
 :END:
 This paper introduces the concept of /computational trinitarianism/, a term coined in \cite{HarperHT}, which presents a correspondence between ideas in logic, type theory, and category theory.
 
-The usefulness of this idea is that new discoveries in one of the above mentioned fields have equivalents in the others, and finding these may provide new insights, triggering feedback loops and leading to more profound understandings of mathematics (TODO: wording?).
+The usefulness of this idea is that new discoveries in one of the above mentioned fields have equivalents in the others, allowing to transfer results between the respective areas.
 
-In the following sections, we focus on the links between the meet-implicational fragment of intuitionistic propositional logic, further referred to as intuitionistic logic, the simply typed \lambda-calculus with product types, further referred to as \(\stl\)-calculus, and closed Cartesian categories.
+In the following sections, we focus on the links between the meet-implicational fragment of intuitionistic propositional logic, further referred to as intuitionistic logic, the simply typed \lambda-calculus with product types, further referred to as \(\stl\)-calculus, and Cartesian closed categories.
 
 [[*Logic][Section 1]] introduces the logic used in the rest of the paper.
 [[*Type theory][Section 2]] contains a summary of basic concepts of type theory, and presents the reader with a formulation of the \(\stl\)-calculus.
 In [[*Logic and Type theory][Section 3]], we note the correspondence between the logic and calculus described in preceding sections.
-In order to define the categorical semantics of the calculus, first an introduction to category theory is provided in [[*Category theory][Section 4]], leading to the definition and explanation of the class of categories called Cartesian closed, and then the semantics are described in [[Types and Category theory][Section 5]].
+In order to define the categorical semantics of the calculus, first an introduction to category theory is provided in [[*Category theory][Section 4]], leading to the definition and explanation of Cartesian closed categories. The semantics of the calculus are described in [[Types and Category theory][Section 5]].
 
 @@latex: \newpage@@
 * Logic
 
-Intuitionistic logic is a system that differs from classical logic by being construction-aware. To give an example, in classical logic, a proposition is intrinsically either true or false, so the formula $A \lor \neg A$ (/A or not A/) is true for all formulas $A$. This is called the law of excluded middle, and it does not universally hold in intuitionistic logic. That is because in intuitionistic logic, to assert that a proposition is true means to present a proof of the proposition according to the derivation rules of the specific logic. What it means is that to proclaim $A \lor \neg A$ to be true, one would actually need to devise either a proof of $A$ or a proof of $\neg A$. In this way, every proposition that is not an assumption must be accompanied by a proof "constructed" from proofs of its subformulas.
+Intuitionistic logic is a system that differs from classical logic by being construction-aware. This is reflected in the formulation of the rewriting rules for operating on formulas, which do not include the law of excluded middle from classical logic. The formula $A \lor \neg A$ is always true in classical logic, because every proposition has to be by definition either true or false, but not so in intuitionistic logic. To /construct/ a proof of $A \lor \neg A$, one would actually need to present either a proof of $A$ or a proof of $\neg A$. In this way, every proposition that is not an assumption must be accompanied by a proof "constructed" from proofs of its subformulas.
 
 Proofs are constructed by sequencing derivation rules. For every connective in the specific logic, the derivation rules describe a way to introduce a formula with the connective (introduction rules, or construction), and a way to reduce a formula using the connective so that it doesn't contain it any longer (elimination rules, or deconstruction).
 
@@ -82,7 +82,7 @@ Derivation rules give a recipe for rewriting judgments regardless of semantic in
 
 The rules for the logic we focus on are described in Figure [[fig:logic_derivations]]. The rule \Intro{\land}, read /conjunction introduction/, says that when one can deduce $A$ and $B$, then the same proofs lead to $A \land B$. The two elimination rules for the conjunction state that once a proof of $A \land B$ is given, either of its subformulas can be held to be true in further proofs.
 
-The idea behind \Intro{\to} is such that if a proposition depends on its assumptions, one can remove a proposition $A$ from the context, and instead state that when $A$ is true, then the original proposition is also true. \Elim{\to} is also known as /modus ponens/, and it states that when the antecedent in the implication can be proved to be true, than the consequent holds.
+The idea behind \Intro{\to} is such that if a proposition depends on its assumptions, one can remove a proposition $A$ from the context, and instead state that when $A$ is true, then the original proposition is also true. \Elim{\to} is also known as /modus ponens/, and it states that when the antecedent in the implication can be proved to be true, then the consequent holds.
 
 #+name: fig:logic_derivations
 #+caption: Derivation rules for the implicative fragment of intuitionistic propositional logic with conjunction
@@ -182,7 +182,7 @@ $$
 
 * Type theory
 
-Type theory is a study of formal systems in which a terms has an associated label called /type/, and rules for constructing the terms include the description of their behavior on the types.
+Type theory is a study of formal systems in which terms have an associated label called /type/, and rules for constructing the terms include the description of their behavior on the types.
 
 More precisely, in constructive mathematics, a mathematical object is created by construction, and the type of an object is the type of construction used to create it \cite{bauerSE}.
 
@@ -266,7 +266,7 @@ A *category* $\Cat{K}$ is a pair of classes, namely the class of its objects, de
    2. The identity arrows are identities with respect to the composition operator. That is, for $a: X \to Y$ in $\Arr{K}$, the equality $\comp a id_X = a = \comp {id_Y} a$ holds.
 #+end_definition
 
-As a convention, and unless the context demands otherwise, capital cursive letters from the middle of the alphabet are used for categories, capital letters from the end of the alphabet are used for objects and lowercase letters from the beginning of the alphabet are used for arrows, with an occasional apostrophe thrown in for cases where there's a need for additional dimension in differentiation.
+As a convention, and unless the context demands otherwise, capital cursive letters from the middle of the alphabet are used for categories, capital letters from the end of the alphabet are used for objects and lowercase letters from the beginning of the alphabet are used for arrows.
 
 We can think of a category as a collection of some unknown objects with arrows between them, with the additional structure that any object has an arrow pointing to itself, and a recipe to "correctly" paste one arrow after another to get a new one.
 
@@ -276,17 +276,17 @@ The category of sets, denoted *Set*, has sets for objects and set functions for 
 
 A non-obvious observation is that every poset $P(A, \le)$ can be looked at as a category. The objects are the elements of the underlying set $A$, and an arrow between $x, y \in A$ either exists when $x \le y$, or it doesn't. Because the relation $\le$ is reflexive, it holds for every x in $A$ that $x \le x$, and because it is transitive, we know that if there is an arrow from $x$ to $y$ ($x \le y$) and one from $y$ to $z$ ($y \le z$), then there is also an arrow from $x$ to $z$ ($x \le z$). Since there can only be one arrow between any two objects, associativity and identity element are guaranteed for free. Categories which only permit one or zero arrows from one object to another are also called /thin/ or /posetal/.
 
-Other examples of categories include those whose objects are some predefined algebras and the arrows are homomorphisms in said algebra, i.e. *Mon* for the category of monoids or *Grp* for the category of groups.
+Other examples of categories include those whose objects are some predefined algebras and the arrows are homomorphisms of said algebras, i.e. *Mon* for the category of monoids or *Grp* for the category of groups.
 
-Equipped with a notion of a category, we can define operations on objects in an arbitrary category. One such operation we need for the purposes of this paper is the product, which is a generalization of the Cartesian product from set theory, lifted into categories.
+Equipped with a notion of a category, we can define operations on objects in an arbitrary category. One such operation we need for the purposes of this paper is the product, which is a generalization of the Cartesian product from set theory.
 
 #+begin_definition
 A *categorical product* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X \times Y$, equipped with two arrows, $\pi_X: X \times Y \to X$ and $\pi_Y: X \times Y \to Y$, satisfying the following property:
 
-For every other object $W \in \Obj{K}$ and a pair of arrows $p: W \to X$ and $q: W \to Y$, there exists a unique arrow $m: W \to X \times Y$ that factorizes $p$ and $q$ through $X \times Y$. That is to say, $p = \comp{\pi_X}{m}$ and $q = \comp{\pi_Y}{m}$. This factorizing arrow is also denoted $\prodfact{p}{q}$.
+For every other object $W \in \Obj{K}$ and a pair of arrows $p: W \to X$ and $q: W \to Y$, there exists a unique arrow $m: W \to X \times Y$ that factorizes $p$ and $q$ through $X \times Y$. That is, the equalities $p = \comp{\pi_X}{m}$ and $q = \comp{\pi_Y}{m}$ hold. This factorizing arrow is also denoted $\prodfact{p}{q}$.
 #+end_definition
 
-We can see why the Cartesian product of two sets $X$ and $Y$ is the product of the corresponding objects in the category *Set*: First of all, the Cartesian product $X \times Y$ is itself a set, so it is a valid object in *Set*, and we can look at individual members of any tuple therein, giving us the two projection onto its components. Secondly, if we are given another set $W$ with functions $p$ and $q$ into $X$ and $Y$ respectively, we can construct a function into the product by taking the images under both $p$ and $q$ and packaging them into a tuple: $m(w) = (p(w), q(w))$. It's trivial to see that the arrows line up.
+We can see why the Cartesian product of two sets $X$ and $Y$ is the product of the corresponding objects in the category *Set*: First of all, the Cartesian product $X \times Y$ is itself a set, so it is a valid object in *Set*, and we can look at individual members of any tuple therein, giving us the two projection onto its components. Secondly, if we are given another set $W$ with functions $p$ and $q$ into $X$ and $Y$ respectively, we can construct a function into the product by taking the images under both $p$ and $q$ and packaging them into a tuple: $m(w) = (p(w), q(w))$. It is trivial to see that the arrows line up.
 
 Another example that may not be obvious at first is the meet of two objects in a posetal category. The definition of a posetal category tells us that a factoring arrow either exists or doesn't, so the definition amounts to finding an object that is less than $X$ and $Y$ and with the property that every other object that is less than both $X$ and $Y$ is also less than the product, which is exactly the definition of a meet.
 
@@ -299,31 +299,31 @@ A *final object* (also called *terminal object* or $1$) is an object for which t
 In *Set*, the final object is the singleton set, since from every other set, there is a function projecting every element to the single element of the singleton set.
 Similarly in a posetal category, the final object is such an element that all other objects are less than or equal, which amounts to the definition of the greatest element.
 
-The final object is the identity element for the categorical product, that is to say $X \times 1 = X = 1 \times X$. Given any object $X$, we have the identity arrow $id_X: X \to X$, and the unique arrow going to $1$, denoted $const_X: X \to 1$. Then, for every other object $Y$ and a pair of arrows $p: Y \to X$ and $q: Y \to 1$, we reason that $q = const_Y$, because there is only one arrow from $Y$ to $1$, and that the factoring arrow is $p$ itself, since the identity can be composed with arrows without effect, achieving $p = \comp{p}{id_X}$.
+The final object is the identity element for the categorical product, that is to say $X \times 1 \cong X \cong 1 \times X$. Given any object $X$, we have the identity arrow $id_X: X \to X$, and the unique arrow going to $1$, denoted $const_X: X \to 1$. Then, for every other object $Y$ and a pair of arrows $p: Y \to X$ and $q: Y \to 1$, we reason that $q = const_Y$, because there is only one arrow from $Y$ to $1$, and that the factoring arrow is $p$ itself, since the identity can be composed with arrows without effect, achieving $p = \comp{p}{id_X}$.
 
 Having an identity element to the categorical product, we can intuitively define nullary and unary products of an object $X$ as the final object and $X$ itself, respectively.
 
 #+begin_definition
 An *exponential* of two objects $X$ and $Y$ in a category $\Cat{K}$ is another object in the same category, often denoted $X^Y$, equipped with an arrow $eval: X^Y \times Y \to X$, satisfying the following property:
 
-For every other object $Z$ in $\Obj{K}$ and an arrow $h: Z \times Y \to X$, there exists a unique arrow $h^\flat: Z \to X^Y$
+For every other object $Z$ in $\Obj{K}$ and an arrow $h: Z \times Y \to X$, there exists a unique arrow $h^\flat: Z \to X^Y$, satisfying the equality $\comp{eval}{(h^\flat \times Y)} = h$, where by $h^\flat \times Y$ we mean the projection of components $\prodfact{\comp{h^\flat}{\pi_1}}{\comp{id_Y}{\pi_2}}$.
 #+end_definition
 
 Exponentials serve as an abstraction of functions, allowing one to represent arrows between two objects as another object in the same category. This is hinted at by the suggestive naming of the arrow $eval$, whose name stems from its role of taking a "function" object and an "argument" object, and "applying" the second to the first. In this light, the property in the definition can be seen as introducing currying, a term familiar to many functional programmers, which states that a function taking a tuple, essentially two arguments, can be partially applied, or provided with just one argument, returning another function that needs to be supplied with the other argument in order to be evaluated.
 
 
 #+begin_definition
-A *closed Cartesian category* $\Cat{K}$ is a category satisfying the following properties:
+A *Cartesian closed category* $\Cat{K}$ is a category satisfying the following properties:
 
 1. $\Cat{K}$ has all finite products
 2. For every pair of objects $X, Y \in \Obj{K}$, their exponent $X^Y$ exists in $\Cat{K}$
 #+end_definition
 
-A closed Cartesian category (or /CCC/ for short) is therefore a category that has a final object, all binary products, and the arrows between two objects have a concrete representation in the form of another object in the category.
+A Cartesian closed category is therefore a category that has a final object, all binary products, and the arrows between two objects have a concrete representation in the form of another object in the category.
 
 * Types and Category theory
 
-Closed Cartesian categories offer a categorical model for the \(\stl\)-calculus, which is more general than the conventional set-theoretical interpretation.
+Cartesian closed categories (CCC's) offer a categorical model for the \(\stl\)-calculus, which is more general than the conventional set-theoretical interpretation.
 
 We interpret types in the calculus as objects in a general CCC. A product type $\ProdType{A}{B}$ is represented by the categorical product $A \times B$. A function type $A \to B$ is represented by the exponential $B^A$.
 
@@ -383,9 +383,7 @@ B^A \times A \arrow[r, "eval"'] & B
 #+end_export
 
 * COMMENT TODO [3/6]
-- [ ] Examples of transferred ideas in [[*Introduction][Introduction]]
 - [X] Proof reduction
 - [X] Motivations for definitions
 - [X] Examples for categories
-- [ ] Unify writing style -> narrative vs impersonal declarative
 - [ ] Sources
