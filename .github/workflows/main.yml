@@ -19,13 +19,14 @@ jobs:
           (progn \
             (require 'org) \
             (with-current-buffer \
-              (find-file \"ComputationalTrinitarianism.org\") \
+              (find-file \"Thesis.org\") \
               (org-latex-export-to-latex)))"
 
       - name: Compile to PDF
-        uses: xu-cheng/latex-action@v2
+        uses: wtfjoke/setup-tectonic@v1
         with:
-          root_file: ComputationalTrinitarianism.tex
+          github_token: {{ secrets.GITHUB_TOKEN }}
+        run: tectonic Thesis.pdf
 
       - name: Create Release
         id: release
@@ -44,6 +45,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.release.outputs.upload_url }}
-          asset_path: ./ComputationalTrinitarianism.pdf
-          asset_name: ComputationalTrinitarianism.pdf
+          asset_path: ./Thesis.pdf
+          asset_name: Thesis.pdf
           asset_content_type: application/pdf

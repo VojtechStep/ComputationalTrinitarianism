@@ -1,0 +1,119 @@
+#+TITLE: Computational trinitarianism and Linear types
+#+AUTHOR: Vojtěch Štěpančík
+
+#+latex_header: \usepackage{fontspec}
+#+latex_header: \usepackage{prftree}
+
+#+begin_export latex
+% Introduction rule
+\newcommand{\Intro}[1]{$#1$-I}
+% Elimination rule
+\newcommand{\Elim}[1]{$#1$-E}
+#+end_export
+
+* TODO Introduction
+
+* Logic
+
+When formalizing a logic system, we take advantage of a so-called "proof system" (Wasilewska?).
+
+A proof system consists of the following components:
+
+- The *language*, i.e. the set of all formulas valid under the logic
+- The *axioms*, i.e. the tautologies
+- The *inference rules*, i.e. the recipes for how to syntactically convert one provable formula into another
+
+A *proposition* is a formula in the language, which is conventionally built up from a set of constants (the alphabet), and logical connectives.
+
+An *assumption* is a sequence of (zero or more) propositions.
+
+A *judgment* is an observation, consisting of an assumption and a conclusion. It is written $\Gamma \vdash A$, where $\Gamma$ is the assumption and $A$ is the conclusion, separated by a turnstile.
+
+An *inference rule* describes how judgments can be syntactically manipulated while preserving derivability. Such a rule consists of zero or more judgments above a derivation line, and one judgment below it.
+
+Inference rules come in multiple flavors: if there are no judgments above the line, then the concluding judgment is always derivable - e.g. it's a tautology, and it expresses and *axiom*. Rules that describe operations on the assumptions, instead of the conclusion, are called *structural*. Finally, rules that allow one to modify the conclusion are *logical* rules, further divided into *introduction* rules and *elimination* rules, based on whether they represent the ability to introduce logical connectives into the conclusion, or eliminate them.
+
+A proof in this system consists of a tree, with the judgment to be proved at its root, axioms at its leaves, and instances of the derivation rules constituting the inner nodes.
+
+The exact notion of what propositions and judgments are depends on the problem space for which the logic was designed - in classical and intuitionistic logic, a proposition is a formula that can be given a "true" or "false" value, and judgments are of the form "$A$ is true". On the other hand, in linear logic, a proposition represents a resource, and judgments express "$A$ is obtainable".
+
+** TODO Intuitionistic logic
+
+Intuitionistic logic is the logic of constructive mathematics - the only axiom in the system is $A \vdash A$, in other words, any proposition can be derived from itself. This is in contrast with classical logic, which also admits the law of excluded middle, $\vdash A \lor \lnot A$.
+
+Propositions in intuitionistic logic can therefore only be judged to be derivable if a proof is presented. To relate it with the excluded middle, the /proposition/ $A \lor \lnot A$ can be derivable on a case-by-case basis, but it needs to be known which side of the disjunction was proved.
+
+#+name: fig:intuit_inference
+#+caption: Inference rules for the meet-implicative fragment of propositional intuitionistic logic
+#+begin_figure
+$$
+\prftree[r]{Id}
+{A \vdash A}
+$$
+
+$$
+\prftree[r]{Weak}
+{\Gamma \vdash A}
+{\Gamma, B \vdash A}
+\hspace{1cm}
+\prftree[r]{Contr}
+{\Gamma, A, A \vdash B}
+{\Gamma, A \vdash B}
+\hspace{1cm}
+\prftree[r]{Exch}
+{\Gamma, \Delta \vdash A}
+{\Delta, \Gamma \vdash A}
+$$
+
+$$
+\prftree[r]{\Intro{\land}}
+{\Gamma \vdash A}
+{}
+{\Gamma \vdash B}
+{\Gamma \vdash A \land B}
+\hspace{1cm}
+\prftree[r]{\Elim{\land}$_1$}
+{\Gamma \vdash A \land B}
+{\Gamma \vdash A}
+\hspace{1cm}
+\prftree[r]{\Elim{\land}$_2$}
+{\Gamma \vdash A \land B}
+{\Gamma \vdash B}
+$$
+
+$$
+\prftree[r]{\Intro{\to}}
+{\Gamma, A \vdash B}
+{\Gamma \vdash A \to B}
+\hspace{1cm}
+\prftree[r]{\Elim{\to}}
+{\Gamma \vdash A \to B}
+{}
+{\Delta \vdash A}
+{\Gamma, \Delta \vdash B}
+$$
+#+end_figure
+
+#+name: fig:intuit_duplic
+#+caption: Duplication of truth
+#+begin_figure
+$$
+\prftree[r]{Contr}
+{\prftree[r]{\Intro{\land}}
+{\prftree[r]{Id}
+{A \vdash A}}
+{\prftree[r]{Id}
+{A \vdash A}}
+{A, A \vdash A \land A}}
+{A \vdash A \land A}
+$$
+#+end_figure
+
+** TODO Linear logic
+
+As can be seen from Figure [[fig:intuit_duplic]], intuitionistic logic has no problem with "duplicating" propositions - it considers truth and proofs to be "free". Linear logic attempts to formalize a system where such mathematical objects are /not/ free, and resources that can be freely duplicated or discarded have to be annotated. This approach was chosen so that intuitionistic logic can be fully embedded in linear logic, therefore adding expressivity instead of limiting it, which would be the case if Contraction and Weakening were simply not allowed.
+
+To this extent, the intuition behind several connectives, as well as their nomenclature, must be adjusted.
+
+The intuitionistic implication $A \to B$ becomes linear $A \multimap B$, and it carries the idea of "consuming" A to "produce" B.
+
