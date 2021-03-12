@@ -27,7 +27,7 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Compile to PDF
-        run: tectonic Thesis.pdf
+        run: tectonic Thesis.tex
 
       - name: Create Release
         id: release
