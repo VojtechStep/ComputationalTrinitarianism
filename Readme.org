@@ -1,0 +1,10 @@
+#+TITLE: Computational trinitarianism
+#+AUTHOR: VojtechStep
+
+This repository contains my research on computational trinitarianism and linear types, which is conducted for my undergraduate thesis at the Czech Technical University.
+
+The documents are written as [[https://orgmode.org/][org-mode]] files in Emacs, which are then exported to LaTeX and compiled to PDF using [[https://tectonic-typesetting.github.io/en-US/][tectonic]].
+
+The file [[file:ComputationalTrinitarianism.org][ComputationalTrinitarism.org]] contains my research on computational trinitarianism assuming the meet-implicative fragment of propositional intuitionistic logic, and [[file:Thesis.org][Thesis.org]] builds on the introduced concepts by replacing traditional intuitionistic logic with substructural linear logic.
+
+The resulting documents are built automatically using GitHub Actions, so the newest version is always available at the [[https://github.com/VojtechStep/ComputationalTrinitarianism/releases][releases]] page.
