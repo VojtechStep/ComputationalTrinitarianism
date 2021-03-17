@@ -11,6 +11,13 @@
 \newcommand{\Elim}[1]{$#1$-E}
 #+end_export
 
+* COMMENT Topic
+
+Computational trinitarianism describes the intimate relationship between logic, category theory and type theory. This relationship identifies propositions of a logic with a type of a corresponding type system, and also establishes a correspondence between a proof of a proposition, a term (program) of a given type, and a generalized element of an object in a category.
+A linear type system is a special kind of a substructural type system with important applications in computer science. An advantage of a linear type system resides in its ability to place constraints on the usage of (or access to) variables (resources).
+The aim of the bachelor thesis is to describe linear logic as an example of a substructural logic, to construct a linear type system stemming from that logic, and to give their categorical semantics via categories with structure.
+The style and presentation of the thesis will be theoretical.
+
 * TODO Introduction
 
 * Logic
