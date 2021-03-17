@@ -104,30 +104,42 @@ A proof in this updated notation is again a tree, with a contextualized judgemen
 
 When composing existing proofs together, we sometimes produce redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating that connective, the proof can be simplified via rewriting rules called *proof-reductions*, specific to the object language.
 
-** TODO Intuitionistic logic
+** Intuitionistic logic
 
-Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A \vdash A$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also admits the law of excluded middle, $\vdash A \lor \lnot A$.
+Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A \vdash A$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also axiomatizes the law of excluded middle, $\vdash A \lor \lnot A$. The philosophical difference between classical and intuitionistic logic is that classical logic is content with knowing whether a formula is true or false, as these are the only options, while intuitionistic logic demands one to construct a proof of such a judgement. By rejecting the law of excluded middle, logical connectives can only be introduced via their corresponding introduction rules. Thus, to give a proof of the judgement /$A \lor \lnot A$ is true/, one would need to present either a proof of /$A$ is true/, or /$\lnot A$ is true/ \cite{Sorensen2006}.
 
-Propositions in intuitionistic logic can therefore only be judged to be derivable if a proof is presented. To relate it with the excluded middle, the /proposition/ $A \lor \lnot A$ can be derivable on a case-by-case basis, but it needs to be known which side of the disjunction was proved.
+The basic judgement that can be made about a proposition $A$ in intuitionistic logic is /$A$ is derivable/. Given that the only way to introduce a connective into a formula is via its unique introduction rule, such a judgement is only possible to be made given a proof of $A$.
 
-#+name: fig:intuit_inference
-#+caption: Inference rules for the meet-implicative fragment of propositional intuitionistic logic
+The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The formulas of this fragment can be described in the following Backus-Naur form:
+
+$$
+A, B ::= X | (A \to B) | (A \land B)
+$$
+
+The rules of this fragment are given in Figure [[fig:intuit_deduct]].
+
+#+name: fig:intuit_deduct
 #+begin_figure
+#+caption: Deduction rules for the meet-implicative fragment of propositional intuitionistic logic
+#+begin_framed
 $$
 \prftree[r]{Id}
 {A \vdash A}
 $$
 
 $$
-\prftree[r]{Weak}
+\prftree[r]{Weakening}
 {\Gamma \vdash A}
 {\Gamma, B \vdash A}
 \hspace{1cm}
-\prftree[r]{Contr}
+\prftree[r]{Contraction}
 {\Gamma, A, A \vdash B}
 {\Gamma, A \vdash B}
 \hspace{1cm}
-\prftree[r]{Exch}
+$$
+
+$$
+\prftree[r]{Exchange}
 {\Gamma, A, B, \Delta \vdash C}
 {\Gamma, B, A, \Delta \vdash C}
 $$
@@ -159,11 +171,59 @@ $$
 {\Delta \vdash A}
 {\Gamma, \Delta \vdash B}
 $$
+#+end_framed
 #+end_figure
 
-#+name: fig:intuit_duplic
-#+caption: Duplication of truth
+The rules consist of the one axiom Id mentioned above, the three structural rules, Weakening, Contraction, and Exchange, and introduction and elimination rules for the two connective, $\Intro{\land}$, $\Elim{\land}_1$, $\Elim{\land}_2$, $\Intro{\to}$ and $\Elim{\to}$.
+
+$\Intro{\land}$, or /conjunction introduction/, states, that given a proof of $A$ and a proof of $B$, then the two proofs combined give a proof of $A \land B$. The respective elimination rules allow one to re-extract one of the proofs of $A$ or $B$ from $A \land B$, even after they were combined. The corresponding proof reduction rule for eliminating a sequence of conjunction introduction and conjunction elimination is shown in [[fig:intuit_conj_red]]. The rule for eliminating a sequence of $\Intro{\land}$ and $\Elim{\land}_2$ is not shown, as it is trivially symmetrical.
+
+#+name: fig:intuit_conj_red
 #+begin_figure
+#+caption: Conjunction proof reduction
+#+begin_framed
+$$
+\prftree[r]{$\Elim{\land}_1$}
+{\prftree[r]{$\Intro{\land}$}
+{\prfsummary[s]{\Gamma \vdash A}}
+{}
+{\prfsummary[t]{\Gamma \vdash B}}
+{\Gamma \vdash A \land B}}
+{\Gamma \vdash A}
+\hspace{1cm}\Rightarrow\hspace{1cm}
+\prfsummary[s]{\Gamma \vdash A}
+$$
+#+end_framed
+#+end_figure
+
+$\Intro{\to}$, or /implication introduction/, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of $A$ into a proof of $B$. The implication elimination is then a method for providing such a proof of $A$. The respective proof reduction is shown in [[fig:intuit_impl_red]].
+
+#+name: fig:intuit_impl_red
+#+begin_figure
+#+caption: Implication proof reduction
+#+begin_framed
+$$
+\prftree[r]{$\Elim{\to}$}
+{\prftree[r]{$\Intro{\to}$}
+{\prfsummary[s]{\Gamma, A \vdash B}}
+{\Gamma \vdash A \to B}}
+{}
+{\prfsummary[t]{\Delta \vdash A}}
+{\Gamma, \Delta \vdash B}
+\hspace{1cm}\Rightarrow\hspace{1cm}
+\prfStackPremises
+{\prfsummary[t]{\Delta \vdash A}}
+{\prfsummary[s]{\Gamma, \Delta \vdash B}}
+$$
+#+end_framed
+#+end_figure
+
+** TODO Linear logic
+
+#+name: fig:intuit_duplic
+#+begin_figure
+#+caption: Duplication of truth
+#+begin_framed
 $$
 \prftree[r]{Contr}
 {\prftree[r]{$\Intro{\land}$}
@@ -174,9 +234,8 @@ $$
 {A, A \vdash A \land A}}
 {A \vdash A \land A}
 $$
+#+end_framed
 #+end_figure
-
-** TODO Linear logic
 
 As can be seen from Figure [[fig:intuit_duplic]], intuitionistic logic has no problem with "duplicating" propositions \mdash it considers truth and proofs to be "free". Linear logic attempts to formalize a system where such mathematical objects are /not/ free, and resources that can be freely duplicated or discarded have to be annotated. This approach was chosen so that intuitionistic logic can be fully embedded in linear logic, therefore adding expressivity instead of limiting it, which would be the case if Contraction and Weakening were simply not allowed.
 
