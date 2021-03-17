@@ -1,14 +1,17 @@
 #+TITLE: Computational trinitarianism and Linear types
 #+AUTHOR: Vojtěch Štěpančík
+#+OPTIONS: toc:nil
 
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{prftree}
+#+latex_header: \usepackage{apacite}
+#+latex_header: \usepackage{framed}
 
 #+begin_export latex
 % Introduction rule
-\newcommand{\Intro}[1]{$#1$-I}
+\newcommand{\Intro}[1]{#1\mathrm{I}}
 % Elimination rule
-\newcommand{\Elim}[1]{$#1$-E}
+\newcommand{\Elim}[1]{#1\mathrm{E}}
 #+end_export
 
 * COMMENT Topic
@@ -22,31 +25,88 @@ The style and presentation of the thesis will be theoretical.
 
 * Logic
 
-When formalizing a logic system, we take advantage of a so-called "proof system" (Wasilewska?).
+Mathematical logic is logic treated by mathematical methods. However, such studies of different kinds of logic often use logical and deductive thinking themselves. To separate the logic observed from the logic used to make the observations, we consider them to be two separate systems. The language of the logic studied is referred to as the *object language*, while the language of the logic used for doing the observations is called the *metalanguage* \cite{Kleene1966}.
 
-A proof system consists of the following components:
+These metalanguages are then used to reason about formal composition of proofs \mdash therefore we call them *proof systems*, or *proof calculi*.
 
-- The *language*, i.e. the set of all formulas valid under the logic
-- The *axioms*, i.e. the tautologies
-- The *inference rules*, i.e. the recipes for how to syntactically convert one provable formula into another
+The proof system used in this paper stems from Gentzen's natural deduction. Natural deduction builds proofs on *judgements* and *propositions*.
 
-A *proposition* is a formula in the language, which is conventionally built up from a set of constants (the alphabet), and logical connectives.
+A proposition is a formula of the object language, and a judgement is a knowable fact about a proposition. For example in traditional logic (that is to say, a /truth-oriented/ logic), one might take "It is raining today" for a proposition $A$, and a judgement is the statement /$A$ is true/. In this context, the judgement /$A$ is true/ is shortened to simply $A$ if it is evident from the usage site that a judgement is expected to appear, and not a proposition. We will later see that, without delving into the philosophy of mathematics, the exact nature of propositions and judgements depends on the object language.
 
-An *assumption* is a sequence of (zero or more) propositions.
+The basis for the metalanguage is the *deduction rules*. A deduction rule consists of a collection of judgements, called the *premises*, and a single judgement, called the *conclusion*. To be able to refer to the rule in proofs, it is assigned a semantically significant name. Graphically, it is represented by drawing a horizontal line (the *derivation line*), placing the premises above it, the conclusion below, and writing the name of the rule to the right.
 
-A *judgment* is an observation, consisting of an assumption and a conclusion. It is written $\Gamma \vdash A$, where $\Gamma$ is the assumption and $A$ is the conclusion, separated by a turnstile.
+To illustrate, if we wanted to express the rule expressing that given two propositions, $A$ and $B$, and the judgements /$A$ is true/ and /$B$ is true/, one can obtain the judgement /$A \land B$ is true/, we can write it as
 
-An *inference rule* describes how judgments can be syntactically manipulated while preserving derivability. Such a rule consists of zero or more judgments above a derivation line, and one judgment below it.
+$$
+\prftree[r]{$\Intro{\land}$}
+{A}
+{B}
+{A \land B}
+$$
 
-Inference rules come in multiple flavors: if there are no judgments above the line, then the concluding judgment is always derivable - e.g. it's a tautology, and it expresses and *axiom*. Rules that describe operations on the assumptions, instead of the conclusion, are called *structural*. Finally, rules that allow one to modify the conclusion are *logical* rules, further divided into *introduction* rules and *elimination* rules, based on whether they represent the ability to introduce logical connectives into the conclusion, or eliminate them.
+\noindent where the judgements $A$, $B$ and $A \land B$ are shorthand forms of /$A$ is true/, /$B$ is true/ and /$A \land B$ is true/, respectively. The label $\Intro{\land}$ is an abbreviation for "conjunction introduction".
 
-A proof in this system consists of a tree, with the judgment to be proved at its root, axioms at its leaves, and instances of the derivation rules constituting the inner nodes.
+Gentzen used the concept of assumptions to formulate implication. If, given that /$A$ is true/, we can sequence the derivation rules in such a way that we get the judgement /$B$ is true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ is true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure [[fig:localized_hyp]] (left). The $\vdots$ stands for a sequence of derivation rules that can derive the judgement /$B$ is true/ from the judgement /$A$ is true/.
 
-The exact notion of what propositions and judgments are depends on the problem space for which the logic was designed - in classical and intuitionistic logic, a proposition is a formula that can be given a "true" or "false" value, and judgments are of the form "$A$ is true". On the other hand, in linear logic, a proposition represents a resource, and judgments express "$A$ is obtainable".
+A proof in natural deduction is a tree, with the judgement to be proven at the root, assumptions at the leaves, and derivation rules between the nodes.
+
+In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally. We say that a *contextualized judgement* has the form $\Gamma \vdash A$, where \Gamma is a sequence of zero or more assumptions, or the *context*, and $A$ is the judgement \mdash once again, in traditional logic, this is shorthand for /$A$ is true/. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure [[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, A$ is a new context, which includes all the assumptions from \Gamma, and the assumption $A$. This concatenation is intuitively extended to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
+
+#+name: fig:localized_hyp
+#+begin_figure
+#+caption: Gentzen's assumption notation (left) and notation for localized assumptions (right)
+#+begin_framed
+$$
+\prftree[r]{$(\Intro{\to})_{\prfref<A>}$}
+{\prfsummary
+{\prfboundedassumption<A>{A}}
+{B}}
+{A \to B}
+\hspace{1cm}
+\prftree[r]{$\Intro{\to}$}
+{A \vdash B}
+{\vdash A \to B}
+$$
+#+end_framed
+#+end_figure
+
+The behaviour of the context is specified in the metalanguage, using derivation rules. These rules are called *structural rules*, and usually include Weakening, Contraction, and Exchange, which are listed in Figure [[fig:structural]]. These three rules encode semantics similar to those of a finite set.
+
+Weakening allows one to add arbitrary assumptions to the context without invalidating the derived judgement. Contraction states that assumptions may be used multiple times. Exchange asserts that the order in which assumptions appear in the context is irrelevant.
+
+A logic which constrains one or more of these structural rules is called *substructural* \cite{Paoli2013}.
+
+#+name: fig:structural
+#+begin_figure
+#+caption: Structural rules
+#+begin_framed
+$$
+\prftree[r]{Weakening}
+{\Gamma \vdash A}
+{\Gamma, B \vdash A}
+\hspace{1cm}
+\prftree[r]{Contraction}
+{\Gamma, A, A \vdash B}
+{\Gamma, A \vdash B}
+$$
+
+$$
+\prftree[r]{Exchange}
+{\Gamma, A, B, \Delta \vdash C}
+{\Gamma, B, A, \Delta \vdash C}
+$$
+#+end_framed
+#+end_figure
+
+Just as there can be zero assumptions in a contextualized judgement, there can be zero premises in a deduction rule. Such rules are called *axioms*, and their conclusions are judgement that can always be made.
+
+A proof in this updated notation is again a tree, with a contextualized judgement at the root, contextualized judgements in the inner nodes, axioms at the leaves, and derivation rules connecting the nodes.
+
+When composing existing proofs together, we sometimes produce redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating that connective, the proof can be simplified via rewriting rules called *proof-reductions*, specific to the object language.
 
 ** TODO Intuitionistic logic
 
-Intuitionistic logic is the logic of constructive mathematics - the only axiom in the system is $A \vdash A$, in other words, any proposition can be derived from itself. This is in contrast with classical logic, which also admits the law of excluded middle, $\vdash A \lor \lnot A$.
+Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A \vdash A$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also admits the law of excluded middle, $\vdash A \lor \lnot A$.
 
 Propositions in intuitionistic logic can therefore only be judged to be derivable if a proof is presented. To relate it with the excluded middle, the /proposition/ $A \lor \lnot A$ can be derivable on a case-by-case basis, but it needs to be known which side of the disjunction was proved.
 
@@ -68,32 +128,32 @@ $$
 {\Gamma, A \vdash B}
 \hspace{1cm}
 \prftree[r]{Exch}
-{\Gamma, \Delta \vdash A}
-{\Delta, \Gamma \vdash A}
+{\Gamma, A, B, \Delta \vdash C}
+{\Gamma, B, A, \Delta \vdash C}
 $$
 
 $$
-\prftree[r]{\Intro{\land}}
+\prftree[r]{$\Intro{\land}$}
 {\Gamma \vdash A}
 {}
 {\Gamma \vdash B}
 {\Gamma \vdash A \land B}
 \hspace{1cm}
-\prftree[r]{\Elim{\land}$_1$}
+\prftree[r]{$\Elim{\land}_1$}
 {\Gamma \vdash A \land B}
 {\Gamma \vdash A}
 \hspace{1cm}
-\prftree[r]{\Elim{\land}$_2$}
+\prftree[r]{$\Elim{\land}_2$}
 {\Gamma \vdash A \land B}
 {\Gamma \vdash B}
 $$
 
 $$
-\prftree[r]{\Intro{\to}}
+\prftree[r]{$\Intro{\to}$}
 {\Gamma, A \vdash B}
 {\Gamma \vdash A \to B}
 \hspace{1cm}
-\prftree[r]{\Elim{\to}}
+\prftree[r]{$\Elim{\to}$}
 {\Gamma \vdash A \to B}
 {}
 {\Delta \vdash A}
@@ -106,7 +166,7 @@ $$
 #+begin_figure
 $$
 \prftree[r]{Contr}
-{\prftree[r]{\Intro{\land}}
+{\prftree[r]{$\Intro{\land}$}
 {\prftree[r]{Id}
 {A \vdash A}}
 {\prftree[r]{Id}
@@ -118,9 +178,13 @@ $$
 
 ** TODO Linear logic
 
-As can be seen from Figure [[fig:intuit_duplic]], intuitionistic logic has no problem with "duplicating" propositions - it considers truth and proofs to be "free". Linear logic attempts to formalize a system where such mathematical objects are /not/ free, and resources that can be freely duplicated or discarded have to be annotated. This approach was chosen so that intuitionistic logic can be fully embedded in linear logic, therefore adding expressivity instead of limiting it, which would be the case if Contraction and Weakening were simply not allowed.
+As can be seen from Figure [[fig:intuit_duplic]], intuitionistic logic has no problem with "duplicating" propositions \mdash it considers truth and proofs to be "free". Linear logic attempts to formalize a system where such mathematical objects are /not/ free, and resources that can be freely duplicated or discarded have to be annotated. This approach was chosen so that intuitionistic logic can be fully embedded in linear logic, therefore adding expressivity instead of limiting it, which would be the case if Contraction and Weakening were simply not allowed.
 
 To this extent, the intuition behind several connectives, as well as their nomenclature, must be adjusted.
 
 The intuitionistic implication $A \to B$ becomes linear $A \multimap B$, and it carries the idea of "consuming" A to "produce" B.
 
+#+begin_export latex
+\bibliography{ComputationalTrinitarianism}
+\bibliographystyle{apacite}
+#+end_export
