@@ -12,6 +12,18 @@
 \newcommand{\Intro}[1]{#1\mathrm{I}}
 % Elimination rule
 \newcommand{\Elim}[1]{#1\mathrm{E}}
+
+% Lambda calculus
+\newcommand{\stl}{\lambda^{\to}_{\ProdTypeCon}}
+
+% Product type
+\newcommand{\ProdTypeCon}{\land}
+\newcommand{\ProdType}[2]{#1 \ProdTypeCon #2}
+\newcommand{\ProdTypeFst}[1]{fst(#1)}
+\newcommand{\ProdTypeSnd}[1]{snd(#1)}
+
+% Tuple
+\newcommand{\tuple}[2]{(#1, #2)}
 #+end_export
 
 * COMMENT Topic
@@ -176,7 +188,7 @@ $$
 
 The rules consist of the one axiom Id mentioned above, the three structural rules, Weakening, Contraction, and Exchange, and introduction and elimination rules for the two connective, $\Intro{\land}$, $\Elim{\land}_1$, $\Elim{\land}_2$, $\Intro{\to}$ and $\Elim{\to}$.
 
-$\Intro{\land}$, or /conjunction introduction/, states, that given a proof of $A$ and a proof of $B$, then the two proofs combined give a proof of $A \land B$. The respective elimination rules allow one to re-extract one of the proofs of $A$ or $B$ from $A \land B$, even after they were combined. The corresponding proof reduction rule for eliminating a sequence of conjunction introduction and conjunction elimination is shown in [[fig:intuit_conj_red]]. The rule for eliminating a sequence of $\Intro{\land}$ and $\Elim{\land}_2$ is not shown, as it is trivially symmetrical.
+$\Intro{\land}$, or /conjunction introduction/, states, that given a proof of $A$ and a proof of $B$, then the two proofs combined give a proof of $A \land B$. The respective elimination rules allow one to re-extract one of the proofs of $A$ or $B$ from $A \land B$, even after they were combined. The corresponding proof reduction rule for eliminating a sequence of conjunction introduction and conjunction elimination is shown in Figure [[fig:intuit_conj_red]]. The rule for eliminating a sequence of $\Intro{\land}$ and $\Elim{\land}_2$ is not shown, as it is trivially symmetrical.
 
 #+name: fig:intuit_conj_red
 #+begin_figure
@@ -196,7 +208,7 @@ $$
 #+end_framed
 #+end_figure
 
-$\Intro{\to}$, or /implication introduction/, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of $A$ into a proof of $B$. The implication elimination is then a method for providing such a proof of $A$. The respective proof reduction is shown in [[fig:intuit_impl_red]].
+$\Intro{\to}$, or /implication introduction/, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of $A$ into a proof of $B$. The implication elimination is then a method for providing such a proof of $A$. The respective proof reduction is shown in Figure [[fig:intuit_impl_red]].
 
 #+name: fig:intuit_impl_red
 #+begin_figure
@@ -243,7 +255,78 @@ To this extent, the intuition behind several connectives, as well as their nomen
 
 The intuitionistic implication $A \to B$ becomes linear $A \multimap B$, and it carries the idea of "consuming" A to "produce" B.
 
+* TODO Type theory
+
+Type theory is the study of formal systems in which terms have an associated label called /type/, and rules for constructing the terms include the description of their behavior on the types. For more information on the subject, see \cite{Thompson1991} and \cite{PerLof1980}.
+
+More precisely, in constructive mathematics, a mathematical object is created by construction, and the type of an object is the type of construction used to create it \cite{Bauer2018}.
+
+One such type system is the simply typed \lambda-calculus, or STLC, which extends the untyped \lambda-calculus by introducing a set of /base types/, and inductively generates all its types with the $\to$ binary type operator, where the type $A \to B$ is the type of functions from type $A$ to type $B$. A term $t$ of type $A$ is expressed as $t: A$.
+
+The STLC recognizes three forms for its terms, very much like the untyped \lambda-calculus. These are /variables/, of the form $x: A$, where $x$ is an atom and $A$ is a type, then /abstractions/, which represent functions, and have the form $\lambda x.t: A \to B$, where $x: A$, $t: B$, and $x$ is a free variable in $t$, becoming bound by the abstraction. Finally, abstractions can be used in an /application/, which, given the terms $f: A \to B$ and $t: A$, yields the term $f(t): B$. Application forms can be further simplified by performing /\(\beta\)-reduction/, defined using term substitution as $(\lambda x.t)(s) \to t[s/x]$, where free occurrences of $x$ in $t$ are rewritten to $s$. Performing a reduction is synonymous with /evaluating/ a program.
+
+We define an extension of the simply typed \lambda-calculus by introducing the binary product type operator $\ProdTypeCon$, producing types of the form $\ProdType{A}{B}$, which represent tuples of one object of type $A$ and one object of type $B$. We call this extension the \(\stl\)-calculus, and the construction rules are listed in Figure [[fig:type_derivation]].
+
+#+name: fig:type_derivation
+#+begin_figure
+#+caption: Derivation rules for the \(\stl\)-calculus
+#+begin_framed
+$$
+\prftree[r]{Id}
+{x: A \vdash x: A}
+$$
+
+$$
+\prftree[r]{Weakening}
+{\Gamma \vdash t: A}
+{\Gamma, x: B \vdash t: A}
+\hspace{1cm}
+\prftree[r]{Contraction}
+{\Gamma, x: A, y: A \vdash t: B}
+{\Gamma, z: A \vdash t[z/x][z/y]: B}
+\hspace{1cm}
+$$
+
+$$
+\prftree[r]{Exchange}
+{\Gamma, x: A, y: B, \Delta \vdash t: C}
+{\Gamma, y: B, x: A, \Delta \vdash t: C}
+$$
+
+$$
+\prftree[r]{$\Intro{\land}$}
+{\Gamma \vdash x: A}
+{}
+{\Delta \vdash y: B}
+{\Gamma, \Delta \vdash \tuple{x}{y}: \ProdType{A}{B}}
+\hspace{0.5cm}
+\prftree[r]{$\Elim{\ProdTypeCon}_1$}
+{\Gamma \vdash t: \ProdType{A}{B}}
+{\Gamma \vdash \ProdTypeFst{t}: A}
+\hspace{0.5cm}
+\prftree[r]{$\Elim{\ProdTypeCon}_2$}
+{\Gamma \vdash t: \ProdType{A}{B}}
+{\Gamma \vdash \ProdTypeSnd{t}: B}
+$$
+
+$$
+\prftree[r]{$\Intro{\to}$}
+{\Gamma, x: A \vdash t: B}
+{\Gamma \vdash \lambda x.t: A \to B}
+\hspace{0.5cm}
+\prftree[r]{$\Elim{\to}$}
+{\Gamma \vdash f: A \to B}
+{\Delta \vdash t: A}
+{\Gamma, \Delta \vdash f(t): B}
+$$
+#+end_framed
+#+end_figure
+
+The new forms introduced are /tuples/, written as $\tuple{x}{y}: \ProdType{A}{B}$, which represent a pair of terms, and left and right /projections/, written as $\ProdTypeFst{t}: A$ and $\ProdTypeSnd{t}: B$, respectively, assuming a term $t: \ProdType{A}{B}$. This new syntax allows for more redundant forms of terms, which can be simplified using /\(\pi\)-reduction/ via the evaluation steps $\ProdTypeFst{\tuple{x}{y}} \to x$ and $\ProdTypeSnd{\tuple{x}{y}} \to y$.
+
+The language is once again described with derivation rules, with zero or more premises above and one conclusion below the line. The context in a judgment now stands for a collection of typed variables, and contains the variables that are free in the term on the right side of the turnstile. In this way, the $\Intro{\to}$ rule can be intuitively interpreted by taking a variable $x: A$, and instead of treating it as free, we remove it from the context and bind it with an abstraction.
 #+begin_export latex
 \bibliography{ComputationalTrinitarianism}
 \bibliographystyle{apacite}
 #+end_export
+
