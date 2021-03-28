@@ -1,6 +1,6 @@
 #+TITLE: Computational trinitarianism and Linear types
 #+AUTHOR: Vojtěch Štěpančík
-#+OPTIONS: toc:nil
+#+OPTIONS: toc:nil ':t
 
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{prftree}
