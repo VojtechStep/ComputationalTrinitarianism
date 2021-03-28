@@ -41,7 +41,7 @@ Mathematical logic is logic treated by mathematical methods. However, such studi
 
 These metalanguages are then used to reason about formal composition of proofs \mdash therefore we call them *proof systems*, or *proof calculi*.
 
-The proof system used in this paper stems from Gentzen's natural deduction. Natural deduction builds proofs on *judgements* and *propositions*.
+The proof system used in this paper stems from Gentzen's natural deduction \cite{Gentzen1934}. Natural deduction builds proofs on *judgements* and *propositions*.
 
 A proposition is a formula of the object language, and a judgement is a knowable fact about a proposition. For example in traditional logic (that is to say, a /truth-oriented/ logic), one might take "It is raining today" for a proposition $A$, and a judgement is the statement /$A$ is true/. In this context, the judgement /$A$ is true/ is shortened to simply $A$ if it is evident from the usage site that a judgement is expected to appear, and not a proposition. We will later see that, without delving into the philosophy of mathematics, the exact nature of propositions and judgements depends on the object language.
 
@@ -60,9 +60,9 @@ $$
 
 Gentzen used the concept of assumptions to formulate implication. If, given that /$A$ is true/, we can sequence the derivation rules in such a way that we get the judgement /$B$ is true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ is true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure [[fig:localized_hyp]] (left). The $\vdots$ stands for a sequence of derivation rules that can derive the judgement /$B$ is true/ from the judgement /$A$ is true/.
 
-A proof in natural deduction is a tree, with the judgement to be proven at the root, assumptions at the leaves, and derivation rules between the nodes.
+A proof in natural deduction is tree-like, with the judgement to be proven at the root, assumptions at the leaves, and derivation rules between the nodes. It is not a proper tree, because it needs to keep track of which implication introductions discharge which assumptions, so additional structure to manage backreferences is necessary.
 
-In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally. We say that a *contextualized judgement* has the form $\Gamma \vdash A$, where \Gamma is a sequence of zero or more assumptions, or the *context*, and $A$ is the judgement \mdash once again, in traditional logic, this is shorthand for /$A$ is true/. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure [[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, A$ is a new context, which includes all the assumptions from \Gamma, and the assumption $A$. This concatenation is intuitively extended to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
+In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally, allowing us to degenerate the proof structure to a proper tree. We say that a *contextualized judgement*[fn:1] has the form $\Gamma \vdash A$, where \Gamma is a sequence of zero or more assumptions, called the *context*, and $A$ is the judgement \mdash once again, in traditional logic, this is shorthand for /$A$ is true/. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure [[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, A$ is a new context, which includes all the assumptions from \Gamma, and the assumption $A$. This concatenation is intuitively extended to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
 
 #+name: fig:localized_hyp
 #+begin_figure
@@ -125,10 +125,11 @@ The basic judgement that can be made about a proposition $A$ in intuitionistic l
 The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The formulas of this fragment can be described in the following Backus-Naur form:
 
 $$
-A, B ::= X | (A \to B) | (A \land B)
+A, B ::= X \; | \; (A \to B) \; | \; (A \land B)
 $$
 
-The rules of this fragment are given in Figure [[fig:intuit_deduct]].
+
+\noindent for X ranging over atomic formulas. The rules of this fragment are given in Figure [[fig:intuit_deduct]].
 
 #+name: fig:intuit_deduct
 #+begin_figure
@@ -188,7 +189,7 @@ $$
 
 The rules consist of the one axiom Id mentioned above, the three structural rules, Weakening, Contraction, and Exchange, and introduction and elimination rules for the two connective, $\Intro{\land}$, $\Elim{\land}_1$, $\Elim{\land}_2$, $\Intro{\to}$ and $\Elim{\to}$.
 
-$\Intro{\land}$, or /conjunction introduction/, states, that given a proof of $A$ and a proof of $B$, then the two proofs combined give a proof of $A \land B$. The respective elimination rules allow one to re-extract one of the proofs of $A$ or $B$ from $A \land B$, even after they were combined. The corresponding proof reduction rule for eliminating a sequence of conjunction introduction and conjunction elimination is shown in Figure [[fig:intuit_conj_red]]. The rule for eliminating a sequence of $\Intro{\land}$ and $\Elim{\land}_2$ is not shown, as it is trivially symmetrical.
+/Conjunction introduction/, labeled $\Intro{\land}$ in the deduction rules, states that given a proof of $A$ and a proof of $B$, then the two proofs combined give a proof of $A \land B$. The respective elimination rules allow one to re-extract one of the proofs of $A$ or $B$ from $A \land B$, even after they were combined. The corresponding proof reduction rule for eliminating a sequence of conjunction introduction and conjunction elimination is shown in Figure [[fig:intuit_conj_red]]. The rule for eliminating a sequence of $\Intro{\land}$ and $\Elim{\land}_2$ is not shown, as it is trivially symmetrical.
 
 #+name: fig:intuit_conj_red
 #+begin_figure
@@ -208,7 +209,7 @@ $$
 #+end_framed
 #+end_figure
 
-$\Intro{\to}$, or /implication introduction/, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of $A$ into a proof of $B$. The implication elimination is then a method for providing such a proof of $A$. The respective proof reduction is shown in Figure [[fig:intuit_impl_red]].
+/Implication introduction/, labeled $\Intro{\to}$, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of $A$ into a proof of $B$. The implication elimination is then a method for providing such a proof of $A$. The respective proof reduction is shown in Figure [[fig:intuit_impl_red]].
 
 #+name: fig:intuit_impl_red
 #+begin_figure
@@ -284,7 +285,6 @@ $$
 \prftree[r]{Contraction}
 {\Gamma, x: A, y: A \vdash t: B}
 {\Gamma, z: A \vdash t[z/x][z/y]: B}
-\hspace{1cm}
 $$
 
 $$
@@ -330,3 +330,6 @@ The language is once again described with derivation rules, with zero or more pr
 \bibliographystyle{apacite}
 #+end_export
 
+* Footnotes
+
+[fn:1] TODO: Should we use Gentzen's term /sequent/?
