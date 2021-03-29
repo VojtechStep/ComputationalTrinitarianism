@@ -64,8 +64,8 @@ A proof in natural deduction is tree-like, with the judgement to be proven at th
 
 In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally, allowing us to degenerate the proof structure to a proper tree. We say that a *contextualized judgement*[fn:1] has the form $\Gamma \vdash A$, where \Gamma is a sequence of zero or more assumptions, called the *context*, and $A$ is the judgement \mdash once again, in traditional logic, this is shorthand for /$A$ is true/. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure [[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, A$ is a new context, which includes all the assumptions from \Gamma, and the assumption $A$. This concatenation is intuitively extended to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
 
-#+name: fig:localized_hyp
 #+begin_figure
+#+name: fig:localized_hyp
 #+caption: Gentzen's assumption notation (left) and notation for localized assumptions (right)
 #+begin_framed
 $$
@@ -88,8 +88,8 @@ Weakening allows one to add arbitrary assumptions to the context without invalid
 
 A logic which constrains one or more of these structural rules is called *substructural* \cite{Paoli2013}.
 
-#+name: fig:structural
 #+begin_figure
+#+name: fig:structural
 #+caption: Structural rules
 #+begin_framed
 $$
@@ -131,8 +131,8 @@ $$
 
 \noindent for X ranging over atomic formulas. The rules of this fragment are given in Figure [[fig:intuit_deduct]].
 
-#+name: fig:intuit_deduct
 #+begin_figure
+#+name: fig:intuit_deduct
 #+caption: Deduction rules for the meet-implicative fragment of propositional intuitionistic logic
 #+begin_framed
 $$
@@ -191,8 +191,8 @@ The rules consist of the one axiom Id mentioned above, the three structural rule
 
 /Conjunction introduction/, labeled $\Intro{\land}$ in the deduction rules, states that given a proof of $A$ and a proof of $B$, then the two proofs combined give a proof of $A \land B$. The respective elimination rules allow one to re-extract one of the proofs of $A$ or $B$ from $A \land B$, even after they were combined. The corresponding proof reduction rule for eliminating a sequence of conjunction introduction and conjunction elimination is shown in Figure [[fig:intuit_conj_red]]. The rule for eliminating a sequence of $\Intro{\land}$ and $\Elim{\land}_2$ is not shown, as it is trivially symmetrical.
 
-#+name: fig:intuit_conj_red
 #+begin_figure
+#+name: fig:intuit_conj_red
 #+caption: Conjunction proof reduction
 #+begin_framed
 $$
@@ -233,8 +233,8 @@ $$
 
 ** TODO Linear logic
 
-#+name: fig:intuit_duplic
 #+begin_figure
+#+name: fig:intuit_duplic
 #+caption: Duplication of truth
 #+begin_framed
 $$
@@ -268,9 +268,9 @@ The STLC recognizes three forms for its terms, very much like the untyped \lambd
 
 We define an extension of the simply typed \lambda-calculus by introducing the binary product type operator $\ProdTypeCon$, producing types of the form $\ProdType{A}{B}$, which represent tuples of one object of type $A$ and one object of type $B$. We call this extension the \(\stl\)-calculus, and the construction rules are listed in Figure [[fig:type_derivation]].
 
-#+name: fig:type_derivation
 #+begin_figure
-#+caption: Derivation rules for the \(\stl\)-calculus
+#+name: fig:type_deduction
+#+caption: Deduction rules for the \(\stl\)-calculus
 #+begin_framed
 $$
 \prftree[r]{Id}
