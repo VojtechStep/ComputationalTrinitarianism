@@ -233,7 +233,11 @@ $$
 #+end_framed
 #+end_figure
 
-/Implication introduction/, labeled $\Intro{\to}$, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of /$A$ true/ into a proof of /$B$ true/. The implication elimination is then a method for providing such a proof of $A$. The respective proof reduction is shown in Figure\nbsp[[fig:intuit_impl_red]].
+/Implication introduction/, labeled $\Intro{\to}$, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of /$A$ true/ (or multiple proofs of /$A$ true/) into a proof of /$B$ true/. The implication elimination is then a method for providing such a proof of $A$.
+
+The proof reduction rule must take into account that the judgment /\(A\)\nbsp{}true/ might have been assumed zero or multiple times in the proof of /$B$ true/, and the context later modified with contractions or weakenings to reach the contextualized judgment $\Gamma, A\;true \vdash B\;true$. Every assumption of /$A$ true/ that is used in the proof must have been introduced by the identity rule, and the ones that aren't used were introduced by weakening. As shown in \cite{Wadler1993}, applications of structural and logic rules commute, so for every proof where contraction and weakening are used, there is an equivalent proof with all the contractions and weakenings pushed to the root of the proof tree. In other words, for every proof of $\Gamma, J_1 \vdash J_2$, there is an equivalent proof which consists of a contraction- and weakening-less subproof of $\Gamma, J_1 \cdots \vdash J_2$, followed by applications of contraction and weakening to accommodate the context, where the ellipsis indicate zero of more assumptions of $J_1$. The final applications of contraction and weakening are represented by a doubled derivation line, to indicate that it's multiple steps shown as one.
+
+The role of the proof reduction is then to take the proof of $\Delta \vdash A\;true$, and replace with it the instances of $A\;true \vdash A\;true$ in the proof of $\Gamma, A\;true \vdash B\;true$. The full proof reduction rule is shown in Figure\nbsp[[fig:intuit_impl_red]].
 
 #+begin_figure
 #+name: fig:intuit_impl_red
