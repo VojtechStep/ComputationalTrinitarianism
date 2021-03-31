@@ -8,6 +8,9 @@
 #+latex_header: \usepackage{framed}
 
 #+begin_export latex
+% Binary or
+\newcommand{\binor}{\mathbin{|}}
+
 % Introduction rule
 \newcommand{\Intro}[1]{#1\mathrm{I}}
 % Elimination rule
@@ -41,7 +44,7 @@ Mathematical logic is logic treated by mathematical methods. However, such studi
 
 These metalanguages are then used to reason about formal composition of proofs \mdash therefore we call them *proof systems*, or *proof calculi*.
 
-The proof system used in this paper stems from Gentzen's natural deduction \cite{Gentzen1934}. Natural deduction builds proofs on *judgements* and *propositions*.
+The proof system used in this paper stems from Gentzen's natural deduction \cite{Gentzen1935}. Natural deduction builds proofs on *judgements* and *propositions*.
 
 A proposition is a formula of the object language, and a judgement is a knowable fact. For example in traditional logic (that is to say, a /truth-oriented/ logic), one might take "It is raining today" for a proposition $A$, and a judgement is the statement /$A$ is true/, or /$A$ true/ for short.
 
@@ -55,12 +58,13 @@ To illustrate, if we wanted to show the rule expressing that given two propositi
 
 $$
 \prftree[r]{$\Intro{\land}$}
-{A\;true}
-{A\;prop}
-{B\;true}
-{B\;prop}
-{(A \land B)\;true}
+ {A\;true}
+ {A\;prop}
+ {B\;true}
+ {B\;prop}
+ {(A \land B)\;true}
 $$
+
 
 \noindent where the label $\Intro{\land}$ is an abbreviation for "conjunction introduction".
 
@@ -76,14 +80,14 @@ In this notation, assumptions are /global/ to the proof. We can change the notat
 #+begin_framed
 $$
 \prftree[r]{$(\Intro{\to})_{\prfref<A>}$}
-{\prfsummary
-{\prfboundedassumption<A>{A}}
-{B}}
-{A \to B}
-\hspace{1cm}
+ {\prfsummary
+   {\prfboundedassumption<A>{A}}
+   {B}}
+ {A \to B}
+\hspace{2em}
 \prftree[r]{$\Intro{\to}$}
-{A\;prop, A\;true, B\;prop \vdash B\;true}
-{A\;prop, B\;prop \vdash (A \to B)\;true}
+ {A\;prop, A\;true, B\;prop \vdash B\;true}
+ {A\;prop, B\;prop \vdash (A \to B)\;true}
 $$
 #+end_framed
 #+end_figure
@@ -100,22 +104,21 @@ A logic which constrains one or more of these structural rules is called *substr
 #+begin_framed
 $$
 \prftree[r]{Weakening}
-{\Gamma \vdash A\;true}
-{\Gamma, B\;true \vdash A\;true}
+ {\Gamma \vdash A\;true}
+ {\Gamma, B\;true \vdash A\;true}
 $$
 
 $$
 \prftree[r]{Contraction}
-{\Gamma, A\;true, A\;true \vdash B\;true}
-{\Gamma, A\;true \vdash B\;true}
+ {\Gamma, A\;true, A\;true \vdash B\;true}
+ {\Gamma, A\;true \vdash B\;true}
 $$
 
 $$
 \prftree[r]{Exchange}
-{\Gamma, A\;true, B\;true, \Delta \vdash C\;true}
-{\Gamma, B\;true, A\;true, \Delta \vdash C\;true}
+ {\Gamma, A\;true, B\;true, \Delta \vdash C\;true}
+ {\Gamma, B\;true, A\;true, \Delta \vdash C\;true}
 $$
-
 #+end_framed
 #+end_figure
 
@@ -129,12 +132,12 @@ When composing existing proofs together, we sometimes produce redundancies. Name
 
 Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A\;true \vdash A\;true$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also axiomatizes the law of excluded middle, $\vdash (A \lor \lnot A)\;true$. The philosophical difference between classical and intuitionistic logic is that classical logic is content with knowing whether a formula is true or whether it is false. After all, those are the only options. Intuitionistic logic, on the other hand, requires a constructive proof \mdash a "recipe", turning the assumptions into the conclusion. Without the law of excluded middle, one cannot derive a proposition to be true based on its double negation alone, which is in accord with the constructive requirements, because showing that an object cannot /not/ exist is not the same as constructing an object. In intuitionistic logic, the judgement /$(A \lor \lnot A)$ true/ can still be made, but it needs to be accompanied with either a proof of /$A$ true/ or /$\lnot A$ true/ \cite{Sorensen2006}.
 
-Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. This could tempt one to identify the proposition $A$ with the judgment /\(A\)\nbsp{}true/, but we do not do it here, for the sake of correctness[fn:2].
+Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth").
 
 The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The formulas of this fragment can be described by the following Backus-Naur form:
 
 $$
-A, B ::= X \; | \; (A \to B) \; | \; (A \land B)
+A, B ::= X \binor (A \to B) \binor (A \land B)
 $$
 
 \noindent for X ranging over atomic formulas. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
@@ -145,55 +148,51 @@ $$
 #+begin_framed
 $$
 \prftree[r]{Id}
-{A\;true \vdash A\;true}
-$$
-
-$$
+ {A \vdash_T A}
+\hspace{2em}
 \prftree[r]{Weakening}
-{\Gamma \vdash A\;true}
-{\Gamma, B\;true \vdash A\;true}
+ {\Gamma \vdash_T A}
+ {\Gamma, B \vdash_T A}
 $$
 
 $$
 \prftree[r]{Contraction}
-{\Gamma, A\;true, A\;true \vdash B\;true}
-{\Gamma, A\;true \vdash B\;true}
-$$
-
-$$
+ {\Gamma, A, A \vdash_T B}
+ {\Gamma, A \vdash_T B}
+\hspace{2em}
 \prftree[r]{Exchange}
-{\Gamma, A\;true, B\;true, \Delta \vdash C\;true}
-{\Gamma, B\;true, A\;true, \Delta \vdash C\;true}
+ {\Gamma, A, B, \Delta \vdash_T C}
+ {\Gamma, B, A, \Delta \vdash_T C}
 $$
 
 $$
 \prftree[r]{$\Intro{\land}$}
-{\Gamma \vdash A\;true}
-{}
-{\Gamma \vdash B\;true}
-{\Gamma \vdash (A \land B)\;true}
+ {\Gamma \vdash_T A}
+ {}
+ {\Gamma \vdash_T B}
+ {\Gamma \vdash_T A \land B}
 $$
 
 $$
 \prftree[r]{$\Elim{\land}_1$}
-{\Gamma \vdash (A \land B)\;true}
-{\Gamma \vdash A\;true}
-\hspace{1cm}
+ {\Gamma \vdash_T A \land B}
+ {\Gamma \vdash_T A}
+\hspace{2em}
 \prftree[r]{$\Elim{\land}_2$}
-{\Gamma \vdash (A \land B)\;true}
-{\Gamma \vdash B\;true}
+ {\Gamma \vdash_T A \land B}
+ {\Gamma \vdash_T B}
 $$
 
 $$
 \prftree[r]{$\Intro{\to}$}
-{\Gamma, A\;true \vdash B\;true}
-{\Gamma \vdash (A \to B)\;true}
-\hspace{1cm}
+ {\Gamma, A \vdash_T B}
+ {\Gamma \vdash_T A \to B}
+\hspace{2em}
 \prftree[r]{$\Elim{\to}$}
-{\Gamma \vdash (A \to B)\;true}
-{}
-{\Delta \vdash A\;true}
-{\Gamma, \Delta \vdash B\;true}
+ {\Gamma \vdash_T A \to B}
+ {}
+ {\Delta \vdash_T A}
+ {\Gamma, \Delta \vdash_T B}
 $$
 #+end_framed
 #+end_figure
@@ -206,12 +205,12 @@ When formulating the proof reduction rule for a particular connective, one needs
 
 $$
 \prftree[r]{$\Elim{\land}_1$}
-{\prftree[r]{$\Intro{\land}$}
-{\prfsummary[s]{\Gamma \vdash A\;true}}
-{}
-{\prfsummary[t]{\Gamma \vdash B\;true}}
-{\Gamma \vdash (A \land B)\;true}}
-{\Gamma \vdash A\;true}
+ {\prftree[r]{$\Intro{\land}$}
+   {\prfsummary[s]{\Gamma \vdash_T A}}
+   {}
+   {\prfsummary[t]{\Gamma \vdash_T B}}
+   {\Gamma \vdash_T A \land B}}
+ {\Gamma \vdash_T A}
 $$
 
 \noindent It is easy to see that the conclusion $\Gamma \vdash A\;true$ could have been reached earlier with the $s$ subproof. The full rule is shown in Figure\nbsp[[fig:intuit_conj_red]]. The rule for the other elimination rule is not shown, as it is trivially symmetrical.
@@ -222,14 +221,14 @@ $$
 #+begin_framed
 $$
 \prftree[r]{$\Elim{\land}_1$}
-{\prftree[r]{$\Intro{\land}$}
-{\prfsummary[s]{\Gamma \vdash A\;true}}
-{}
-{\prfsummary[t]{\Gamma \vdash B\;true}}
-{\Gamma \vdash (A \land B)\;true}}
-{\Gamma \vdash A\;true}
-\hspace{1cm}\Rightarrow\hspace{1cm}
-\prfsummary[s]{\Gamma \vdash A\;true}
+ {\prftree[r]{$\Intro{\land}$}
+   {\prfsummary[s]{\Gamma \vdash_T A}}
+   {}
+   {\prfsummary[t]{\Gamma \vdash_T B}}
+   {\Gamma \vdash_T A \land B}}
+ {\Gamma \vdash_T A}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prfsummary[s]{\Gamma \vdash_T A}
 $$
 #+end_framed
 #+end_figure
@@ -240,18 +239,22 @@ $$
 #+name: fig:intuit_impl_red
 #+caption: Implication proof reduction
 #+begin_framed
-\footnotesize
 $$
 \prftree[r]{$\Elim{\to}$}
-{\prftree[r]{$\Intro{\to}$}
-{\prfsummary[s]{\Gamma, A\;true \vdash B\;true}}
-{\Gamma \vdash A\;true \to B\;true}}
-{}
-{\prfsummary[t]{\Delta \vdash A\;true}}
-\hspace{1cm}\Rightarrow\hspace{1cm}
-\prfStackPremises
-{\prfsummary[t]{\Delta \vdash A\;true}}
-{\prfsummary[s]{\Gamma, \Delta \vdash B\;true}}
+ {\prftree[r]{$\Intro{\to}$}
+   {\prftree[r,double]{}
+     {\prfsummary[s]{A \vdash_T A \cdots}
+       {\Gamma, A \cdots \vdash_T B}}
+     {\Gamma, A \vdash_T B}}
+   {\Gamma \vdash_T (A \to B)}}
+ {\prfsummary[t]{\Delta \vdash_T A}}
+ {\Gamma, \Delta \vdash_T B}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prftree[r,double]{}
+ {\prfStackPremises
+   {\prfsummary[t $\cdots$]{\Delta \vdash_T A \cdots}}
+   {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
+ {\Gamma, \Delta \vdash_T B}
 $$
 #+end_framed
 #+end_figure
@@ -260,17 +263,24 @@ $$
 
 #+begin_figure
 #+name: fig:intuit_duplic
-#+caption: Duplication of truth
+#+caption: Duplication and discard of truth
 #+begin_framed
 $$
 \prftree[r]{Contr}
-{\prftree[r]{$\Intro{\land}$}
-{\prftree[r]{Id}
-{A \vdash A}}
-{\prftree[r]{Id}
-{A \vdash A}}
-{A, A \vdash A \land A}}
-{A \vdash A \land A}
+ {\prftree[r]{$\Intro{\land}$}
+   {\prftree[r]{Id}
+     {A \vdash_T A}}
+   {\prftree[r]{Id}
+     {A \vdash_T A}}
+   {A, A \vdash_T A \land A}}
+ {A \vdash_T A \land A}
+\hspace{2em}
+\prftree[r]{$\Intro{\to}$}
+ {\prftree[r]{Weak}
+   {\prftree[r]{Id}
+     {A \vdash_T B}}
+   {A, B \vdash_T \to A}}
+ {A \vdash_T B \to A}
 $$
 #+end_framed
 #+end_figure
@@ -306,7 +316,7 @@ $$
 \prftree[r]{Weakening}
 {\Gamma \vdash t: A}
 {\Gamma, x: B \vdash t: A}
-\hspace{1cm}
+\hspace{2em}
 \prftree[r]{Contraction}
 {\Gamma, x: A, y: A \vdash t: B}
 {\Gamma, z: A \vdash t[z/x][z/y]: B}
@@ -330,7 +340,7 @@ $$
 \prftree[r]{$\Elim{\ProdTypeCon}_1$}
 {\Gamma \vdash t: \ProdType{A}{B}}
 {\Gamma \vdash \ProdTypeFst{t}: A}
-\hspace{1cm}
+\hspace{2em}
 \prftree[r]{$\Elim{\ProdTypeCon}_2$}
 {\Gamma \vdash t: \ProdType{A}{B}}
 {\Gamma \vdash \ProdTypeSnd{t}: B}
@@ -340,7 +350,7 @@ $$
 \prftree[r]{$\Intro{\to}$}
 {\Gamma, x: A \vdash t: B}
 {\Gamma \vdash \lambda x.t: A \to B}
-\hspace{0.5cm}
+\hspace{2em}
 \prftree[r]{$\Elim{\to}$}
 {\Gamma \vdash f: A \to B}
 {\Delta \vdash t: A}
