@@ -16,6 +16,18 @@
 % Elimination rule
 \newcommand{\Elim}[1]{#1\mathrm{E}}
 
+% Linear assumption
+\newcommand{\Lin}[1]{\langle#1\rangle}
+% Intuitionistic assumption
+\newcommand{\Int}[1]{[#1]}
+
+% Tensor
+\newcommand{\tens}{\mathbin{\otimes}}
+% With
+\newcommand{\with}{\mathbin{\&}}
+% Lolipop
+\newcommand{\loli}{\multimap}
+
 % Lambda calculus
 \newcommand{\stl}{\lambda^{\to}_{\ProdTypeCon}}
 
@@ -263,7 +275,10 @@ $$
 #+end_framed
 #+end_figure
 
+\newpage
 ** TODO Linear logic
+
+In contrast to intuitionistic logic, linear logic considers propositions to be a form of resource - they should not be subject to duplication or discard. When looking at intuitionistic proofs, such as the ones listed in Figure [[fig:intuit_duplic]], we can see that intuitionistic logic has no problem with duplicating propositions (from a single $A$ one might obtain multiple \(A\)'s) or discarding propositions (the $B$ is unnecessary in the proof of $A$, so it is thrown away).
 
 #+begin_figure
 #+name: fig:intuit_duplic
@@ -289,11 +304,195 @@ $$
 #+end_framed
 #+end_figure
 
-As can be seen from Figure\nbsp[[fig:intuit_duplic]], intuitionistic logic has no problem with "duplicating" propositions \mdash it considers truth and proofs to be "free". Linear logic attempts to formalize a system where such mathematical objects are /not/ free, and resources that can be freely duplicated or discarded have to be annotated. This approach was chosen so that intuitionistic logic can be fully embedded in linear logic, therefore adding expressivity instead of limiting it, which would be the case if Contraction and Weakening were simply not allowed.
+In intuitionistic logic, we judged a proposition to be true, and the judgment had the form /$A$ true/. In linear logic, we focus on /availability/. We can judge a proposition $A$ to be available, written /$A$ avail/, if there is a proof that "consumes" some assumptions, "producing" the proposition $A$. The semantics of consumption are embedded in the deduction rules, explained below.
 
-To this extent, the intuition behind several connectives, as well as their nomenclature, must be adjusted.
+One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language \mdash even if some resources were truly "free", meaning they could be used any number of times, even zero, we would have no way of conveying this information to the system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources.
 
-The intuitionistic implication $A \to B$ becomes linear $A \multimap B$, and it carries the idea of "consuming" A to "produce" B.
+#+begin_figure
+#+name: fig:lin_int_conv
+#+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
+#+begin_framed
+$$
+\prftree[r]{$\Elim{!}$}
+ {\Int{A} \vdash_R B}
+ {\prftree[r]{$\Lin{\text{Id}}$}
+   {}
+   {\Lin{!A} \vdash_R !A}}
+ {\Lin{!A} \vdash_R B}
+\hspace{2em}
+\prftree[r]{$\Elim{\loli}$}
+ {\prftree[r]{$\Intro{\loli}$}
+   {\Lin{!A} \vdash_R B}
+   {\vdash_R !A \loli B}}
+ {\prftree[r]{$\Intro{!}$}
+   {\prftree[r]{$\Int{\text{Id}}$}
+     {}
+     {\Int{A} \vdash_R A}}
+   {\Int{A} \vdash_R !A}}
+ {\Int{A} \vdash_R B}
+$$
+#+end_framed
+#+end_figure
+
+The introduction of unbound resources necessitates differentiating between two kinds of assumptions in the contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, they can only appear on the left-hand side of a turnstile.
+
+Contraction and weakening are now limited to only intuitionistic assumptions, meaning that judgments can be linearly assumed multiple times. These new rules lead to the interpretation of a general context $\Gamma$ as a multiset, where every intuitionistic judgment can be made to have a multiplicity of one (using the new contraction and weakening), and multiplicity of linear assumptions is given by their usage in the conclusion. Similarly to the intuitionistic case, a shorthand notation for contextualized judgments is used \mdash writing $\Gamma \vdash_R A$, the context \Gamma is a multiset of /propositions/ in square or angle brackets, such as $\Lin{B}$ or $\Int{C \loli D}$, and $A$ is a proposition. This is shorthand for a contextualized judgment whose context is a multiset containing one occurrence of the judgment $\Lin{B\;avail}$ for every proposition $B$ in angle brackets in \Gamma, and one occurrence of the judgment $\Int{B\;avail}$ for every proposition $B$ in square brackets in \Gamma. The conclusion of this contextualized judgment is the judgment $A\;avail$, where $A$ is the proposition on the right of the turnstile in the shorthand.
+
+A general context \Gamma can contain assumptions of both kinds, linear and intuitionistic, but an /intuitionistic context/, denoted by $\Int{\Gamma}$, is a context that only contains intuitionistic assumptions, if any.
+
+The focus of this chapter is the (???) propositional intuitionistic linear logic. It bears similarity to the intuitionistic logic described in the last chapter, specifically it provides tools for representing implications and conjunction.
+
+The new implication connective is historically called "lollipop", and it's written $A \loli B$. The formula is read "produce $B$ consuming $A$".
+
+Interestingly, there are two conjunction connectives \mdash the "tensor", written $A \tens B$, and the "with", written $A \with B$. The tensor represents a conjunction "containing" /both/ resources $A$ and $B$, while the "with" lists two resources that are both available, but not at the same time \mdash the recipient of such a resource needs to choose either $A$ or $B$.
+
+The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective is different from the intuitionistic assumption $\Int{A\;avail}$ and why they are both necessary once we take a look at the proof reduction rules.
+
+The formulas of this logic can also be described by the simple grammar
+
+$$
+A, B ::= X \binor (A \loli B) \binor (A \tens B) \binor (A \with B) \; \binor \; !A
+$$
+
+\noindent for X ranging over atomic propositions. The deduction rules are listed in Figure [[fig:linear_deduct]].
+
+#+begin_figure
+#+name: fig:linear_deduct
+#+caption: Deduction rules for the ??? (TODO: positive?) fragment of intuitionistic linear logic
+#+begin_framed
+$$
+\prftree[r]{$\Lin{\text{Id}}$}
+ {\Lin{A} \vdash_R A}
+\hspace{2em}
+\prftree[r]{$\Int{\text{Id}}$}
+ {\Int{A} \vdash_R A}
+$$
+
+$$
+\prftree[r]{Exchange}
+ {\Gamma, S, T, \Delta \vdash_R A}
+ {\Gamma, T, S, \Delta \vdash_R A}
+$$
+
+$$
+\prftree[r]{Contraction}
+ {\Gamma, \Int{A}, \Int{A} \vdash_R B}
+ {\Gamma, \Int{A}, \vdash_R B}
+\hspace{2em}
+\prftree[r]{Weakening}
+ {\Gamma \vdash_R B}
+ {\Gamma, \Int{A} \vdash_R B}
+$$
+
+$$
+\prftree[r]{$\Intro{\loli}$}
+ {\Gamma, \Lin{A} \vdash_R B}
+ {\Gamma \vdash_R (A \loli B)}
+\hspace{2em}
+\prftree[r]{$\Elim{\loli}$}
+ {\Gamma \vdash_R (A \loli B)}
+ {}
+ {\Delta \vdash_R A}
+ {\Gamma, \Delta \vdash_R B}
+$$
+
+$$
+\prftree[r]{$\Intro{\with}$}
+ {\Gamma \vdash_R A}
+ {}
+ {\Gamma \vdash_R B}
+ {\Gamma \vdash_R A \with B}
+$$
+
+$$
+\prftree[r]{$\Elim{\with}_1$}
+ {\Gamma \vdash_R A \with B}
+ {\Gamma \vdash_R A}
+\hspace{2em}
+\prftree[r]{$\Elim{\with}_2$}
+ {\Gamma \vdash_R A \with B}
+ {\Gamma \vdash_R B}
+$$
+
+$$
+\prftree[r]{$\Intro{\tens}$}
+ {\Gamma \vdash_R A}
+ {}
+ {\Delta \vdash_R B}
+ {\Gamma, \Delta \vdash_R A \tens B}
+\hspace{2em}
+\prftree[r]{$\Elim{\tens}$}
+ {\Gamma \vdash_R A \tens B}
+ {}
+ {\Delta, \Lin{A}, \Lin{B} \vdash_R C}
+ {\Gamma, \Delta \vdash_R C}
+$$
+
+$$
+\prftree[r]{$\Intro{!}$}
+ {\Int{\Gamma} \vdash_R A}
+ {\Int{\Gamma} \vdash_R !A}
+\hspace{2em}
+\prftree[r]{$\Elim{!}$}
+ {\Gamma \vdash_R !A}
+ {}
+ {\Delta, \Int{A} \vdash_R B}
+ {\Gamma, \Delta \vdash_R B}
+$$
+#+end_framed
+#+end_figure
+
+There are now two axioms, one for each kind of assumption. The /linear identity/ $\Lin{\text{Id}}$ says that one can conclude the availability of a resource if one such resource is available. The /intuitionistic identity/ expresses the very same concept, except with one caveat \mdash the proof says nothing about how many times the resource was used in the reasoning.
+
+The exchange rule stays unchanged, only $S$ and $T$ stand for any two propositions with square or angle brackets \mdash we are free to rearrange and intermix linear and intuitionistic assumptions.
+
+The contraction and weakening rules are limited to intuitionistic assumptions, as mentioned in the introduction.
+
+The lollipop introduction rule in linear logic also abstracts an assumption, but it is limited only to linear ones. The formula $A \loli B$ represents an action of "consuming" a resource $A$ to "produce" a resource $B$. The notion of "consuming" is justified by the fact that the introduction rule removes the linear assumption of the judgment /$A$ avail/ from the context exactly once, leading to there being one less such assumption in the context, and producing a proposition with a "hole" waiting for one occurrence of /$A$ avail/. The corresponding elimination rule fills such a hole with a resource obtained from a different context.
+
+Emphasis is put on the contexts being different \mdash the context \Gamma contains other resources that are also consumed during the process of turning an $A$ into a $B$, therefore the resources cannot be shared with the context used for filling the hole.
+
+The "with" deduction rules exactly mirror the conjunction rules used when we formulated intuitionistic logic. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are used once one of the components is extracted.
+
+#+begin_figure
+#+begin_framed
+\footnotesize
+$$
+\prftree[r]{$\Elim{!}$}
+ {\prftree[r]{$\Lin{\text{Id}}$}
+   {}
+   {\Lin{!(A \with B)} \vdash_R !(A \with B)}}
+ {\prftree[r]{Cont}
+   {\prftree[r]{$\Intro{\tens}$}
+     {\prftree[r]{$\Intro{!}$}
+       {\prftree[r]{$\Elim{\with}_1$}
+         {\prftree[r]{\Int{\text{Id}}}
+           {}
+           {\Int{A \with B} \vdash_R A \with B}}
+         {\Int{A \with B} \vdash_R A}}
+       {\Int{A \with B} \vdash_R !A}}
+     {\prftree[r]{$\Intro{!}$}
+       {\prftree[r]{$\Elim{\with}_2$}
+         {\prftree[r]{\Int{\text{Id}}}
+           {}
+           {\Int{A \with B} \vdash_R A \with B}}
+         {\Int{A \with B} \vdash_R B}}
+       {\Int{A \with B} \vdash_R !B}}
+     {\Int{A \with B}, \Int{A \with B} \vdash_R !A \tens !B}}
+   {\Int{A \with B} \vdash_R !A \tens !B}}
+ {\Lin{!(A \with B)} \vdash_R !A \tens !B}
+$$
+#+end_framed
+#+end_figure
+
+** TODO Intuitionistic embedding
+
+- $|A| = A$
+- $|A \land B| = |A| \with |B|$
+- $|A \to B| = !|A| \loli |B|$
+- Explain why both $\Int{A}$ and $!A$ are necessary
+
+
 
 * TODO Type theory
 
