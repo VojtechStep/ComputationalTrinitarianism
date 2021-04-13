@@ -41,6 +41,14 @@
 # Tuple
 #+latex_header: \newcommand{\tuple}[2]{(#1, #2)}
 
+# Tensor Tuple
+#+latex_header: \newcommand{\tenstup}[2]{\langle #1, #2 \rangle}
+# With Tuple
+#+latex_header: \newcommand{\withtup}[2]{\langle \langle #1, #2 \rangle \rangle}
+#+latex_header: \newcommand{\withfst}[1]{fst \langle #1 \rangle}
+#+latex_header: \newcommand{\withsnd}[1]{snd \langle #1 \rangle}
+#+latex_header: \newcommand{\bang}{{!}}
+
 #+latex_header: \newcommand\WorkTitle{Computational trinitarianism and Linear types}
 #+latex_header: \newcommand\FirstandFamilyName{Vojtěch Štěpančík}
 #+latex_header: \newcommand\Supervisor{Ing. Matěj Dostál, Ph.D.}
