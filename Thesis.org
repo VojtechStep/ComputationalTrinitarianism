@@ -9,6 +9,38 @@
 #+latex_header: \usepackage[english]{babel}
 #+latex_header: \usepackage{./thesis_template/k336_thesis_macros}
 
+# Binary or
+#+latex_header: \newcommand{\binor}{\mathbin{|}}
+
+# Introduction rule
+#+latex_header: \newcommand{\Intro}[1]{#1\mathrm{I}}
+# Elimination rule
+#+latex_header: \newcommand{\Elim}[1]{#1\mathrm{E}}
+
+# Linear assumption
+#+latex_header: \newcommand{\Lin}[1]{\langle#1\rangle}
+# Intuitionistic assumption
+#+latex_header: \newcommand{\Int}[1]{[#1]}
+
+# Tensor
+#+latex_header: \newcommand{\tens}{\mathbin{\otimes}}
+# With
+#+latex_header: \newcommand{\with}{\mathbin{\&}}
+# Lolipop
+#+latex_header: \newcommand{\loli}{\multimap}
+
+# Lambda calculus
+#+latex_header: \newcommand{\stl}{\lambda^{\to}_{\ProdTypeCon}}
+
+# Product type
+#+latex_header: \newcommand{\ProdTypeCon}{\land}
+#+latex_header: \newcommand{\ProdType}[2]{#1 \ProdTypeCon #2}
+#+latex_header: \newcommand{\ProdTypeFst}[1]{fst(#1)}
+#+latex_header: \newcommand{\ProdTypeSnd}[1]{snd(#1)}
+
+# Tuple
+#+latex_header: \newcommand{\tuple}[2]{(#1, #2)}
+
 #+latex_header: \newcommand\WorkTitle{Computational trinitarianism and Linear types}
 #+latex_header: \newcommand\FirstandFamilyName{Vojtěch Štěpančík}
 #+latex_header: \newcommand\Supervisor{Ing. Matěj Dostál, Ph.D.}
@@ -17,37 +49,6 @@
 #+latex_header: \newcommand\StudBranch{Software}
 
 #+begin_export latex
-% Binary or
-\newcommand{\binor}{\mathbin{|}}
-
-% Introduction rule
-\newcommand{\Intro}[1]{#1\mathrm{I}}
-% Elimination rule
-\newcommand{\Elim}[1]{#1\mathrm{E}}
-
-% Linear assumption
-\newcommand{\Lin}[1]{\langle#1\rangle}
-% Intuitionistic assumption
-\newcommand{\Int}[1]{[#1]}
-
-% Tensor
-\newcommand{\tens}{\mathbin{\otimes}}
-% With
-\newcommand{\with}{\mathbin{\&}}
-% Lolipop
-\newcommand{\loli}{\multimap}
-
-% Lambda calculus
-\newcommand{\stl}{\lambda^{\to}_{\ProdTypeCon}}
-
-% Product type
-\newcommand{\ProdTypeCon}{\land}
-\newcommand{\ProdType}[2]{#1 \ProdTypeCon #2}
-\newcommand{\ProdTypeFst}[1]{fst(#1)}
-\newcommand{\ProdTypeSnd}[1]{snd(#1)}
-
-% Tuple
-\newcommand{\tuple}[2]{(#1, #2)}
 \graphicspath{{thesis_template/}}
 \selectlanguage{english}
 \translate
