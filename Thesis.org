@@ -5,7 +5,6 @@
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{prftree}
 #+latex_header: \usepackage{apacite}
-#+latex_header: \usepackage{framed}
 #+latex_header: \usepackage{fancyhdr}
 #+latex_header: \usepackage[english]{babel}
 #+latex_header: \usepackage{./thesis_template/k336_thesis_macros}
@@ -111,10 +110,9 @@ A proof in natural deduction is tree-like, with the judgement to be proven at th
 
 In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally, allowing us to degenerate the proof structure to a proper tree. We say that a *contextualized judgement*[fn:1] has the form $\Gamma \vdash J$, where \Gamma is a sequence of zero or more assumptions, called the *context*, and $J$ is the judgement. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure\nbsp[[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, S$ is a new context, which includes all the assumptions from \Gamma, and the assumption $S$. This concatenation is intuitively extended to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
 
-#+begin_figure
 #+name: fig:localized_hyp
 #+caption: Gentzen's assumption notation (left) and notation for localized assumptions (right)
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{$(\Intro{\to})_{\prfref<A>}$}
  {\prfsummary
@@ -126,7 +124,6 @@ $$
  {A\;prop, A\;true, B\;prop \vdash B\;true}
  {A\;prop, B\;prop \vdash (A \to B)\;true}
 $$
-#+end_framed
 #+end_figure
 
 The behaviour of the context is specified in the metalanguage, using deduction rules. These rules are called *structural rules*, and usually include Weakening, Contraction, and Exchange, which are listed in Figure\nbsp[[fig:structural]]. These three rules encode semantics similar to those of a finite set.
@@ -135,10 +132,9 @@ Weakening allows one to add arbitrary assumptions to the context without invalid
 
 A logic which constrains one or more of these structural rules is called *substructural* \cite{Paoli2013}.
 
-#+begin_figure
 #+name: fig:structural
 #+caption: Structural rules
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{Weakening}
  {\Gamma \vdash A\;true}
@@ -156,7 +152,6 @@ $$
  {\Gamma, A\;true, B\;true, \Delta \vdash C\;true}
  {\Gamma, B\;true, A\;true, \Delta \vdash C\;true}
 $$
-#+end_framed
 #+end_figure
 
 Just as there can be zero assumptions in a contextualized judgement, there can be zero premises in a deduction rule. Such rules are called *axioms*, and the judgments in their conclusions are always derivable.
@@ -179,10 +174,9 @@ $$
 
 \noindent for X ranging over atomic formulas. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
 
-#+begin_figure
 #+name: fig:intuit_deduct
 #+caption: Deduction rules for the meet-implicative fragment of propositional intuitionistic logic
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{Id}
  {A \vdash_T A}
@@ -231,7 +225,6 @@ $$
  {\Delta \vdash_T A}
  {\Gamma, \Delta \vdash_T B}
 $$
-#+end_framed
 #+end_figure
 
 The rules consist of the one axiom Id mentioned above, the three structural rules, Weakening, Contraction, and Exchange, and introduction and elimination rules for the two connectives, $\Intro{\land}$, $\Elim{\land}_1$, $\Elim{\land}_2$, $\Intro{\to}$ and $\Elim{\to}$.
@@ -252,10 +245,9 @@ $$
 
 \noindent It is easy to see that the conclusion $\Gamma \vdash A\;true$ could have been reached earlier with the $s$ subproof. The full rule is shown in Figure\nbsp[[fig:intuit_conj_red]]. The rule for the other elimination rule is not shown, as it is trivially symmetrical.
 
-#+begin_figure
 #+name: fig:intuit_conj_red
 #+caption: Conjunction proof reduction
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{$\Elim{\land}_1$}
  {\prftree[r]{$\Intro{\land}$}
@@ -267,7 +259,6 @@ $$
 \hspace{1em}\Rightarrow\hspace{1em}
 \prfsummary[s]{\Gamma \vdash_T A}
 $$
-#+end_framed
 #+end_figure
 
 /Implication introduction/, labeled $\Intro{\to}$, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of /$A$ true/ (or multiple proofs of /$A$ true/) into a proof of /$B$ true/. The implication elimination is then a method for providing such a proof of $A$.
@@ -276,10 +267,9 @@ The proof reduction rule must take into account that the judgment /\(A\)\nbsp{}t
 
 The role of the proof reduction is then to take the proof of $\Delta \vdash A\;true$, and replace with it the instances of $A\;true \vdash A\;true$ in the proof of $\Gamma, A\;true \vdash B\;true$. The full proof reduction rule is shown in Figure\nbsp[[fig:intuit_impl_red]].
 
-#+begin_figure
 #+name: fig:intuit_impl_red
 #+caption: Implication proof reduction
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{$\Elim{\to}$}
  {\prftree[r]{$\Intro{\to}$}
@@ -297,17 +287,15 @@ $$
    {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
  {\Gamma, \Delta \vdash_T B}
 $$
-#+end_framed
 #+end_figure
 
 ** TODO Linear logic
 
 In contrast to intuitionistic logic, linear logic considers propositions to be a form of resource - they should not be subject to duplication or discard. When looking at intuitionistic proofs, such as the ones listed in Figure [[fig:intuit_duplic]], we can see that intuitionistic logic has no problem with duplicating propositions (from a single $A$ one might obtain multiple \(A\)'s) or discarding propositions (the $B$ is unnecessary in the proof of $A$, so it is thrown away).
 
-#+begin_figure
 #+name: fig:intuit_duplic
 #+caption: Duplication and discard of truth
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{Contr}
  {\prftree[r]{$\Intro{\land}$}
@@ -325,17 +313,15 @@ $$
    {A, B \vdash_T \to A}}
  {A \vdash_T B \to A}
 $$
-#+end_framed
 #+end_figure
 
 In intuitionistic logic, we judged a proposition to be true, and the judgment had the form /$A$ true/. In linear logic, we focus on /availability/. We can judge a proposition $A$ to be available, written /$A$ avail/, if there is a proof that "consumes" some assumptions, "producing" the proposition $A$. The semantics of consumption are embedded in the deduction rules, explained below.
 
 One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language \mdash even if some resources were truly "free", meaning they could be used any number of times, even zero, we would have no way of conveying this information to the system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources.
 
-#+begin_figure
 #+name: fig:lin_int_conv
 #+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{$\Elim{!}$}
  {\Int{A} \vdash_R B}
@@ -355,7 +341,6 @@ $$
    {\Int{A} \vdash_R !A}}
  {\Int{A} \vdash_R B}
 $$
-#+end_framed
 #+end_figure
 
 The introduction of unbound resources necessitates differentiating between two kinds of assumptions in the contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, they can only appear on the left-hand side of a turnstile.
@@ -380,10 +365,9 @@ $$
 
 \noindent for X ranging over atomic propositions. The deduction rules are listed in Figure [[fig:linear_deduct]].
 
-#+begin_figure
 #+name: fig:linear_deduct
 #+caption: Deduction rules for the ??? (TODO: positive?) fragment of intuitionistic linear logic
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{$\Lin{\text{Id}}$}
  {\Lin{A} \vdash_R A}
@@ -463,7 +447,6 @@ $$
  {\Delta, \Int{A} \vdash_R B}
  {\Gamma, \Delta \vdash_R B}
 $$
-#+end_framed
 #+end_figure
 
 There are now two axioms, one for each kind of assumption. The /linear identity/ $\Lin{\text{Id}}$ says that one can conclude the availability of a resource if one such resource is available. The /intuitionistic identity/ expresses the very same concept, except with one caveat \mdash the proof says nothing about how many times the resource was used in the reasoning.
@@ -479,7 +462,6 @@ Emphasis is put on the contexts being different \mdash the context \Gamma contai
 The "with" deduction rules exactly mirror the conjunction rules used when we formulated intuitionistic logic. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are used once one of the components is extracted.
 
 #+begin_figure
-#+begin_framed
 \footnotesize
 $$
 \prftree[r]{$\Elim{!}$}
@@ -506,7 +488,6 @@ $$
    {\Int{A \with B} \vdash_R !A \tens !B}}
  {\Lin{!(A \with B)} \vdash_R !A \tens !B}
 $$
-#+end_framed
 #+end_figure
 
 ** TODO Intuitionistic embedding
@@ -530,10 +511,9 @@ The STLC recognizes three forms for its terms, very much like the untyped \lambd
 
 We define an extension of the simply typed \lambda-calculus by introducing the binary product type operator $\ProdTypeCon$, producing types of the form $\ProdType{A}{B}$, which represent tuples of one object of type $A$ and one object of type $B$. We call this extension the \(\stl\)-calculus, and the construction rules are listed in Figure\nbsp[[fig:type_deduction]].
 
-#+begin_figure
 #+name: fig:type_deduction
 #+caption: Deduction rules for the \(\stl\)-calculus
-#+begin_framed
+#+begin_figure
 $$
 \prftree[r]{Id}
 {x: A \vdash x: A}
@@ -583,7 +563,6 @@ $$
 {\Delta \vdash t: A}
 {\Gamma, \Delta \vdash f(t): B}
 $$
-#+end_framed
 #+end_figure
 
 The new forms introduced are /tuples/, written as $\tuple{x}{y}: \ProdType{A}{B}$, which represent a pair of terms, and left and right /projections/, written as $\ProdTypeFst{t}: A$ and $\ProdTypeSnd{t}: B$, respectively, assuming a term $t: \ProdType{A}{B}$. This new syntax allows for more redundant forms of terms, which can be simplified using /\(\pi\)-reduction/ via the evaluation steps $\ProdTypeFst{\tuple{x}{y}} \to x$ and $\ProdTypeSnd{\tuple{x}{y}} \to y$.
