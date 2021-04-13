@@ -1,0 +1,3 @@
+[submodule "thesis_template"]
+	path = thesis_template
+	url = git@github.com:VojtechStep/k336_sablona

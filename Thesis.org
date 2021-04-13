@@ -1,11 +1,21 @@
-#+TITLE: Computational trinitarianism and Linear types
-#+AUTHOR: Vojtěch Štěpančík
 #+OPTIONS: toc:nil ':t
 
+#+latex_class: book
+#+latex_class_options: [11pt,twoside,a4paper]
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{prftree}
 #+latex_header: \usepackage{apacite}
 #+latex_header: \usepackage{framed}
+#+latex_header: \usepackage{fancyhdr}
+#+latex_header: \usepackage[english]{babel}
+#+latex_header: \usepackage{./thesis_template/k336_thesis_macros}
+
+#+latex_header: \newcommand\WorkTitle{Computational trinitarianism and Linear types}
+#+latex_header: \newcommand\FirstandFamilyName{Vojtěch Štěpančík}
+#+latex_header: \newcommand\Supervisor{Ing. Matěj Dostál, Ph.D.}
+#+latex_header: \newcommand\TypeOfWork{Bachelor's Thesis}
+#+latex_header: \newcommand\StudProgram{Otevřená informatika, Bakalářský}
+#+latex_header: \newcommand\StudBranch{Software}
 
 #+begin_export latex
 % Binary or
@@ -39,6 +49,21 @@
 
 % Tuple
 \newcommand{\tuple}[2]{(#1, #2)}
+\graphicspath{{thesis_template/}}
+\selectlanguage{english}
+\translate
+\coverpagestarts
+\acknowledgements
+...
+\declaration{In Prague on ... ... 2021}
+\abstractpage
+\vglue60mm
+\noindent{\Huge \textbf{Abstrakt}}
+
+\tableofcontents
+\listoffigures
+\listoftables
+\mainbodystarts
 #+end_export
 
 * COMMENT Topic
@@ -275,7 +300,6 @@ $$
 #+end_framed
 #+end_figure
 
-\newpage
 ** TODO Linear logic
 
 In contrast to intuitionistic logic, linear logic considers propositions to be a form of resource - they should not be subject to duplication or discard. When looking at intuitionistic proofs, such as the ones listed in Figure [[fig:intuit_duplic]], we can see that intuitionistic logic has no problem with duplicating propositions (from a single $A$ one might obtain multiple \(A\)'s) or discarding propositions (the $B$ is unnecessary in the proof of $A$, so it is thrown away).
