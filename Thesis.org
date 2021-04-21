@@ -70,7 +70,6 @@
 
 \tableofcontents
 \listoffigures
-\listoftables
 \mainbodystarts
 #+end_export
 
@@ -113,7 +112,7 @@ $$
 
 \noindent where the label $\Intro{\land}$ is an abbreviation for "conjunction introduction".
 
-Gentzen used the concept of assumptions to formulate implication. If, given that /$A$ true/, we could sequence the deduction rules in such a way that we get the judgement /$B$ true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure\nbsp[[fig:localized_hyp]]\nbsp(left). The $\vdots$ stands for a sequence of deduction rules that can derive the judgement /$B$ true/ from the judgement /$A$ true/.
+Gentzen used the concept of assumptions to formulate the rules for implication. If, given that /$A$ true/, we could sequence the deduction rules in such a way that we get the judgement /$B$ true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure\nbsp[[fig:localized_hyp]]\nbsp(left). The symbol $\vdots$ stands for a sequence of deduction rules that can derive the judgement /$B$ true/ from the judgement /$A$ true/.
 
 A proof in natural deduction is tree-like, with the judgement to be proven at the root, assumptions at the leaves, and deduction rules between the nodes. It is not a proper tree, because it needs to keep track of which implication introductions discharge which assumptions, so additional structure to manage backreferences is necessary.
 
@@ -163,17 +162,19 @@ $$
 $$
 #+end_figure
 
+Apart from the structural rules, the logic also specifies *logical rules*. These describe how the logical connectives participate in derivations. Conventionally, they come in pairs of introduction and elimination, the former defining how a formula containing the connective is created, and the latter defining how such a formula is "used" and split apart.
+
 Just as there can be zero assumptions in a contextualized judgement, there can be zero premises in a deduction rule. Such rules are called *axioms*, and the judgments in their conclusions are always derivable.
 
 A proof in this updated notation is now a proper tree, with a contextualized judgement at the root, contextualized judgements in the inner nodes, axioms at the leaves, and deduction rules connecting the nodes.
 
-When composing existing proofs together, we sometimes produce redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*, specific to the object language.
+When composing deductions, we sometimes produce redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*. These rules must preserve the validity of the proof, meaning that the proof after a reduction must still consist only of derivations specified for the logic. This condition is called /local soundness/ \cite{Pfenning2004}, and we will revisit it when talking about linear logic.
 
 ** Intuitionistic logic
 
-Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A\;true \vdash A\;true$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also axiomatizes the law of excluded middle, $\vdash (A \lor \lnot A)\;true$. The philosophical difference between classical and intuitionistic logic is that classical logic is content with knowing whether a formula is true or whether it is false. After all, those are the only options. Intuitionistic logic, on the other hand, requires a constructive proof \mdash a "recipe", turning the assumptions into the conclusion. Without the law of excluded middle, one cannot derive a proposition to be true based on its double negation alone, which is in accord with the constructive requirements, because showing that an object cannot /not/ exist is not the same as constructing an object. In intuitionistic logic, the judgement /$(A \lor \lnot A)$ true/ can still be made, but it needs to be accompanied with either a proof of /$A$ true/ or /$\lnot A$ true/ \cite{Sorensen2006}.
+Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A\;true \vdash A\;true$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also axiomatizes the law of excluded middle, $\vdash (A \lor \lnot A)\;true$. The philosophical difference between classical and intuitionistic logic is that classical logic is content with knowing whether a proposition is true or whether it is false. After all, those are the only options. Intuitionistic logic, on the other hand, requires a constructive proof \mdash a "recipe", turning the assumptions into the conclusion. The law of excluded middle allows for proofs where one judges a proposition to be true, just because it cannot be false. This goes against the intuitionistic line of reasoning, because merely showing that something has to exists doesn't provide the mathematician with a way to construct it. In intuitionistic logic, the judgement /$(A \lor \lnot A)$ true/ can still be made, but it needs to be accompanied with either a proof of /$A$ true/ or /$\lnot A$ true/ \cite{Sorensen2006}.
 
-Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth").
+Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth"). For example, the formula $A, B \vdash_T C$ is short for $A\;true, B\;true \vdash C\;true$. This notation will be used exclusively in the diagrams to prevent them from spreading too wide, and we will use the full form in the body of the thesis.
 
 The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The formulas of this fragment can be described by the following Backus-Naur form:
 
@@ -270,9 +271,9 @@ $$
 $$
 #+end_figure
 
-/Implication introduction/, labeled $\Intro{\to}$, once again builds on abstracting away an assumption. If a judgement can be made under an assumption, then the proof tree can be seen as a way of turning a proof of /$A$ true/ (or multiple proofs of /$A$ true/) into a proof of /$B$ true/. The implication elimination is then a method for providing such a proof of $A$.
+/Implication introduction/, labeled $\Intro{\to}$, once again builds on abstracting away an assumption. If a judgement /$B$ true/ can be made under an assumption /$A$ true/, then the proof tree can be seen as a way of turning a proof of /$A$ true/ (or multiple proofs of /$A$ true/) into a proof of /$B$ true/. The implication elimination is then a method for providing such a proof of $A$.
 
-The proof reduction rule must take into account that the judgment /\(A\)\nbsp{}true/ might have been assumed zero or multiple times in the proof of /$B$ true/, and the context later modified with contractions or weakenings to reach the contextualized judgment $\Gamma, A\;true \vdash B\;true$. Every assumption of /$A$ true/ that is used in the proof must have been introduced by the identity rule, and the ones that aren't used were introduced by weakening. As shown in \cite{Wadler1993}, applications of structural and logic rules commute, so for every proof where contraction and weakening are used, there is an equivalent proof with all the contractions and weakenings pushed to the root of the proof tree. In other words, for every proof of $\Gamma, J_1 \vdash J_2$, there is an equivalent proof which consists of a contraction- and weakening-less subproof of $\Gamma, J_1 \cdots \vdash J_2$, followed by applications of contraction and weakening to accommodate the context, where the ellipsis indicate zero of more assumptions of $J_1$. The final applications of contraction and weakening are represented by a doubled derivation line, to indicate that it's multiple steps shown as one.
+The proof reduction rule must take into account that the judgment /\(A\)\nbsp{}true/ might have been assumed zero or multiple times in the proof of /$B$ true/, and the context later modified with contractions or weakenings to reach the contextualized judgment $\Gamma, A\;true \vdash B\;true$. Every assumption of /$A$ true/ that is used in the proof must have been introduced by the identity rule, and the ones that aren't used were introduced by weakening. As shown in \cite{Wadler1993}, applications of structural and logic rules commute, so for every proof where contraction and weakening are used, there is an equivalent proof with all the contractions and weakenings pushed to the root of the proof tree. In other words, for every proof of $\Gamma, J_1 \vdash J_2$, where $J_1$ and $J_2$ stand for arbitrary judgments, there is an equivalent proof which consists of a contraction- and weakening-less subproof of $\Gamma, J_1 \cdots \vdash J_2$, followed by applications of contraction and weakening to accommodate the context, where the ellipsis indicate zero of more assumptions of $J_1$. The final applications of contraction and weakening are represented by a doubled derivation line, to indicate that it's multiple steps shown as one.
 
 The role of the proof reduction is then to take the proof of $\Delta \vdash A\;true$, and replace with it the instances of $A\;true \vdash A\;true$ in the proof of $\Gamma, A\;true \vdash B\;true$. The full proof reduction rule is shown in Figure\nbsp[[fig:intuit_impl_red]].
 
@@ -283,7 +284,9 @@ $$
 \prftree[r]{$\Elim{\to}$}
  {\prftree[r]{$\Intro{\to}$}
    {\prftree[r,double]{}
-     {\prfsummary[s]{A \vdash_T A \cdots}
+     {\prfsummary[s]
+       {\prftree[r]{Id}
+         {A \vdash_T A} \cdots}
        {\Gamma, A \cdots \vdash_T B}}
      {\Gamma, A \vdash_T B}}
    {\Gamma \vdash_T (A \to B)}}
@@ -326,45 +329,21 @@ $$
 
 In intuitionistic logic, we judged a proposition to be true, and the judgment had the form /$A$ true/. In linear logic, we focus on /availability/. We can judge a proposition $A$ to be available, written /$A$ avail/, if there is a proof that "consumes" some assumptions, "producing" the proposition $A$. The semantics of consumption are embedded in the deduction rules, explained below.
 
-One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language \mdash even if some resources were truly "free", meaning they could be used any number of times, even zero, we would have no way of conveying this information to the system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources.
+One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language. We might still want to model "free" resources, meaning resources that can be used any number of times, even zero, but conveying this information would not be possible in such a system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources.
 
-#+name: fig:lin_int_conv
-#+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
-#+begin_figure
-$$
-\prftree[r]{$\Elim{!}$}
- {\Int{A} \vdash_R B}
- {\prftree[r]{$\Lin{\text{Id}}$}
-   {}
-   {\Lin{!A} \vdash_R !A}}
- {\Lin{!A} \vdash_R B}
-\hspace{2em}
-\prftree[r]{$\Elim{\loli}$}
- {\prftree[r]{$\Intro{\loli}$}
-   {\Lin{!A} \vdash_R B}
-   {\vdash_R !A \loli B}}
- {\prftree[r]{$\Intro{!}$}
-   {\prftree[r]{$\Int{\text{Id}}$}
-     {}
-     {\Int{A} \vdash_R A}}
-   {\Int{A} \vdash_R !A}}
- {\Int{A} \vdash_R B}
-$$
-#+end_figure
+The introduction of unbound resources necessitates differentiating between two kinds of assumptions in contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, and the bracket notation can only appear on the left-hand side of a turnstile.
 
-The introduction of unbound resources necessitates differentiating between two kinds of assumptions in the contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, they can only appear on the left-hand side of a turnstile.
-
-Contraction and weakening are now limited to only intuitionistic assumptions, meaning that judgments can be linearly assumed multiple times. These new rules lead to the interpretation of a general context $\Gamma$ as a multiset, where every intuitionistic judgment can be made to have a multiplicity of one (using the new contraction and weakening), and multiplicity of linear assumptions is given by their usage in the conclusion. Similarly to the intuitionistic case, a shorthand notation for contextualized judgments is used \mdash writing $\Gamma \vdash_R A$, the context \Gamma is a multiset of /propositions/ in square or angle brackets, such as $\Lin{B}$ or $\Int{C \loli D}$, and $A$ is a proposition. This is shorthand for a contextualized judgment whose context is a multiset containing one occurrence of the judgment $\Lin{B\;avail}$ for every proposition $B$ in angle brackets in \Gamma, and one occurrence of the judgment $\Int{B\;avail}$ for every proposition $B$ in square brackets in \Gamma. The conclusion of this contextualized judgment is the judgment $A\;avail$, where $A$ is the proposition on the right of the turnstile in the shorthand.
+Contraction and weakening are now limited to only intuitionistic assumptions, meaning that judgments can be linearly assumed multiple times. These new rules lead to a general context $\Gamma$ behaving like a multiset. Every intuitionistic judgment can be made to have a multiplicity of one (using the new contraction and weakening), and multiplicity of linear assumptions is given by their usage in the conclusion. Similarly to the intuitionistic case, a shorthand notation for contextualized judgments is used \mdash writing $\Gamma \vdash_R A$, the context \Gamma is a list of /propositions/ in square or angle brackets, such as $\Lin{B}$ or $\Int{C \loli D}$, and $A$ is a proposition. This is shorthand for a contextualized judgment whose context is a list containing one occurrence of the judgment $\Lin{B\;avail}$ for every proposition $B$ in angle brackets in \Gamma, and one occurrence of the judgment $\Int{C\;avail}$ for every proposition $C$ in square brackets in \Gamma. The conclusion of this contextualized judgment is the judgment $A\;avail$, where $A$ is the proposition on the right of the turnstile in the shorthand.
 
 A general context \Gamma can contain assumptions of both kinds, linear and intuitionistic, but an /intuitionistic context/, denoted by $\Int{\Gamma}$, is a context that only contains intuitionistic assumptions, if any.
 
-The focus of this chapter is the (???) propositional intuitionistic linear logic. It bears similarity to the intuitionistic logic described in the last chapter, specifically it provides tools for representing implications and conjunction.
+The focus of this chapter is a fragment of propositional intuitionistic linear logic. It bears similarity to the intuitionistic logic described in the last chapter, specifically it provides tools for representing implication and conjunction, in addition to the linear-logic-specific exponentiation.
 
 The new implication connective is historically called "lollipop", and it's written $A \loli B$. The formula is read "produce $B$ consuming $A$".
 
 Interestingly, there are two conjunction connectives \mdash the "tensor", written $A \tens B$, and the "with", written $A \with B$. The tensor represents a conjunction "containing" /both/ resources $A$ and $B$, while the "with" lists two resources that are both available, but not at the same time \mdash the recipient of such a resource needs to choose either $A$ or $B$.
 
-The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective is different from the intuitionistic assumption $\Int{A\;avail}$ and why they are both necessary once we take a look at the proof reduction rules.
+The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\;avail}$ and why they are both necessary once we take a look at the proof reduction rules.
 
 The formulas of this logic can also be described by the simple grammar
 
@@ -464,9 +443,9 @@ The exchange rule stays unchanged, only $S$ and $T$ stand for any two propositio
 
 The contraction and weakening rules are limited to intuitionistic assumptions, as mentioned in the introduction.
 
-The lollipop introduction rule in linear logic also abstracts an assumption, but it is limited only to linear ones. The formula $A \loli B$ represents an action of "consuming" a resource $A$ to "produce" a resource $B$. The notion of "consuming" is justified by the fact that the introduction rule removes the linear assumption of the judgment /$A$ avail/ from the context exactly once, leading to there being one less such assumption in the context, and producing a proposition with a "hole" waiting for one occurrence of /$A$ avail/. The corresponding elimination rule fills such a hole with a resource obtained from a different context.
+The lollipop introduction rule in linear logic also abstracts an assumption, but it is limited only to linear ones. The proposition $A \loli B$ represents an action of "consuming" a resource $A$ to "produce" a resource $B$. We choose the word "consuming", because when introducing the lollipop, the resource $A$ is removed from the context. In other words, the subsequent deductions loose access to it. Because the deduction sequence leading to the judgment /\(B\)\nbsp{}avail/  was using the assumption $\Lin{A\;avail}$, we can imagine a proof of the judgment /$(A \loli B)$ avail/ to contain a hole, waiting for an $A$.
 
-Emphasis is put on the contexts being different \mdash the context \Gamma contains other resources that are also consumed during the process of turning an $A$ into a $B$, therefore the resources cannot be shared with the context used for filling the hole.
+The corresponding elimination rule fills such a hole with a resource obtained from a different context. Emphasis is put on the contexts being different \mdash the context \Gamma contains other resources that are also consumed during the process of turning an $A$ into a $B$, therefore the resources cannot be shared with the context used for filling the hole.
 
 The "with" deduction rules exactly mirror the conjunction rules used when we formulated intuitionistic logic. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are used once one of the components is extracted.
 
@@ -500,6 +479,30 @@ $$
 #+end_figure
 
 ** TODO Intuitionistic embedding
+
+#+name: fig:lin_int_conv
+#+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
+#+begin_figure
+$$
+\prftree[r]{$\Elim{!}$}
+ {\Int{A} \vdash_R B}
+ {\prftree[r]{$\Lin{\text{Id}}$}
+   {}
+   {\Lin{!A} \vdash_R !A}}
+ {\Lin{!A} \vdash_R B}
+\hspace{2em}
+\prftree[r]{$\Elim{\loli}$}
+ {\prftree[r]{$\Intro{\loli}$}
+   {\Lin{!A} \vdash_R B}
+   {\vdash_R !A \loli B}}
+ {\prftree[r]{$\Intro{!}$}
+   {\prftree[r]{$\Int{\text{Id}}$}
+     {}
+     {\Int{A} \vdash_R A}}
+   {\Int{A} \vdash_R !A}}
+ {\Int{A} \vdash_R B}
+$$
+#+end_figure
 
 - $|A| = A$
 - $|A \land B| = |A| \with |B|$
@@ -584,6 +587,6 @@ The language is once again described with deduction rules, with zero or more pre
 
 * Footnotes
 
-[fn:2] The judgment /$A$ prop/ is used more frequently in the field of dependent type theories, which are out of scope for this thesis. The valid formulas of the relevant fragment can be described more easily with a simple grammar.
+[fn:2] The judgment /$A$ prop/ (and subsequently /$A$ type/) is used more frequently in predicate logic and dependent type theories, which are out of scope for this thesis. The valid formulas of the relevant fragment can be described more easily with a simple grammar.
 
 [fn:1] The notation is borrowed from Gentzen's other proof calculus, the sequent calculus. To prevent confusion of the two systems, we prefer the term /contextualized judgment/ to Gentzen's /sequent/.
