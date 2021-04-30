@@ -418,9 +418,9 @@ $$
  {\Gamma, \Delta \vdash_R A \tens B}
 \hspace{2em}
 \prftree[r]{$\Elim{\tens}$}
- {\Gamma \vdash_R A \tens B}
+ {\Gamma, \Lin{A}, \Lin{B} \vdash_R C}
  {}
- {\Delta, \Lin{A}, \Lin{B} \vdash_R C}
+ {\Delta \vdash_R A \tens B}
  {\Gamma, \Delta \vdash_R C}
 $$
 
@@ -430,9 +430,9 @@ $$
  {\Int{\Gamma} \vdash_R !A}
 \hspace{2em}
 \prftree[r]{$\Elim{!}$}
- {\Gamma \vdash_R !A}
+ {\Gamma, \Int{A} \vdash_R B}
  {}
- {\Delta, \Int{A} \vdash_R B}
+ {\Delta \vdash_R !A}
  {\Gamma, \Delta \vdash_R B}
 $$
 #+end_figure
