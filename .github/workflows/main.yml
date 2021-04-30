@@ -12,6 +12,8 @@ jobs:
           version: 27.1
 
       - uses: actions/checkout@v2
+        with:
+          submodules: recursive
 
       - name: Export to LaTeX
         run: |
