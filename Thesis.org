@@ -479,9 +479,92 @@ $$
 $$
 #+end_figure
 
+#+caption: Lolipop proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\loli}$}
+ {\prftree[r]{$\Intro{\loli}$}
+   {\prfsummary[s]
+     {\prftree[r]{$\Lin{\text{Id}}$}
+       {\Lin{A} \vdash_R A}}
+     {\Gamma, \Lin{A} \vdash_R B}}
+   {\Gamma \vdash_R A \loli B}}
+ {\prfsummary[t]{\Delta \vdash_R A}}
+ {\Gamma, \Delta \vdash_R B}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prfStackPremises
+ {\prfsummary[t]{\Delta \vdash_R A}}
+ {\prfsummary[s]{\Gamma, \Delta \vdash_R B}}
+$$
+#+end_figure
+
+#+caption: With product proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\with}_1$}
+ {\prftree[r]{$\Intro{\with}$}
+   {\prfsummary[s]{\Gamma \vdash_R A}}
+   {}
+   {\prfsummary[t]{\Gamma \vdash_R B}}
+   {\Gamma \vdash_T A \with B}}
+ {\Gamma \vdash_T A}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prfsummary[s]{\Gamma \vdash_R A}
+$$
+#+end_figure
+
+#+caption: Tensor product proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\tens}$}
+ {\prfsummary[s]
+   {\prftree[r]{$\Lin{\text{Id}}$}
+     {\Lin{A} \vdash_R A}}
+   {}
+   {\prftree[r]{$\Lin{\text{Id}}$}
+     {\Lin{B} \vdash_R B}}
+   {\Gamma, \Lin{A}, \Lin{B} \vdash_R C}}
+ {\prftree[r]{$\Intro{\tens}$}
+   {\prfsummary[t]{\Delta \vdash_R A}}
+   {}
+   {\prfsummary[u]{\Theta \vdash_R B}}
+   {\Delta, \Theta \vdash_R A \tens B}}
+ {\Gamma, \Delta, \Theta \vdash_R C}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prfsummary[s]
+ {\prfsummary[t]{\Delta \vdash_R A}}
+ {}
+ {\prfsummary[u]{\Theta \vdash_R B}}
+ {\Gamma, \Delta, \Theta \vdash_R C}
+$$
+#+end_figure
+
+#+caption: Exponential proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\bang}$}
+ {\prftree[double]
+   {\prfsummary[s]
+     {\prftree[r]{$\Int{\text{Id}} \cdots$}
+       {\Int{A} \vdash_R A}}
+     {\Gamma, \Int{A} \cdots \vdash_R B}}
+   {\Gamma, \Int{A} \vdash_R B}}
+ {\prftree[r]{$\Intro{\bang}$}
+   {\prfsummary[t]{\Int{\Delta} \vdash_R A}}
+   {\Int{\Delta} \vdash_R !A}}
+ {\Gamma, \Int{\Delta} \vdash_R B}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prftree[double]
+ {\prfStackPremises
+   {\prfsummary[t $\cdots$]{\Int{\Delta} \vdash_R A} \cdots}
+   {\prfsummary[s]{\Gamma, \Int{\Delta} \cdots \vdash_R B}}}
+ {\Gamma, \Int{\Delta} \vdash_R B}
+$$
+
+#+end_figure
+
 ** TODO Intuitionistic embedding
 
-#+name: fig:lin_int_conv
 #+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
 #+begin_figure
 $$
