@@ -26,7 +26,7 @@
 #+latex_header: \newcommand{\tens}{\mathbin{\otimes}}
 # With
 #+latex_header: \newcommand{\with}{\mathbin{\&}}
-# Lolipop
+# Lollipop
 #+latex_header: \newcommand{\loli}{\multimap}
 
 # Lambda calculus
@@ -162,7 +162,7 @@ $$
 $$
 #+end_figure
 
-Apart from the structural rules, the logic also specifies *logical rules*. These describe how the logical connectives participate in derivations. Conventionally, they come in pairs of introduction and elimination, the former defining how a formula containing the connective is created, and the latter defining how such a formula is "used" and split apart.
+Apart from the structural rules, the logic also specifies *logical rules*. These describe how the logical connectives participate in derivations. Conventionally, they come in pairs of introduction and elimination, the former defining how a proposition containing the connective is created, and the latter defining how such a proposition is "used" and split apart.
 
 Just as there can be zero assumptions in a contextualized judgement, there can be zero premises in a deduction rule. Such rules are called *axioms*, and the judgments in their conclusions are always derivable.
 
@@ -176,13 +176,13 @@ Intuitionistic logic is the logic of constructive mathematics \mdash the only ax
 
 Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth"). For example, the formula $A, B \vdash_T C$ is short for $A\;true, B\;true \vdash C\;true$. This notation will be used exclusively in the diagrams to prevent them from spreading too wide, and we will use the full form in the body of the thesis.
 
-The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The formulas of this fragment can be described by the following Backus-Naur form:
+The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The propositions of this fragment can be described by the following Backus-Naur form:
 
 $$
 A, B ::= X \binor (A \to B) \binor (A \land B)
 $$
 
-\noindent for X ranging over atomic formulas. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
+\noindent for X ranging over atomic propositions. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
 
 #+name: fig:intuit_deduct
 #+caption: Deduction rules for the meet-implicative fragment of propositional intuitionistic logic
@@ -309,21 +309,25 @@ In contrast to intuitionistic logic, linear logic considers propositions to be a
 #+caption: Duplication and discard of truth
 #+begin_figure
 $$
-\prftree[r]{Contr}
- {\prftree[r]{$\Intro{\land}$}
-   {\prftree[r]{Id}
-     {A \vdash_T A}}
-   {\prftree[r]{Id}
-     {A \vdash_T A}}
-   {A, A \vdash_T A \land A}}
- {A \vdash_T A \land A}
+\prftree[r]{$\Intro{\to}$}
+ {\prftree[r]{Contr}
+   {\prftree[r]{$\Intro{\land}$}
+     {\prftree[r]{Id}
+       {A \vdash_T A}}
+     {\prftree[r]{Id}
+       {A \vdash_T A}}
+     {A, A \vdash_T A \land A}}
+   {A \vdash_T A \land A}}
+ {\vdash_T A \to (A \land A)}
 \hspace{2em}
 \prftree[r]{$\Intro{\to}$}
- {\prftree[r]{Weak}
-   {\prftree[r]{Id}
-     {A \vdash_T B}}
-   {A, B \vdash_T \to A}}
- {A \vdash_T B \to A}
+ {\prftree[r]{$\Intro{\to}$}
+  {\prftree[r]{Weak}
+    {\prftree[r]{Id}
+      {A \vdash_T B}}
+    {A, B \vdash_T \to A}}
+  {A \vdash_T B \to A}}
+ {\vdash_T A \to (B \to A)}
 $$
 #+end_figure
 
@@ -331,21 +335,23 @@ In intuitionistic logic, we judged a proposition to be true, and the judgment ha
 
 One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language. We might still want to model "free" resources, meaning resources that can be used any number of times, even zero, but conveying this information would not be possible in such a system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources.
 
-The introduction of unbound resources necessitates differentiating between two kinds of assumptions in contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, and the bracket notation can only appear on the left-hand side of a turnstile.
+The introduction of unbound resources necessitates differentiating between two kinds of assumptions in contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, and the bracket notation can only appear on the left side of a turnstile.
 
-Contraction and weakening are now limited to only intuitionistic assumptions, meaning that judgments can be linearly assumed multiple times. These new rules lead to a general context $\Gamma$ behaving like a multiset. Every intuitionistic judgment can be made to have a multiplicity of one (using the new contraction and weakening), and multiplicity of linear assumptions is given by their usage in the conclusion. Similarly to the intuitionistic case, a shorthand notation for contextualized judgments is used \mdash writing $\Gamma \vdash_R A$, the context \Gamma is a list of /propositions/ in square or angle brackets, such as $\Lin{B}$ or $\Int{C \loli D}$, and $A$ is a proposition. This is shorthand for a contextualized judgment whose context is a list containing one occurrence of the judgment $\Lin{B\;avail}$ for every proposition $B$ in angle brackets in \Gamma, and one occurrence of the judgment $\Int{C\;avail}$ for every proposition $C$ in square brackets in \Gamma. The conclusion of this contextualized judgment is the judgment $A\;avail$, where $A$ is the proposition on the right of the turnstile in the shorthand.
+Contraction and weakening are now limited to only intuitionistic assumptions, meaning that judgments can be linearly assumed multiple times. These new rules lead to a general context $\Gamma$ behaving like a multiset. Every intuitionistic judgment can be made to have a multiplicity of one (using the new contraction and weakening), and multiplicity of linear assumptions is given by their usage in the conclusion.
+
+Similarly to the intuitionistic case, a shorthand notation for contextualized judgments is used \mdash writing $\Gamma \vdash_R A$, the context \Gamma is a list of /propositions/ in square or angle brackets, such as $\Lin{B}$ or $\Int{C \loli D}$, and $A$ is a proposition. This is shorthand for a contextualized judgment whose context is a list containing one occurrence of the judgment $\Lin{B\;avail}$ for every proposition $B$ in angle brackets in \Gamma, and one occurrence of the judgment $\Int{C\;avail}$ for every proposition $C$ in square brackets in \Gamma. The conclusion of this contextualized judgment is the judgment $A\;avail$, where $A$ is the proposition on the right of the turnstile in the shorthand.
 
 A general context \Gamma can contain assumptions of both kinds, linear and intuitionistic, but an /intuitionistic context/, denoted by $\Int{\Gamma}$, is a context that only contains intuitionistic assumptions, if any.
 
 The focus of this chapter is a fragment of propositional intuitionistic linear logic. It bears similarity to the intuitionistic logic described in the last chapter, specifically it provides tools for representing implication and conjunction, in addition to the linear-logic-specific exponentiation.
 
-The new implication connective is historically called "lollipop", and it's written $A \loli B$. The formula is read "produce $B$ consuming $A$".
+The new implication connective is historically called "lollipop", and it's written $A \loli B$. The proposition is read "produce $B$ consuming $A$".
 
 Interestingly, there are two conjunction connectives \mdash the "tensor", written $A \tens B$, and the "with", written $A \with B$. The tensor represents a conjunction "containing" /both/ resources $A$ and $B$, while the "with" lists two resources that are both available, but not at the same time \mdash the recipient of such a resource needs to choose either $A$ or $B$.
 
 The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\;avail}$ and why they are both necessary once we take a look at the proof reduction rules.
 
-The formulas of this logic can also be described by the simple grammar
+The propositions of this logic can also be described by the simple grammar
 
 $$
 A, B ::= X \binor (A \loli B) \binor (A \tens B) \binor (A \with B) \; \binor \; !A
@@ -354,7 +360,7 @@ $$
 \noindent for X ranging over atomic propositions. The deduction rules are listed in Figure [[fig:linear_deduct]].
 
 #+name: fig:linear_deduct
-#+caption: Deduction rules for the ??? (TODO: positive?) fragment of intuitionistic linear logic
+#+caption: Deduction rules for the fragment of intuitionistic linear logic
 #+begin_figure
 $$
 \prftree[r]{$\Lin{\text{Id}}$}
@@ -443,7 +449,7 @@ The exchange rule stays unchanged, only $S$ and $T$ stand for any two propositio
 
 The contraction and weakening rules are limited to intuitionistic assumptions, as mentioned in the introduction.
 
-The lollipop introduction rule in linear logic also abstracts an assumption, but it is limited only to linear ones. The proposition $A \loli B$ represents an action of "consuming" a resource $A$ to "produce" a resource $B$. We choose the word "consuming", because when introducing the lollipop, the resource $A$ is removed from the context. In other words, the subsequent deductions loose access to it. Because the deduction sequence leading to the judgment /\(B\)\nbsp{}avail/  was using the assumption $\Lin{A\;avail}$, we can imagine a proof of the judgment /$(A \loli B)$ avail/ to contain a hole, waiting for an $A$.
+The $\loli$ ("lollipop") introduction rule in linear logic also abstracts an assumption, but it is limited only to linear ones. The proposition $A \loli B$ represents an action of "consuming" a resource $A$ to "produce" a resource $B$. We choose the word "consuming", because when introducing the lollipop, the resource $A$ is removed from the context. In other words, the subsequent deductions loose access to it. Because the deduction sequence leading to the judgment /\(B\)\nbsp{}avail/  was using the assumption $\Lin{A\;avail}$, we can imagine a proof of the judgment /$(A \loli B)$ avail/ to contain a hole, waiting for an $A$.
 
 The corresponding elimination rule fills such a hole with a resource obtained from a different context. Emphasis is put on the contexts being different \mdash the context \Gamma contains other resources that are also consumed during the process of turning an $A$ into a $B$, therefore the resources cannot be shared with the context used for filling the hole.
 
@@ -479,7 +485,7 @@ $$
 $$
 #+end_figure
 
-#+caption: Lolipop proof reduction
+#+caption: Lollipop proof reduction
 #+begin_figure
 $$
 \prftree[r]{$\Elim{\loli}$}
@@ -671,6 +677,6 @@ The language is once again described with deduction rules, with zero or more pre
 
 * Footnotes
 
-[fn:2] The judgment /$A$ prop/ (and subsequently /$A$ type/) is used more frequently in predicate logic and dependent type theories, which are out of scope for this thesis. The valid formulas of the relevant fragment can be described more easily with a simple grammar.
+[fn:2] The judgment /$A$ prop/ (and subsequently /$A$ type/) is used more frequently in predicate logic and dependent type theories, which are out of scope for this thesis. The valid propositions of the relevant fragment can be described more easily with a simple grammar.
 
 [fn:1] The notation is borrowed from Gentzen's other proof calculus, the sequent calculus. To prevent confusion of the two systems, we prefer the term /contextualized judgment/ to Gentzen's /sequent/.
