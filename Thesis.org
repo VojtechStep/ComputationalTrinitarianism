@@ -293,9 +293,9 @@ $$
  {\prfsummary[t]{\Delta \vdash_T A}}
  {\Gamma, \Delta \vdash_T B}
 \hspace{1em}\Rightarrow\hspace{1em}
-\prftree[r,double]{}
+\prftree[double]
  {\prfStackPremises
-   {\prfsummary[t $\cdots$]{\Delta \vdash_T A \cdots}}
+   {\prfsummary[t $\cdots$]{\Delta \vdash_T A} \cdots}
    {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
  {\Gamma, \Delta \vdash_T B}
 $$
@@ -449,6 +449,7 @@ The corresponding elimination rule fills such a hole with a resource obtained fr
 
 The "with" deduction rules exactly mirror the conjunction rules used when we formulated intuitionistic logic. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are used once one of the components is extracted.
 
+#+caption: Relationship between the with product and the tensor product
 #+begin_figure
 \footnotesize
 $$
