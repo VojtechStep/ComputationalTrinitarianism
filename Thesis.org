@@ -301,7 +301,7 @@ $$
 $$
 #+end_figure
 
-** TODO Linear logic
+** Linear logic
 
 In contrast to intuitionistic logic, linear logic considers propositions to be a form of resource - they should not be subject to duplication or discard. When looking at intuitionistic proofs, such as the ones listed in Figure [[fig:intuit_duplic]], we can see that intuitionistic logic has no problem with duplicating propositions (from a single $A$ one might obtain multiple \(A\)'s) or discarding propositions (the $B$ is unnecessary in the proof of $A$, so it is thrown away).
 
@@ -453,7 +453,135 @@ The $\loli$ ("lollipop") introduction rule in linear logic also abstracts an ass
 
 The corresponding elimination rule fills such a hole with a resource obtained from a different context. Emphasis is put on the contexts being different \mdash the context \Gamma contains other resources that are also consumed during the process of turning an $A$ into a $B$, therefore the resources cannot be shared with the context used for filling the hole.
 
-The "with" deduction rules exactly mirror the conjunction rules used when we formulated intuitionistic logic. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are used once one of the components is extracted.
+Proof reduction for the lollipop is similar in spirit to the intuitionistic implication, except there is no need to worry about the assumption /$A$ avail/ being used multiple times. This is apparent from the fact that linear assumptions cannot be contracted. Therefore, the resulting reduction rule is simpler, as shown in Figure [[fig:lin_impl_red]].
+
+#+name: fig:lin_impl_red
+#+caption: Lollipop proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\loli}$}
+ {\prftree[r]{$\Intro{\loli}$}
+   {\prfsummary[s]
+     {\prftree[r]{$\Lin{\text{Id}}$}
+       {\Lin{A} \vdash_R A}}
+     {\Gamma, \Lin{A} \vdash_R B}}
+   {\Gamma \vdash_R A \loli B}}
+ {\prfsummary[t]{\Delta \vdash_R A}}
+ {\Gamma, \Delta \vdash_R B}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prfStackPremises
+ {\prfsummary[t]{\Delta \vdash_R A}}
+ {\prfsummary[s]{\Gamma, \Delta \vdash_R B}}
+$$
+#+end_figure
+
+The $\with$ ("with") deduction rules exactly mirror the conjunction rules used in intuitionistic logic. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are all used once one of the components is extracted. The proof reduction is also analogous, and presented in Figure [[fig:lin_with_red]].
+
+#+name: fig:lin_with_red
+#+caption: With product proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\with}_1$}
+ {\prftree[r]{$\Intro{\with}$}
+   {\prfsummary[s]{\Gamma \vdash_R A}}
+   {}
+   {\prfsummary[t]{\Gamma \vdash_R B}}
+   {\Gamma \vdash_T A \with B}}
+ {\Gamma \vdash_T A}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prfsummary[s]{\Gamma \vdash_R A}
+$$
+#+end_figure
+
+The $\tens$ ("tensor") product represents a pair of resources, both of which have to be consumed, due to the requirement of not discarding resources. The introduction rule looks almost exactly the same as the one for the $\with$ product, however in this case, the two parts of the tensor product are produced in different contexts. It is this difference that makes the two connectives have different semantics \mdash while the $\with$ product offers two different possible results from the same resources, the $\tens$ product combines two sets of resources into a pair of two results, and provides both for later consumption.
+
+The elimination rule says that a $\tens$ resource can be used to complete a proof that contains a linear assumption of each of its constituents. In other words, to consume a $\tens$ resource, one must consume both of its parts.
+
+The reduction rule, shown in Figure [[fig:lin_tens_red]], describes how to perform such a completion. If the product is constructed using two proofs $t$ and $u$ of the judgments /$A$ avail/ and /$B$ avail/, respectively, then these proofs can replace the assumptions $\Lin{A\;avail}$ and $\Lin{B\;avail}$ in another proof $s$.
+
+#+name: fig:lin_tens_red
+#+caption: Tensor product proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\tens}$}
+ {\prfsummary[s]
+   {\prftree[r]{$\Lin{\text{Id}}$}
+     {\Lin{A} \vdash_R A}}
+   {}
+   {\prftree[r]{$\Lin{\text{Id}}$}
+     {\Lin{B} \vdash_R B}}
+   {\Gamma, \Lin{A}, \Lin{B} \vdash_R C}}
+ {\prftree[r]{$\Intro{\tens}$}
+   {\prfsummary[t]{\Delta \vdash_R A}}
+   {}
+   {\prfsummary[u]{\Theta \vdash_R B}}
+   {\Delta, \Theta \vdash_R A \tens B}}
+ {\Gamma, \Delta, \Theta \vdash_R C}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prfsummary[s]
+ {\prfsummary[t]{\Delta \vdash_R A}}
+ {}
+ {\prfsummary[u]{\Theta \vdash_R B}}
+ {\Gamma, \Delta, \Theta \vdash_R C}
+$$
+#+end_figure
+
+The $\bang$ ("of course") connective is supposed to extend the expressive power of linear logic to reason about free resources. A judgment of the form /$!A$ avail/ does not represent an instance of the resource $A$, but rather /a source of/[fn:3] these resources. The idea is that a resource $A$ can be pulled out from this source at any time, or even never at all, allowing us to model free resources \mdash the judgment /$!A$ avail/ serves as a statement that $A$ is a free resource.
+
+To produce one of these sources, the introduction rule provides us with a way of extending proofs based on only intuitionistic assumptions. Intuitionistic assumptions are another way of modeling free resources, so the essence of the introduction rule is an observation that, given a recipe of creating one unit of a resource $A$ from free ingredients $\Int{\Gamma}$, we can duplicate those free ingredients however many times is necessary to supply more instances of the resource, and that we don't mind throwing the ingredients away in the case that there is no demand for it.
+
+Dually to the introduction rule, which relays how to create a source from free ingredients, the elimination rule describes how a source can satiate an undisclosed demand. A proof built on an intuitionistic assumption gives no guarantees about the number of times it uses the associated resource $A$. To satisfy this assumption, we can provide the proof with a source $!A$, which can adapt to its requirements.
+
+Reducing a sequence of $\bang$ introduction and elimination looks similar to reducing an implication in intuitionistic logic, because it operates on the same principle \mdash replacing assumptions with auxiliary proofs, while acknowledging the fact that the assumptions might appear zero or more times. In the Figure [[fig:lin_exp_red]], the expression $\Int{A} \cdots$ represents zero or more intuitionistic assumptions of the judgment /$A$ avail/, and the proof tree $s$ is devoid of contraction and weakening on the judgment /$A$ avail/. Instead, these are all applied in the step represented by the double derivation line. The reduction then replaces each instance of the intuitionistic assumption /$A$ avail/ with a derivation tree $t$, which produces a resource $A$ from other intuitionistic assumptions. The double line in the reduced proof signifies applications of contraction and weakening to the assumptions $\Int{\Delta}$, corresponding to the double line in the non-reduced proof.
+
+#+name: fig:lin_exp_red
+#+caption: Exponential proof reduction
+#+begin_figure
+$$
+\prftree[r]{$\Elim{\bang}$}
+ {\prftree[double]
+   {\prfsummary[s]
+     {\prftree[r]{$\Int{\text{Id}} \cdots$}
+       {\Int{A} \vdash_R A}}
+     {\Gamma, \Int{A} \cdots \vdash_R B}}
+   {\Gamma, \Int{A} \vdash_R B}}
+ {\prftree[r]{$\Intro{\bang}$}
+   {\prfsummary[t]{\Int{\Delta} \vdash_R A}}
+   {\Int{\Delta} \vdash_R !A}}
+ {\Gamma, \Int{\Delta} \vdash_R B}
+\hspace{1em}\Rightarrow\hspace{1em}
+\prftree[double]
+ {\prfStackPremises
+   {\prfsummary[t $\cdots$]{\Int{\Delta} \vdash_R A} \cdots}
+   {\prfsummary[s]{\Gamma, \Int{\Delta} \cdots \vdash_R B}}}
+ {\Gamma, \Int{\Delta} \vdash_R B}
+$$
+#+end_figure
+
+** TODO Intuitionistic embedding
+
+#+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
+#+begin_figure
+$$
+\prftree[r]{$\Elim{!}$}
+ {\Int{A} \vdash_R B}
+ {\prftree[r]{$\Lin{\text{Id}}$}
+   {}
+   {\Lin{!A} \vdash_R !A}}
+ {\Lin{!A} \vdash_R B}
+\hspace{2em}
+\prftree[r]{$\Elim{\loli}$}
+ {\prftree[r]{$\Intro{\loli}$}
+   {\Lin{!A} \vdash_R B}
+   {\vdash_R !A \loli B}}
+ {\prftree[r]{$\Intro{!}$}
+   {\prftree[r]{$\Int{\text{Id}}$}
+     {}
+     {\Int{A} \vdash_R A}}
+   {\Int{A} \vdash_R !A}}
+ {\Int{A} \vdash_R B}
+$$
+#+end_figure
 
 #+caption: Relationship between the with product and the tensor product
 #+begin_figure
@@ -485,120 +613,10 @@ $$
 $$
 #+end_figure
 
-#+caption: Lollipop proof reduction
-#+begin_figure
-$$
-\prftree[r]{$\Elim{\loli}$}
- {\prftree[r]{$\Intro{\loli}$}
-   {\prfsummary[s]
-     {\prftree[r]{$\Lin{\text{Id}}$}
-       {\Lin{A} \vdash_R A}}
-     {\Gamma, \Lin{A} \vdash_R B}}
-   {\Gamma \vdash_R A \loli B}}
- {\prfsummary[t]{\Delta \vdash_R A}}
- {\Gamma, \Delta \vdash_R B}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prfStackPremises
- {\prfsummary[t]{\Delta \vdash_R A}}
- {\prfsummary[s]{\Gamma, \Delta \vdash_R B}}
-$$
-#+end_figure
-
-#+caption: With product proof reduction
-#+begin_figure
-$$
-\prftree[r]{$\Elim{\with}_1$}
- {\prftree[r]{$\Intro{\with}$}
-   {\prfsummary[s]{\Gamma \vdash_R A}}
-   {}
-   {\prfsummary[t]{\Gamma \vdash_R B}}
-   {\Gamma \vdash_T A \with B}}
- {\Gamma \vdash_T A}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prfsummary[s]{\Gamma \vdash_R A}
-$$
-#+end_figure
-
-#+caption: Tensor product proof reduction
-#+begin_figure
-$$
-\prftree[r]{$\Elim{\tens}$}
- {\prfsummary[s]
-   {\prftree[r]{$\Lin{\text{Id}}$}
-     {\Lin{A} \vdash_R A}}
-   {}
-   {\prftree[r]{$\Lin{\text{Id}}$}
-     {\Lin{B} \vdash_R B}}
-   {\Gamma, \Lin{A}, \Lin{B} \vdash_R C}}
- {\prftree[r]{$\Intro{\tens}$}
-   {\prfsummary[t]{\Delta \vdash_R A}}
-   {}
-   {\prfsummary[u]{\Theta \vdash_R B}}
-   {\Delta, \Theta \vdash_R A \tens B}}
- {\Gamma, \Delta, \Theta \vdash_R C}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prfsummary[s]
- {\prfsummary[t]{\Delta \vdash_R A}}
- {}
- {\prfsummary[u]{\Theta \vdash_R B}}
- {\Gamma, \Delta, \Theta \vdash_R C}
-$$
-#+end_figure
-
-#+caption: Exponential proof reduction
-#+begin_figure
-$$
-\prftree[r]{$\Elim{\bang}$}
- {\prftree[double]
-   {\prfsummary[s]
-     {\prftree[r]{$\Int{\text{Id}} \cdots$}
-       {\Int{A} \vdash_R A}}
-     {\Gamma, \Int{A} \cdots \vdash_R B}}
-   {\Gamma, \Int{A} \vdash_R B}}
- {\prftree[r]{$\Intro{\bang}$}
-   {\prfsummary[t]{\Int{\Delta} \vdash_R A}}
-   {\Int{\Delta} \vdash_R !A}}
- {\Gamma, \Int{\Delta} \vdash_R B}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prftree[double]
- {\prfStackPremises
-   {\prfsummary[t $\cdots$]{\Int{\Delta} \vdash_R A} \cdots}
-   {\prfsummary[s]{\Gamma, \Int{\Delta} \cdots \vdash_R B}}}
- {\Gamma, \Int{\Delta} \vdash_R B}
-$$
-
-#+end_figure
-
-** TODO Intuitionistic embedding
-
-#+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
-#+begin_figure
-$$
-\prftree[r]{$\Elim{!}$}
- {\Int{A} \vdash_R B}
- {\prftree[r]{$\Lin{\text{Id}}$}
-   {}
-   {\Lin{!A} \vdash_R !A}}
- {\Lin{!A} \vdash_R B}
-\hspace{2em}
-\prftree[r]{$\Elim{\loli}$}
- {\prftree[r]{$\Intro{\loli}$}
-   {\Lin{!A} \vdash_R B}
-   {\vdash_R !A \loli B}}
- {\prftree[r]{$\Intro{!}$}
-   {\prftree[r]{$\Int{\text{Id}}$}
-     {}
-     {\Int{A} \vdash_R A}}
-   {\Int{A} \vdash_R !A}}
- {\Int{A} \vdash_R B}
-$$
-#+end_figure
-
 - $|A| = A$
 - $|A \land B| = |A| \with |B|$
 - $|A \to B| = !|A| \loli |B|$
 - Explain why both $\Int{A}$ and $!A$ are necessary
-
 
 
 * TODO Type theory
@@ -670,12 +688,17 @@ $$
 The new forms introduced are /tuples/, written as $\tuple{x}{y}: \ProdType{A}{B}$, which represent a pair of terms, and left and right /projections/, written as $\ProdTypeFst{t}: A$ and $\ProdTypeSnd{t}: B$, respectively, assuming a term $t: \ProdType{A}{B}$. This new syntax allows for more redundant forms of terms, which can be simplified using /\(\pi\)-reduction/ via the evaluation steps $\ProdTypeFst{\tuple{x}{y}} \to x$ and $\ProdTypeSnd{\tuple{x}{y}} \to y$.
 
 The language is once again described with deduction rules, with zero or more premises above and one conclusion below the line. The context in a judgment now stands for a collection of typed variables, and contains the variables that are free in the term on the right side of the turnstile. In this way, the $\Intro{\to}$ rule can be intuitively interpreted by taking a variable $x: A$, and instead of treating it as free, we remove it from the context and bind it with an abstraction.
+
+** TODO Intuitionistic embedding, revisited
+
 #+begin_export latex
 \bibliography{ComputationalTrinitarianism}
 \bibliographystyle{apacite}
 #+end_export
 
 * Footnotes
+
+[fn:3] Or /a generator of/, or /an infinite pocket of/
 
 [fn:2] The judgment /$A$ prop/ (and subsequently /$A$ type/) is used more frequently in predicate logic and dependent type theories, which are out of scope for this thesis. The valid propositions of the relevant fragment can be described more easily with a simple grammar.
 
