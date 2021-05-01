@@ -4,6 +4,7 @@
 #+latex_class_options: [11pt,twoside,a4paper]
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{prftree}
+#+latex_header: \usepackage{stmaryrd}
 #+latex_header: \usepackage{apacite}
 #+latex_header: \usepackage{fancyhdr}
 #+latex_header: \usepackage[english]{babel}
@@ -28,6 +29,8 @@
 #+latex_header: \newcommand{\with}{\mathbin{\&}}
 # Lollipop
 #+latex_header: \newcommand{\loli}{\multimap}
+# Linear translation
+#+latex_header: \newcommand{\LinTrans}[1]{\llbracket #1 \rrbracket_L}
 
 # Lambda calculus
 #+latex_header: \newcommand{\stl}{\lambda^{\to}_{\ProdTypeCon}}
@@ -333,7 +336,7 @@ $$
 
 In intuitionistic logic, we judged a proposition to be true, and the judgment had the form /$A$ true/. In linear logic, we focus on /availability/. We can judge a proposition $A$ to be available, written /$A$ avail/, if there is a proof that "consumes" some assumptions, "producing" the proposition $A$. The semantics of consumption are embedded in the deduction rules, explained below.
 
-One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language. We might still want to model "free" resources, meaning resources that can be used any number of times, even zero, but conveying this information would not be possible in such a system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources.
+One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language. We might still want to model "free" resources, meaning resources that can be used any number of times, even zero, but conveying this information would not be possible in such a system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources. This alternative gives us strictly greater expressivity than intuitionistic logic, as we will see that every intuitionistic proof can be translated to a linear proof.
 
 The introduction of unbound resources necessitates differentiating between two kinds of assumptions in contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, and the bracket notation can only appear on the left side of a turnstile.
 
@@ -475,10 +478,10 @@ $$
 $$
 #+end_figure
 
-The $\with$ ("with") deduction rules exactly mirror the conjunction rules used in intuitionistic logic. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are all used once one of the components is extracted. The proof reduction is also analogous, and presented in Figure [[fig:lin_with_red]].
+The $\with$ ("with") deduction rules exactly mirror the intuitionistic conjunction rules. This connective is also called the /additive conjunction/, because the introduction rule shares the resources used for producing the individual components. This sharing of resources prevents a consumer from extracting both of the components \mdash the resources are all used once one of the components is extracted. The proof reduction is also analogous, and presented in Figure [[fig:lin_with_red]].
 
 #+name: fig:lin_with_red
-#+caption: With product proof reduction
+#+caption: With conjunction proof reduction
 #+begin_figure
 $$
 \prftree[r]{$\Elim{\with}_1$}
@@ -493,14 +496,14 @@ $$
 $$
 #+end_figure
 
-The $\tens$ ("tensor") product represents a pair of resources, both of which have to be consumed, due to the requirement of not discarding resources. The introduction rule looks almost exactly the same as the one for the $\with$ product, however in this case, the two parts of the tensor product are produced in different contexts. It is this difference that makes the two connectives have different semantics \mdash while the $\with$ product offers two different possible results from the same resources, the $\tens$ product combines two sets of resources into a pair of two results, and provides both for later consumption.
+The $\tens$ ("tensor") conjunction represents a pair of resources, both of which have to be consumed, due to the requirement of not discarding resources. The introduction rule looks almost exactly the same as the one for the $\with$ conjunction, however in this case, the two parts of the tensor conjunction are produced in different contexts. It is this difference that makes the two connectives have different semantics \mdash while the $\with$ conjunction offers two different possible results from the same resources, the $\tens$ conjunction combines two sets of resources into a pair of two results, and provides both for later consumption.
 
 The elimination rule says that a $\tens$ resource can be used to complete a proof that contains a linear assumption of each of its constituents. In other words, to consume a $\tens$ resource, one must consume both of its parts.
 
-The reduction rule, shown in Figure [[fig:lin_tens_red]], describes how to perform such a completion. If the product is constructed using two proofs $t$ and $u$ of the judgments /$A$ avail/ and /$B$ avail/, respectively, then these proofs can replace the assumptions $\Lin{A\;avail}$ and $\Lin{B\;avail}$ in another proof $s$.
+The reduction rule, shown in Figure [[fig:lin_tens_red]], describes how to perform such a completion. If the conjunction is constructed using two proofs $t$ and $u$ of the judgments /$A$ avail/ and /$B$ avail/, respectively, then these proofs can replace the assumptions $\Lin{A\;avail}$ and $\Lin{B\;avail}$ in another proof $s$.
 
 #+name: fig:lin_tens_red
-#+caption: Tensor product proof reduction
+#+caption: Tensor conjunction proof reduction
 #+begin_figure
 $$
 \prftree[r]{$\Elim{\tens}$}
@@ -560,64 +563,56 @@ $$
 
 ** TODO Intuitionistic embedding
 
-#+caption: Deducing $\Lin{!A} \vdash_R B$ from $\Int{A} \vdash_R B$ (left) and vice versa (right)
+We claimed that every intuitionistic proof can be translated to an equivalent linear proof. To verify this statement, two steps are necessary. First, we need to show how to translate the three primitive constructs: propositions, judgments, and contextualized judgments. Secondly, we need to show that this translation preserves deduction rules and proof reductions. That is to say, for every intuitionistic deduction rule or proof reduction, there is a corresponding linear deduction or reduction taking the translated premises to the translated conclusion.
+
+The intuitionistic propositions come in three flavors: base propositions, conjunctions and implications. We define a translation operator $\LinTrans{\_}$, and its action on propositions is given by the equations
+
+\begin{align*}
+  \LinTrans{X} & = X \\
+  \LinTrans{A \land B} & = \LinTrans{A} \with \LinTrans{B} \\
+  \LinTrans{A \to B} & = \bang{}\LinTrans{A} \loli \LinTrans{B} \\
+\end{align*}
+
+\noindent where X stands for an atomic proposition, and A and B stand for arbitrary intuitionistic propositions.
+
+On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only to one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
+
+There are only two judgments in intuitionistic logic, and these are /$A$ type/ and /$A$ true/ for an intuitionistic proposition $A$. These are interpreted as /$A$ type/ and /$A$ avail/, respectively, defining the action of the translation operator on judgments.
+
+\begin{align*}
+  \LinTrans{A\;type} &= A\;type \\
+  \LinTrans{A\;true} &= A\;avail
+\end{align*}
+
+To give a translation of a contextualized judgment, we need to describe how to translate the context. This action is defined with an equation for the empty context, labeled '$\cdot$', and an equation for a concatenation of an arbitrary context $\Gamma$ with an arbitrary assumption $J$.
+
+\begin{align*}
+  \LinTrans{\cdot} &= \cdot \\
+  \LinTrans{\Gamma, J} &= \LinTrans{\Gamma}, \Int{\LinTrans{J}}
+\end{align*}
+
+Verbally, the translation preserves the empty context, and it maps every judgment $J$ in $\Gamma$ (since assumptions in intuitionistic logic are simply judgments) to an intuitionistic assumption of the translation of the judgment.
+
+#+caption: Deducing $\Gamma, \Lin{!A} \vdash_R B$ from $\Gamma, \Int{A} \vdash_R B$ (left) and vice versa (right)
 #+begin_figure
 $$
 \prftree[r]{$\Elim{!}$}
- {\Int{A} \vdash_R B}
+ {\Gamma, \Int{A} \vdash_R B}
  {\prftree[r]{$\Lin{\text{Id}}$}
-   {}
    {\Lin{!A} \vdash_R !A}}
- {\Lin{!A} \vdash_R B}
+ {\Gamma, \Lin{!A} \vdash_R B}
 \hspace{2em}
 \prftree[r]{$\Elim{\loli}$}
  {\prftree[r]{$\Intro{\loli}$}
-   {\Lin{!A} \vdash_R B}
-   {\vdash_R !A \loli B}}
+   {\Gamma, \Lin{!A} \vdash_R B}
+   {\Gamma \vdash_R !A \loli B}}
  {\prftree[r]{$\Intro{!}$}
    {\prftree[r]{$\Int{\text{Id}}$}
-     {}
      {\Int{A} \vdash_R A}}
    {\Int{A} \vdash_R !A}}
- {\Int{A} \vdash_R B}
+ {\Gamma, \Int{A} \vdash_R B}
 $$
 #+end_figure
-
-#+caption: Relationship between the with product and the tensor product
-#+begin_figure
-\footnotesize
-$$
-\prftree[r]{$\Elim{!}$}
- {\prftree[r]{$\Lin{\text{Id}}$}
-   {}
-   {\Lin{!(A \with B)} \vdash_R !(A \with B)}}
- {\prftree[r]{Cont}
-   {\prftree[r]{$\Intro{\tens}$}
-     {\prftree[r]{$\Intro{!}$}
-       {\prftree[r]{$\Elim{\with}_1$}
-         {\prftree[r]{\Int{\text{Id}}}
-           {}
-           {\Int{A \with B} \vdash_R A \with B}}
-         {\Int{A \with B} \vdash_R A}}
-       {\Int{A \with B} \vdash_R !A}}
-     {\prftree[r]{$\Intro{!}$}
-       {\prftree[r]{$\Elim{\with}_2$}
-         {\prftree[r]{\Int{\text{Id}}}
-           {}
-           {\Int{A \with B} \vdash_R A \with B}}
-         {\Int{A \with B} \vdash_R B}}
-       {\Int{A \with B} \vdash_R !B}}
-     {\Int{A \with B}, \Int{A \with B} \vdash_R !A \tens !B}}
-   {\Int{A \with B} \vdash_R !A \tens !B}}
- {\Lin{!(A \with B)} \vdash_R !A \tens !B}
-$$
-#+end_figure
-
-- $|A| = A$
-- $|A \land B| = |A| \with |B|$
-- $|A \to B| = !|A| \loli |B|$
-- Explain why both $\Int{A}$ and $!A$ are necessary
-
 
 * TODO Type theory
 
