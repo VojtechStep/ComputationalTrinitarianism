@@ -20,6 +20,7 @@
 
 # Proof reduction
 #+latex_header: \newcommand{\prfRed}[1][1em]{\hspace{#1}\Rightarrow\hspace{#1}}
+#+latex_header: \newcommand{\prfEq}[1][1em]{\hspace{#1}=\hspace{#1}}
 
 # Linear assumption
 #+latex_header: \newcommand{\Lin}[1]{\langle#1\rangle}
@@ -33,7 +34,7 @@
 # Lollipop
 #+latex_header: \newcommand{\loli}{\multimap}
 # Linear translation
-#+latex_header: \newcommand{\LinTrans}[1]{\llbracket #1 \rrbracket_L}
+#+latex_header: \newcommand{\LinTrans}[1]{\left\llbracket #1 \right\rrbracket_L}
 
 # Lambda calculus
 #+latex_header: \newcommand{\stl}{\lambda^{\to}_{\ProdTypeCon}}
@@ -114,9 +115,7 @@ $$
  {B\;prop}
  {(A \land B)\;true}
 $$
-
-
-\noindent where the label $\Intro{\land}$ is an abbreviation for "conjunction introduction".
+where the label $\Intro{\land}$ is an abbreviation for "conjunction introduction".
 
 Gentzen used the concept of assumptions to formulate the rules for implication. If, given that /$A$ true/, we could sequence the deduction rules in such a way that we get the judgement /$B$ true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure\nbsp[[fig:localized_hyp]]\nbsp(left). The symbol $\vdots$ stands for a sequence of deduction rules that can derive the judgement /$B$ true/ from the judgement /$A$ true/.
 
@@ -183,12 +182,10 @@ Intuitionistic logic is the logic of constructive mathematics \mdash the only ax
 Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth"). For example, the formula $A, B \vdash_T C$ is short for $A\;true, B\;true \vdash C\;true$. This notation will be used exclusively in the diagrams to prevent them from spreading too wide, and we will use the full form in the body of the thesis.
 
 The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The propositions of this fragment can be described by the following Backus-Naur form:
-
 $$
 A, B ::= X \binor (A \to B) \binor (A \land B)
 $$
-
-\noindent for X ranging over atomic propositions. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
+for X ranging over atomic propositions. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
 
 #+name: fig:intuit_deduct
 #+caption: Deduction rules for the meet-implicative fragment of propositional intuitionistic logic
@@ -248,7 +245,6 @@ The rules consist of the one axiom Id mentioned above, the three structural rule
 /Conjunction introduction/, labeled $\Intro{\land}$ in the deduction rules, states that given a proof of /$A$ true/ and a proof of /$B$ true/, the two proofs combined give a proof of /$(A \land B$) true/. The respective elimination rules allow one to extract one of the proofs of /$A$ true/ or /$B$ true/ from /$(A \land B)$ true/, even after they were combined.
 
 When formulating the proof reduction rule for a particular connective, one needs to look at a generic example of a reducible proof. For sequencing a conjunction introduction and a conjunction elimination, we need to represent generic proofs of the premises, then apply the two rules in succession, and finally justify an alternative path to reach the conclusion. We can represent the generic proofs with the symbol $\vdots$, much like how Gentzen formulated assumptions. For the conjunction reduction, the generic schema would look like the following tree, with the subproofs labeled $s$ and $t$.
-
 $$
 \prftree[r]{$\Elim{\land}_1$}
  {\prftree[r]{$\Intro{\land}$}
@@ -259,7 +255,7 @@ $$
  {\Gamma \vdash_T A}
 $$
 
-\noindent It is easy to see that the conclusion $\Gamma \vdash A\;true$ could have been reached earlier with the $s$ subproof. The full rule is shown in Figure\nbsp[[fig:intuit_conj_red]]. The rule for the other elimination rule is not shown, as it is trivially symmetrical.
+It is easy to see that the conclusion $\Gamma \vdash A\;true$ could have been reached earlier with the $s$ subproof. The full rule is shown in Figure\nbsp[[fig:intuit_conj_red]]. The rule for the other elimination rule is not shown, as it is trivially symmetrical.
 
 #+name: fig:intuit_conj_red
 #+caption: Conjunction proof reduction
@@ -358,12 +354,10 @@ Interestingly, there are two conjunction connectives \mdash the "tensor", writte
 The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\;avail}$ and why they are both necessary once we take a look at the proof reduction rules.
 
 The propositions of this logic can also be described by the simple grammar
-
 $$
 A, B ::= X \binor (A \loli B) \binor (A \tens B) \binor (A \with B) \; \binor \; !A
 $$
-
-\noindent for X ranging over atomic propositions. The deduction rules are listed in Figure [[fig:linear_deduct]].
+for X ranging over atomic propositions. The deduction rules are listed in Figure [[fig:linear_deduct]].
 
 #+name: fig:linear_deduct
 #+caption: Deduction rules for the fragment of intuitionistic linear logic
@@ -570,32 +564,124 @@ $$
 We claimed that every intuitionistic proof can be translated to an equivalent linear proof. To verify this statement, two steps are necessary. First, we need to show how to translate the three primitive constructs: propositions, judgments, and contextualized judgments. Secondly, we need to show that this translation preserves deduction rules and proof reductions. That is to say, for every intuitionistic deduction rule or proof reduction, there is a corresponding linear deduction or reduction taking the translated premises to the translated conclusion.
 
 The intuitionistic propositions come in three flavors: base propositions, conjunctions and implications. We define a translation operator $\LinTrans{\_}$, and its action on propositions is given by the equations
-
 \begin{align*}
   \LinTrans{X} & = X \\
   \LinTrans{A \land B} & = \LinTrans{A} \with \LinTrans{B} \\
   \LinTrans{A \to B} & = \bang{}\LinTrans{A} \loli \LinTrans{B} \\
 \end{align*}
-
-\noindent where X stands for an atomic proposition, and A and B stand for arbitrary intuitionistic propositions.
+where X stands for an atomic proposition, and A and B stand for arbitrary intuitionistic propositions.
 
 On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only to one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
 
 There are only two judgments in intuitionistic logic, and these are /$A$ type/ and /$A$ true/ for an intuitionistic proposition $A$. These are interpreted as /$A$ type/ and /$A$ avail/, respectively, defining the action of the translation operator on judgments.
-
 \begin{align*}
   \LinTrans{A\;type} &= A\;type \\
   \LinTrans{A\;true} &= A\;avail
 \end{align*}
 
 To give a translation of a contextualized judgment, we need to describe how to translate the context. This action is defined with an equation for the empty context, labeled '$\cdot$', and an equation for a concatenation of an arbitrary context $\Gamma$ with an arbitrary assumption $J$.
-
 \begin{align*}
   \LinTrans{\cdot} &= \cdot \\
   \LinTrans{\Gamma, J} &= \LinTrans{\Gamma}, \Int{\LinTrans{J}}
 \end{align*}
 
-Verbally, the translation preserves the empty context, and it maps every judgment $J$ in $\Gamma$ (since assumptions in intuitionistic logic are simply judgments) to an intuitionistic assumption of the translation of the judgment.
+Verbally, the translation preserves the empty context, and it maps every judgment $J$ in $\Gamma$ (since assumptions in intuitionistic logic are simply judgments) to an intuitionistic assumption of the translation of the judgment. As a consequence, all the assumptions in a translated context are intuitionistic. The contextualized judgment translation is then given by the equation
+$$
+\LinTrans{\Gamma \vdash J} = \LinTrans{\Gamma} \vdash \LinTrans{J}
+$$
+
+It is easy to see that by also defining the action of the translation on lists of propositions as $\LinTrans{(\Gamma_i)_{i=0}^n} = (\Int{\LinTrans{\Gamma_i}})_{i=0}^n$, we can recover a relationship between the shorthand notations:
+$$
+\LinTrans{\Gamma \vdash_T A} = \LinTrans{\Gamma} \vdash_R \LinTrans{A}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{Id}
+    {A \vdash_T A}}}
+\prfEq
+\vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{\LinTrans{A}} \vdash_R \LinTrans{A}}}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{Weakening}
+    {\Gamma \vdash_T A}
+    {\Gamma, B \vdash_T A}}}
+\prfEq
+\vcenter{\prftree[r]{Weakening}
+  {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}
+  {\LinTrans{\Gamma}, \Int{\LinTrans{B}} \vdash_R \LinTrans{A}}}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{Contraction}
+  {\Gamma, A, A \vdash_T B}
+  {\Gamma, A \vdash_T B}}}
+\prfEq
+\vcenter{\prftree[r]{Contraction}
+  {\LinTrans{\Gamma}, \Int{\LinTrans{A}}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}
+  {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{Exchange}
+    {\Gamma, A, B, \Delta \vdash_T C}
+    {\Gamma, B, A, \Delta \vdash_T C}}}
+\prfEq
+\vcenter{\prftree[r]{Exchange}
+  {\LinTrans{\Gamma}, \Int{\LinTrans{A}}, \Int{\LinTrans{B}}, \LinTrans{\Delta} \vdash_R \LinTrans{C}}
+  {\LinTrans{\Gamma}, \Int{\LinTrans{B}}, \Int{\LinTrans{A}}, \LinTrans{\Delta} \vdash_R \LinTrans{C}}}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{$\Intro{\land}$}
+    {\Gamma \vdash_T A}
+    {\Gamma \vdash_T B}
+    {\Gamma \vdash_T A \land B}}}
+\prfEq
+\vcenter{\prftree[r]{$\Intro{\with}$}
+  {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}
+  {\LinTrans{\Gamma} \vdash_R \LinTrans{B}}
+  {\LinTrans{\Gamma} \vdash_R \LinTrans{A} \with \LinTrans{B}}}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{$\Elim{\land}_1$}
+    {\Gamma \vdash_T A \land B}
+    {\Gamma \vdash_T A}}}
+\prfEq
+\vcenter{\prftree[r]{$\Elim{\with}_1$}
+  {\LinTrans{\Gamma} \vdash_R \LinTrans{A} \with \LinTrans{B}}
+  {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{$\Intro{\to}$}
+    {\Gamma, A \vdash_T B}
+    {\Gamma \vdash_T A \to B}}}
+\prfEq
+\vcenter{\prftree[r]{$\Intro{\loli}$}
+  {\prftree[r]{$\Elim{\bang}$}
+    {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}
+    {\prftree[r]{$\Lin{\text{Id}}$}
+      {\Lin{!\!\LinTrans{A}} \vdash_R !\!\LinTrans{A}}}
+    {\LinTrans{\Gamma}, \Lin{!\!\LinTrans{A}} \vdash_T \LinTrans{B}}}
+  {\LinTrans{\Gamma} \vdash_R !\!\LinTrans{A} \loli \LinTrans{B}}}
+$$
+
+$$
+\LinTrans{\vcenter{\prftree[r]{$\Elim{\to}$}
+    {\Gamma \vdash_T A \to B}
+    {\Delta \vdash_T A}
+    {\Gamma, \Delta \vdash_T B}}}
+\prfEq
+\vcenter{\prftree[r]{$\Elim{\loli}$}
+  {\LinTrans{\Gamma} \vdash_R !\!\LinTrans{A} \loli \LinTrans{B}}
+  {\prftree[r]{$\Intro{\bang}$}
+    {\LinTrans{\Delta} \vdash_R \LinTrans{A}}
+    {\LinTrans{\Delta} \vdash_R !\!\LinTrans{A}}}
+  {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
+$$
+
 
 #+caption: Deducing $\Gamma, \Lin{!A} \vdash_R B$ from $\Gamma, \Int{A} \vdash_R B$ (left) and vice versa (right)
 #+begin_figure
