@@ -18,6 +18,9 @@
 # Elimination rule
 #+latex_header: \newcommand{\Elim}[1]{#1\mathrm{E}}
 
+# Proof reduction
+#+latex_header: \newcommand{\prfRed}[1][1em]{\hspace{#1}\Rightarrow\hspace{#1}}
+
 # Linear assumption
 #+latex_header: \newcommand{\Lin}[1]{\langle#1\rangle}
 # Intuitionistic assumption
@@ -262,15 +265,15 @@ $$
 #+caption: Conjunction proof reduction
 #+begin_figure
 $$
-\prftree[r]{$\Elim{\land}_1$}
+\vcenter{\prftree[r]{$\Elim{\land}_1$}
  {\prftree[r]{$\Intro{\land}$}
    {\prfsummary[s]{\Gamma \vdash_T A}}
    {}
    {\prfsummary[t]{\Gamma \vdash_T B}}
    {\Gamma \vdash_T A \land B}}
- {\Gamma \vdash_T A}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prfsummary[s]{\Gamma \vdash_T A}
+ {\Gamma \vdash_T A}}
+\prfRed
+\vcenter{\prfsummary[s]{\Gamma \vdash_T A}}
 $$
 #+end_figure
 
@@ -284,7 +287,7 @@ The role of the proof reduction is then to take the proof of $\Delta \vdash A\;t
 #+caption: Implication proof reduction
 #+begin_figure
 $$
-\prftree[r]{$\Elim{\to}$}
+\vcenter{\prftree[r]{$\Elim{\to}$}
  {\prftree[r]{$\Intro{\to}$}
    {\prftree[r,double]{}
      {\prfsummary[s]
@@ -294,13 +297,13 @@ $$
      {\Gamma, A \vdash_T B}}
    {\Gamma \vdash_T (A \to B)}}
  {\prfsummary[t]{\Delta \vdash_T A}}
- {\Gamma, \Delta \vdash_T B}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prftree[double]
+ {\Gamma, \Delta \vdash_T B}}
+\prfRed
+\vcenter{\prftree[double]
  {\prfStackPremises
    {\prfsummary[t $\cdots$]{\Delta \vdash_T A} \cdots}
    {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
- {\Gamma, \Delta \vdash_T B}
+ {\Gamma, \Delta \vdash_T B}}
 $$
 #+end_figure
 
@@ -462,7 +465,7 @@ Proof reduction for the lollipop is similar in spirit to the intuitionistic impl
 #+caption: Lollipop proof reduction
 #+begin_figure
 $$
-\prftree[r]{$\Elim{\loli}$}
+\vcenter{\prftree[r]{$\Elim{\loli}$}
  {\prftree[r]{$\Intro{\loli}$}
    {\prfsummary[s]
      {\prftree[r]{$\Lin{\text{Id}}$}
@@ -470,11 +473,11 @@ $$
      {\Gamma, \Lin{A} \vdash_R B}}
    {\Gamma \vdash_R A \loli B}}
  {\prfsummary[t]{\Delta \vdash_R A}}
- {\Gamma, \Delta \vdash_R B}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prfStackPremises
+ {\Gamma, \Delta \vdash_R B}}
+\prfRed
+\vcenter{\prfStackPremises
  {\prfsummary[t]{\Delta \vdash_R A}}
- {\prfsummary[s]{\Gamma, \Delta \vdash_R B}}
+ {\prfsummary[s]{\Gamma, \Delta \vdash_R B}}}
 $$
 #+end_figure
 
@@ -484,15 +487,15 @@ The $\with$ ("with") deduction rules exactly mirror the intuitionistic conjuncti
 #+caption: With conjunction proof reduction
 #+begin_figure
 $$
-\prftree[r]{$\Elim{\with}_1$}
+\vcenter{\prftree[r]{$\Elim{\with}_1$}
  {\prftree[r]{$\Intro{\with}$}
    {\prfsummary[s]{\Gamma \vdash_R A}}
    {}
    {\prfsummary[t]{\Gamma \vdash_R B}}
    {\Gamma \vdash_T A \with B}}
- {\Gamma \vdash_T A}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prfsummary[s]{\Gamma \vdash_R A}
+ {\Gamma \vdash_T A}}
+\prfRed
+\vcenter{\prfsummary[s]{\Gamma \vdash_R A}}
 $$
 #+end_figure
 
@@ -506,7 +509,7 @@ The reduction rule, shown in Figure [[fig:lin_tens_red]], describes how to perfo
 #+caption: Tensor conjunction proof reduction
 #+begin_figure
 $$
-\prftree[r]{$\Elim{\tens}$}
+\vcenter{\prftree[r]{$\Elim{\tens}$}
  {\prfsummary[s]
    {\prftree[r]{$\Lin{\text{Id}}$}
      {\Lin{A} \vdash_R A}}
@@ -519,14 +522,15 @@ $$
    {}
    {\prfsummary[u]{\Theta \vdash_R B}}
    {\Delta, \Theta \vdash_R A \tens B}}
- {\Gamma, \Delta, \Theta \vdash_R C}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prfsummary[s]
+ {\Gamma, \Delta, \Theta \vdash_R C}}
+\prfRed
+\vcenter{\prfsummary[s]
  {\prfsummary[t]{\Delta \vdash_R A}}
  {}
  {\prfsummary[u]{\Theta \vdash_R B}}
- {\Gamma, \Delta, \Theta \vdash_R C}
+ {\Gamma, \Delta, \Theta \vdash_R C}}
 $$
+
 #+end_figure
 
 The $\bang$ ("of course") connective is supposed to extend the expressive power of linear logic to reason about free resources. A judgment of the form /$!A$ avail/ does not represent an instance of the resource $A$, but rather /a source of/[fn:3] these resources. The idea is that a resource $A$ can be pulled out from this source at any time, or even never at all, allowing us to model free resources \mdash the judgment /$!A$ avail/ serves as a statement that $A$ is a free resource.
@@ -541,7 +545,7 @@ Reducing a sequence of $\bang$ introduction and elimination looks similar to red
 #+caption: Exponential proof reduction
 #+begin_figure
 $$
-\prftree[r]{$\Elim{\bang}$}
+\vcenter{\prftree[r]{$\Elim{\bang}$}
  {\prftree[double]
    {\prfsummary[s]
      {\prftree[r]{$\Int{\text{Id}} \cdots$}
@@ -551,13 +555,13 @@ $$
  {\prftree[r]{$\Intro{\bang}$}
    {\prfsummary[t]{\Int{\Delta} \vdash_R A}}
    {\Int{\Delta} \vdash_R !A}}
- {\Gamma, \Int{\Delta} \vdash_R B}
-\hspace{1em}\Rightarrow\hspace{1em}
-\prftree[double]
+ {\Gamma, \Int{\Delta} \vdash_R B}}
+\prfRed
+\vcenter{\prftree[double]
  {\prfStackPremises
    {\prfsummary[t $\cdots$]{\Int{\Delta} \vdash_R A} \cdots}
    {\prfsummary[s]{\Gamma, \Int{\Delta} \cdots \vdash_R B}}}
- {\Gamma, \Int{\Delta} \vdash_R B}
+ {\Gamma, \Int{\Delta} \vdash_R B}}
 $$
 #+end_figure
 
