@@ -595,65 +595,63 @@ $$
 \LinTrans{\Gamma \vdash_T A} = \LinTrans{\Gamma} \vdash_R \LinTrans{A}
 $$
 
-$$
+Having defined the translation of contextualized judgments, we continue by defining how their relationships are translated \mdash that is, how to translate deduction rules.
+
+The axiom of intuitionistic logic is translated into the intuitionistic axiom of linear logic, and the structural rules correspond to their respective counterparts, as shown in the following equations:
+\begin{align*}
 \LinTrans{\vcenter{\prftree[r]{Id}
     {A \vdash_T A}}}
-\prfEq
+&\prfEq
 \vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{\LinTrans{A}} \vdash_R \LinTrans{A}}}
-$$
-
-$$
+\\[1ex]
 \LinTrans{\vcenter{\prftree[r]{Weakening}
     {\Gamma \vdash_T A}
     {\Gamma, B \vdash_T A}}}
-\prfEq
+&\prfEq
 \vcenter{\prftree[r]{Weakening}
   {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}
   {\LinTrans{\Gamma}, \Int{\LinTrans{B}} \vdash_R \LinTrans{A}}}
-$$
-
-$$
+\\[1ex]
 \LinTrans{\vcenter{\prftree[r]{Contraction}
   {\Gamma, A, A \vdash_T B}
   {\Gamma, A \vdash_T B}}}
-\prfEq
+&\prfEq
 \vcenter{\prftree[r]{Contraction}
   {\LinTrans{\Gamma}, \Int{\LinTrans{A}}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}
   {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}}
-$$
-
-$$
+\\[1ex]
 \LinTrans{\vcenter{\prftree[r]{Exchange}
     {\Gamma, A, B, \Delta \vdash_T C}
     {\Gamma, B, A, \Delta \vdash_T C}}}
-\prfEq
+&\prfEq
 \vcenter{\prftree[r]{Exchange}
   {\LinTrans{\Gamma}, \Int{\LinTrans{A}}, \Int{\LinTrans{B}}, \LinTrans{\Delta} \vdash_R \LinTrans{C}}
   {\LinTrans{\Gamma}, \Int{\LinTrans{B}}, \Int{\LinTrans{A}}, \LinTrans{\Delta} \vdash_R \LinTrans{C}}}
-$$
+\end{align*}
+\newpage
 
-$$
+Translation of the intuitionistic conjunction is defined in terms of the $\with$ conjunction, so it is expected that the deduction rules of one will correspond to the deduction rules of the other. That is indeed the case, as the translation is given below. It uses the equality $\LinTrans{A \land B} = \LinTrans{A} \with \LinTrans{B}$.
+\begin{align*}
 \LinTrans{\vcenter{\prftree[r]{$\Intro{\land}$}
     {\Gamma \vdash_T A}
     {\Gamma \vdash_T B}
     {\Gamma \vdash_T A \land B}}}
-\prfEq
+&\prfEq
 \vcenter{\prftree[r]{$\Intro{\with}$}
   {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}
   {\LinTrans{\Gamma} \vdash_R \LinTrans{B}}
   {\LinTrans{\Gamma} \vdash_R \LinTrans{A} \with \LinTrans{B}}}
-$$
-
-$$
+\\[1ex]
 \LinTrans{\vcenter{\prftree[r]{$\Elim{\land}_1$}
     {\Gamma \vdash_T A \land B}
     {\Gamma \vdash_T A}}}
-\prfEq
+&\prfEq
 \vcenter{\prftree[r]{$\Elim{\with}_1$}
   {\LinTrans{\Gamma} \vdash_R \LinTrans{A} \with \LinTrans{B}}
   {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
-$$
+\end{align*}
 
+The intuitionistic implication is translated with the $\bang$ and $\loli$ connectives, and the translation of the $\Intro{\to}$ rule, stated below, demonstrates why. The linear implication cannot be introduced from an intuitionistic assumption, so it necessitates an intermediary step which replaces it with a linear assumption, through $\bang$ elimination.
 $$
 \LinTrans{\vcenter{\prftree[r]{$\Intro{\to}$}
     {\Gamma, A \vdash_T B}
@@ -668,6 +666,7 @@ $$
   {\LinTrans{\Gamma} \vdash_R !\!\LinTrans{A} \loli \LinTrans{B}}}
 $$
 
+The translation for the $\Elim{\to}$ rule takes advantage of the fact that for any intuitionistic context $\Delta$, its translation $\LinTrans{\Delta}$ consists only of intuitionistic assumptions, therefore it is a valid target for applying $\bang$ introduction. Producing a $\bang$ proposition is required for the input of the translated implication proposition.
 $$
 \LinTrans{\vcenter{\prftree[r]{$\Elim{\to}$}
     {\Gamma \vdash_T A \to B}
@@ -681,6 +680,8 @@ $$
     {\LinTrans{\Delta} \vdash_R !\!\LinTrans{A}}}
   {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
 $$
+
+We can extend the notion of translating deduction rules into translating entire proof trees. The linear translation of an intuitionistic proof tree $p$ is denoted $\LinTrans{p}$, and it is constructed by replacing the intuitionistic contextualized judgments and deduction rules by their linear translations. Because the deduction rules are translated into valid linear deductions, and because the premises and conclusions are consistently translated, we can be certain that the new deduction tree is correctly constructed and represents a valid linear proof.
 
 
 #+caption: Deducing $\Gamma, \Lin{!A} \vdash_R B$ from $\Gamma, \Int{A} \vdash_R B$ (left) and vice versa (right)
