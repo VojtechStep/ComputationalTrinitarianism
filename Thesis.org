@@ -335,7 +335,7 @@ $$
 
 In intuitionistic logic, we judged a proposition to be true, and the judgment had the form /$A$ true/. In linear logic, we focus on /availability/. We can judge a proposition $A$ to be available, written /$A$ avail/, if there is a proof that "consumes" some assumptions, "producing" the proposition $A$. The semantics of consumption are embedded in the deduction rules, explained below.
 
-One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language. We might still want to model "free" resources, meaning resources that can be used any number of times, even zero, but conveying this information would not be possible in such a system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources. This alternative gives us strictly greater expressivity than intuitionistic logic, as we will see that every intuitionistic proof can be translated to a linear proof.
+One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language. We might still want to model "free" resources, meaning resources that can be used any number of times, even zero, but conveying this information would not be possible in such a system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources. This alternative gives us strictly greater expressivity than intuitionistic logic, as we will see that every intuitionistic proof can be translated to an equivalent linear proof.
 
 The introduction of unbound resources necessitates differentiating between two kinds of assumptions in contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\;avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\;avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, and the bracket notation can only appear on the left side of a turnstile.
 
@@ -351,7 +351,7 @@ The new implication connective is historically called "lollipop", and it's writt
 
 Interestingly, there are two conjunction connectives \mdash the "tensor", written $A \tens B$, and the "with", written $A \with B$. The tensor represents a conjunction "containing" /both/ resources $A$ and $B$, while the "with" lists two resources that are both available, but not at the same time \mdash the recipient of such a resource needs to choose either $A$ or $B$.
 
-The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\;avail}$ and why they are both necessary once we take a look at the proof reduction rules.
+The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\;avail}$ and why they are both necessary once we take a look at program evaluation in [[*Type theory][Part III]].
 
 The propositions of this logic can also be described by the simple grammar
 $$
@@ -804,27 +804,6 @@ Writing down the translation of $p'$, we can see that the two conclusions are eq
   \\[2ex]
   &\prfEq \LinTrans{p}'
 \end{align*}
-
-#+caption: Deducing $\Gamma, \Lin{!A} \vdash_R B$ from $\Gamma, \Int{A} \vdash_R B$ (left) and vice versa (right)
-#+begin_figure
-$$
-\prftree[r]{$\Elim{!}$}
- {\Gamma, \Int{A} \vdash_R B}
- {\prftree[r]{$\Lin{\text{Id}}$}
-   {\Lin{!A} \vdash_R !A}}
- {\Gamma, \Lin{!A} \vdash_R B}
-\hspace{2em}
-\prftree[r]{$\Elim{\loli}$}
- {\prftree[r]{$\Intro{\loli}$}
-   {\Gamma, \Lin{!A} \vdash_R B}
-   {\Gamma \vdash_R !A \loli B}}
- {\prftree[r]{$\Intro{!}$}
-   {\prftree[r]{$\Int{\text{Id}}$}
-     {\Int{A} \vdash_R A}}
-   {\Int{A} \vdash_R !A}}
- {\Gamma, \Int{A} \vdash_R B}
-$$
-#+end_figure
 
 * TODO Type theory
 
