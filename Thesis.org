@@ -286,19 +286,18 @@ The role of the proof reduction is then to take the proof of $\Delta \vdash A\;t
 $$
 \vcenter{\prftree[r]{$\Elim{\to}$}
  {\prftree[r]{$\Intro{\to}$}
-   {\prftree[r,double]{}
+   {\prftree[double]
      {\prfsummary[s]
-       {\prftree[r]{Id}
-         {A \vdash_T A} \cdots}
+       {\left(\vcenter{\prftree[r]{Id}{A \vdash_T A}}\right) \cdots}
        {\Gamma, A \cdots \vdash_T B}}
      {\Gamma, A \vdash_T B}}
-   {\Gamma \vdash_T (A \to B)}}
+   {\Gamma \vdash_T A \to B}}
  {\prfsummary[t]{\Delta \vdash_T A}}
  {\Gamma, \Delta \vdash_T B}}
 \prfRed
 \vcenter{\prftree[double]
  {\prfStackPremises
-   {\prfsummary[t $\cdots$]{\Delta \vdash_T A} \cdots}
+   {\left(\vcenter{\prfsummary[t]{\Delta \vdash_T A}}\right) \cdots}
    {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
  {\Gamma, \Delta \vdash_T B}}
 $$
@@ -432,14 +431,14 @@ $$
 $$
 
 $$
-\prftree[r]{$\Intro{!}$}
+\prftree[r]{$\Intro{\bang}$}
  {\Int{\Gamma} \vdash_R A}
- {\Int{\Gamma} \vdash_R !A}
+ {\Int{\Gamma} \vdash_R \bang{}A}
 \hspace{2em}
-\prftree[r]{$\Elim{!}$}
+\prftree[r]{$\Elim{\bang}$}
  {\Gamma, \Int{A} \vdash_R B}
  {}
- {\Delta \vdash_R !A}
+ {\Delta \vdash_R \bang{}A}
  {\Gamma, \Delta \vdash_R B}
 $$
 #+end_figure
@@ -543,18 +542,17 @@ $$
 \vcenter{\prftree[r]{$\Elim{\bang}$}
  {\prftree[double]
    {\prfsummary[s]
-     {\prftree[r]{$\Int{\text{Id}} \cdots$}
-       {\Int{A} \vdash_R A}}
+     {\left(\vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{A} \vdash_R A}}\right) \cdots}
      {\Gamma, \Int{A} \cdots \vdash_R B}}
    {\Gamma, \Int{A} \vdash_R B}}
  {\prftree[r]{$\Intro{\bang}$}
    {\prfsummary[t]{\Int{\Delta} \vdash_R A}}
-   {\Int{\Delta} \vdash_R !A}}
+   {\Int{\Delta} \vdash_R \bang{}A}}
  {\Gamma, \Int{\Delta} \vdash_R B}}
 \prfRed
 \vcenter{\prftree[double]
  {\prfStackPremises
-   {\prfsummary[t $\cdots$]{\Int{\Delta} \vdash_R A} \cdots}
+   {\left(\vcenter{\prfsummary[t]{\Int{\Delta} \vdash_R A}}\right) \cdots}
    {\prfsummary[s]{\Gamma, \Int{\Delta} \cdots \vdash_R B}}}
  {\Gamma, \Int{\Delta} \vdash_R B}}
 $$
@@ -662,9 +660,9 @@ $$
   {\prftree[r]{$\Elim{\bang}$}
     {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}
     {\prftree[r]{$\Lin{\text{Id}}$}
-      {\Lin{!\!\LinTrans{A}} \vdash_R !\!\LinTrans{A}}}
-    {\LinTrans{\Gamma}, \Lin{!\!\LinTrans{A}} \vdash_T \LinTrans{B}}}
-  {\LinTrans{\Gamma} \vdash_R !\!\LinTrans{A} \loli \LinTrans{B}}}
+      {\Lin{\bang\!\LinTrans{A}} \vdash_R \bang\!\LinTrans{A}}}
+    {\LinTrans{\Gamma}, \Lin{\bang\!\LinTrans{A}} \vdash_T \LinTrans{B}}}
+  {\LinTrans{\Gamma} \vdash_R \bang\!\LinTrans{A} \loli \LinTrans{B}}}
 $$
 
 The translation for the $\Elim{\to}$ rule takes advantage of the fact that for any intuitionistic context $\Delta$, its translation $\LinTrans{\Delta}$ consists only of intuitionistic assumptions, therefore it is a valid target for applying $\bang$ introduction. Producing a $\bang$ proposition is required for the input of the translated implication proposition.
@@ -675,10 +673,10 @@ $$
     {\Gamma, \Delta \vdash_T B}}}
 \prfEq
 \vcenter{\prftree[r]{$\Elim{\loli}$}
-  {\LinTrans{\Gamma} \vdash_R !\!\LinTrans{A} \loli \LinTrans{B}}
+  {\LinTrans{\Gamma} \vdash_R \bang\!\LinTrans{A} \loli \LinTrans{B}}
   {\prftree[r]{$\Intro{\bang}$}
     {\LinTrans{\Delta} \vdash_R \LinTrans{A}}
-    {\LinTrans{\Delta} \vdash_R !\!\LinTrans{A}}}
+    {\LinTrans{\Delta} \vdash_R \bang\!\LinTrans{A}}}
   {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
 $$
 
