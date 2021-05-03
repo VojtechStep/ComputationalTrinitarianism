@@ -558,7 +558,7 @@ $$
 $$
 #+end_figure
 
-** TODO Intuitionistic embedding
+** Intuitionistic embedding
 
 We claimed that every intuitionistic proof can be translated to an equivalent linear proof. To verify this statement, two steps are necessary. First, we need to show how to translate the three primitive constructs: propositions, judgments, and contextualized judgments. Secondly, we need to show that this translation preserves deduction rules and proof reductions. That is to say, for every intuitionistic deduction rule or proof reduction, there is a corresponding linear deduction or reduction taking the translated premises to the translated conclusion.
 
@@ -568,9 +568,9 @@ The intuitionistic propositions come in three flavors: base propositions, conjun
   \LinTrans{A \land B} & = \LinTrans{A} \with \LinTrans{B} \\
   \LinTrans{A \to B} & = \bang{}\LinTrans{A} \loli \LinTrans{B} \\
 \end{align*}
-where X stands for an atomic proposition, and A and B stand for arbitrary intuitionistic propositions.
+where $X$ stands for an atomic proposition, and $A$ and $B$ stand for arbitrary intuitionistic propositions.
 
-On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only to one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
+On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
 
 There are only two judgments in intuitionistic logic, and these are /$A$ type/ and /$A$ true/ for an intuitionistic proposition $A$. These are interpreted as /$A$ type/ and /$A$ avail/, respectively, defining the action of the translation operator on judgments.
 \begin{align*}
@@ -686,9 +686,9 @@ Finally, we need to show that reduction and translation commute. That is, given 
 
 \begin{center}
 \begin{tikzcd}
-p \arrow[rr, "\Rightarrow"] \arrow[dd, "\LinTrans{\_}"] & & p' \arrow[dd, "\LinTrans{\_}"] \\
+p \arrow[rr, maps to, "\Rightarrow"] \arrow[dd, maps to, "\LinTrans{\_}"] & & p' \arrow[dd, maps to, "\LinTrans{\_}"] \\
 \\
-\LinTrans{p} \arrow[rr, "\LinTrans{\Rightarrow}"]      & & \LinTrans{p}' = \LinTrans{p'}
+\LinTrans{p} \arrow[rr, maps to, "\LinTrans{\Rightarrow}"]      & & \LinTrans{p}' = \LinTrans{p'}
 \end{tikzcd}
 \end{center}
 
@@ -792,7 +792,6 @@ We can define the translation of the implication reduction as first reducing the
 \end{align*}
 
 Writing down the translation of $p'$, we can see that the two conclusions are equal.
-
 \begin{align*}
   \LinTrans{p'}
   &\prfEq
@@ -804,6 +803,8 @@ Writing down the translation of $p'$, we can see that the two conclusions are eq
   \\[2ex]
   &\prfEq \LinTrans{p}'
 \end{align*}
+
+Because all proof reductions are composed of sequenced implication and conjunction reductions, it follows that the defined translation commutes with every proof reduction.
 
 * TODO Type theory
 
