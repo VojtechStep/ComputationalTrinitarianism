@@ -5,6 +5,7 @@
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{prftree}
 #+latex_header: \usepackage{stmaryrd}
+#+latex_header: \usepackage{tikz-cd}
 #+latex_header: \usepackage{apacite}
 #+latex_header: \usepackage{fancyhdr}
 #+latex_header: \usepackage[english]{babel}
@@ -683,6 +684,128 @@ $$
 
 We can extend the notion of translating deduction rules into translating entire proof trees. The linear translation of an intuitionistic proof tree $p$ is denoted $\LinTrans{p}$, and it is constructed by replacing the intuitionistic contextualized judgments and deduction rules by their linear translations. Because the deduction rules are translated into valid linear deductions, and because the premises and conclusions are consistently translated, we can be certain that the new deduction tree is correctly constructed and represents a valid linear proof.
 
+Finally, we need to show that reduction and translation commute. That is, given an intuitionistic proof $p$ and its reduction $p \prfRed[0em] p'$, there is an equivalent reduction $\LinTrans{p} \LinTrans{\prfRed[0em]} \LinTrans{p}'$ such that its result is the same as translating $p'$. This condition is represented by the following diagram:
+
+\begin{center}
+\begin{tikzcd}
+p \arrow[rr, "\Rightarrow"] \arrow[dd, "\LinTrans{\_}"] & & p' \arrow[dd, "\LinTrans{\_}"] \\
+\\
+\LinTrans{p} \arrow[rr, "\LinTrans{\Rightarrow}"]      & & \LinTrans{p}' = \LinTrans{p'}
+\end{tikzcd}
+\end{center}
+
+To prove this commutativity, it suffices to prove it for the two intuitionistic reductions individually.
+
+For conjunction reduction, we take a general reducible proof
+$$
+p \prfEq \vcenter{\prftree[r]{$\Elim{\land}_1$}
+  {\prftree[r]{$\Intro{\land}$}
+    {\prfsummary[s]{\Gamma \vdash_T A}}
+    {\prfsummary[t]{\Gamma \vdash_T B}}
+    {\Gamma \vdash_T A \land B}}
+  {\Gamma \vdash_T A}}
+$$
+its reduced form
+$$
+p' \prfEq \vcenter{\prfsummary[s]{\Gamma \vdash_T A}}
+$$
+and its translation
+$$
+\LinTrans{p} \prfEq \vcenter{\prftree[r]{$\Elim{\with}_1$}
+  {\prftree[r]{$\Intro{\with}$}
+    {\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
+    {\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{B}}}
+    {\LinTrans{\Gamma} \vdash_R \LinTrans{A} \with \LinTrans{B}}}
+  {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
+$$
+
+We can verify that indeed
+\begin{align*}
+\LinTrans{p}'
+&\prfEq \vcenter{\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
+\\[1ex]
+&\prfEq \LinTrans{p'}
+\end{align*}
+
+The proof for implication reduction involves both lollipop and exponential reductions. First, take a general reducible proof
+$$
+p \prfEq \vcenter{\prftree[r]{$\Elim{\to}$}
+  {\prftree[r]{$\Intro{\to}$}
+    {\prftree[double]
+      {\prfsummary[s]
+        {\left(\vcenter{\prftree[r]{Id}{A \vdash_T A}}\right) \cdots}
+        {\Gamma, A \cdots \vdash_T B}}
+      {\Gamma, A \vdash_T B}}
+    {\Gamma \vdash_T A \to B}}
+  {\prfsummary[t]{\Delta \vdash_T A}}
+  {\Gamma, \Delta \vdash_T B}}
+$$
+its reduced form
+$$
+p' \prfEq \vcenter{\prftree[double]
+  {\prfStackPremises
+    {\left(\vcenter{\prfsummary[t]{\Delta \vdash_T A}}\right) \cdots}
+    {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
+  {\Gamma, \Delta \vdash_T B}}
+$$
+and its translation
+$$
+\LinTrans{p} \prfEq \vcenter{\prftree[r]{$\Elim{\loli}$}
+  {\prftree[r]{$\Intro{\loli}$}
+    {\prftree[r]{$\Elim{\bang}$}
+      {\prftree[double]
+        {\prfsummary[$\LinTrans{\text{s}}$]
+          {\left(\vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{\LinTrans{A}} \vdash_R \LinTrans{A}}}\right) \cdots}
+          {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \cdots \vdash_R \LinTrans{B}}}
+        {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}}
+      {\prftree[r]{$\Lin{\text{Id}}$}{\Lin{\bang\!\LinTrans{A}} \vdash_R \bang\!\LinTrans{A}}}
+      {\LinTrans{\Gamma}, \Lin{\bang\!\LinTrans{A}} \vdash_R \LinTrans{B}}}
+    {\LinTrans{\Gamma} \vdash_R \bang\!\LinTrans{A} \loli \LinTrans{B}}}
+  {\prftree[r]{$\Intro{\bang}$}
+    {\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}
+    {\LinTrans{\Delta} \vdash_R \bang\!\LinTrans{A}}}
+  {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
+$$
+
+We can define the translation of the implication reduction as first reducing the lollipop, and subsequently reducing the exponential, as in the sequence
+\begin{align*}
+\LinTrans{p}
+&\underset{\loli}{\prfRed}
+\vcenter{\prftree[r]{$\Elim{\bang}$}
+  {\prftree[double]
+    {\prfsummary[$\LinTrans{\text{s}}$]
+      {\left(\vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{\LinTrans{A}} \vdash_R \LinTrans{A}}}\right) \cdots}
+      {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \cdots \vdash_R \LinTrans{B}}}
+    {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}}
+  {\prftree[r]{$\Intro{\bang}$}
+    {\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}
+    {\LinTrans{\Delta} \vdash_R \bang\!\LinTrans{A}}}
+  {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
+\\[2ex]
+&\underset{\bang}{\prfRed}
+\vcenter{\prftree[double]
+  {\prfStackPremises
+    {\left(\vcenter{\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}\right) \cdots}
+    {\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma}, \LinTrans{\Delta} \cdots \vdash_R \LinTrans{B}}}}
+  {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
+\\[2ex]
+&\prfEq
+\LinTrans{p}'
+\end{align*}
+
+Writing down the translation of $p'$, we can see that the two conclusions are equal.
+
+\begin{align*}
+  \LinTrans{p'}
+  &\prfEq
+  \vcenter{\prftree[double]
+    {\prfStackPremises
+      {\left(\vcenter{\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}\right) \cdots}
+      {\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma}, \LinTrans{\Delta} \cdots \vdash_R \LinTrans{B}}}}
+    {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
+  \\[2ex]
+  &\prfEq \LinTrans{p}'
+\end{align*}
 
 #+caption: Deducing $\Gamma, \Lin{!A} \vdash_R B$ from $\Gamma, \Int{A} \vdash_R B$ (left) and vice versa (right)
 #+begin_figure
