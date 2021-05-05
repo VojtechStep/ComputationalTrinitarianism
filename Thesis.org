@@ -1,7 +1,6 @@
 #+OPTIONS: toc:nil ':t
 
 #+latex_class: book
-#+latex_class_options: [11pt,twoside,a4paper]
 #+latex_header: \usepackage{fontspec}
 #+latex_header: \usepackage{prftree}
 #+latex_header: \usepackage{stmaryrd}
@@ -933,3 +932,7 @@ Lastly, the \beta-reduction rules, which are computational in nature, correspond
 [fn:2] The judgment /$A$ prop/ (and subsequently /$A$ type/) is used more frequently in predicate logic and dependent type theories, which are out of scope for this thesis. The valid propositions of the relevant fragment can be described more easily with a simple grammar.
 
 [fn:1] The notation is borrowed from Gentzen's other proof calculus, the sequent calculus. To prevent confusion of the two systems, we prefer the term /contextualized judgment/ to Gentzen's /sequent/.
+
+# Local Variables:
+# org-latex-classes: (("book" "\\documentclass[11pt,twoside,a4paper]{book}" ("\\chapter{%s}" . "\\chapter*{%s}") ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}")))
+# End:
