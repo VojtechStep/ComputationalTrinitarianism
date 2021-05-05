@@ -20,6 +20,7 @@ jobs:
           emacs --batch --eval=" \
           (progn \
             (require 'org) \
+            (put 'org-latex-classes 'safe-local-variable (lambda (_) t)) \
             (with-current-buffer \
               (find-file \"Thesis.org\") \
               (org-latex-export-to-latex)))"
