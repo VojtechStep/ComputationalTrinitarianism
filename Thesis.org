@@ -44,9 +44,11 @@
 #+latex_header: \newcommand{\snd}[1]{(\Snd\ #1)}
 
 # Tensor Tuple
-#+latex_header: \newcommand{\tenstup}[2]{\{ #1, #2 \}}
+#+latex_header: \newcommand{\tenstup}[2]{| #1, #2 |}
+#+latex_header: \newcommand{\tenscase}[4]{\mathrm{case\ } #1 \mathrm{\ of\ } \tenstup{#2}{#3} \mathrm{\ in\ } #4}
 # With Tuple
 #+latex_header: \newcommand{\bang}{{!}}
+#+latex_header: \newcommand{\bangcase}[3]{\mathrm{case\ } #1 \mathrm{\ of\ } \bang{#2} \mathrm{\ in\ } #3}
 
 #+latex_header: \newcommand\WorkTitle{Computational trinitarianism and Linear types}
 #+latex_header: \newcommand\FirstandFamilyName{Vojtěch Štěpančík}
@@ -918,8 +920,123 @@ Second, every logical rule in intuitionistic logic has an equivalent in STLC, an
 
 Lastly, the \beta-reduction rules, which are computational in nature, correspond to proof reductions. Therefore, computation is proof reduction.
 
+** Linear types
+
+Given the correspondence between intuitionistic logic and the simply typed \lambda-calculus, we might wonder if there is a programming language corresponding to linear logic, and indeed there is.
+
+#+caption: Stuctural rules and identity axioms for linear lambda calculus
+#+begin_figure
+$$
+\prftree[r]{$\Lin{\text{Id}}$}
+ {\Lin{x: A} \vdash x: A}
+\hspace{2em}
+\prftree[r]{$\Int{\text{Id}}$}
+ {\Int{x: A} \vdash x: A}
+$$
+
+$$
+\prftree[r]{Exchange}
+ {\Gamma, x: A, y: B, \Delta \vdash s: C}
+ {\Gamma, y: B, x: A, \Delta \vdash s: C}
+\hspace{2em}
+\prftree[r]{Weakening}
+ {\Gamma \vdash s: B}
+ {\Gamma, \Int{x: A} \vdash s: B}
+$$
+
+$$
+\prftree[r]{Contraction}
+ {\Gamma, \Int{x: A}, \Int{y: A} \vdash s: B}
+ {\Gamma, \Int{z: A} \vdash s[x:=z][y:=z]: B}
+$$
+#+end_figure
+
+#+caption: Rules and equations for the $\loli$ function type
+#+begin_figure
+$$
+\prftree[r]{$\Intro{\loli}$}
+ {\Gamma, \Lin{x: A} \vdash s: B}
+ {\Gamma \vdash (\lambda x. s): (A \loli B)}
+\hspace{2em}
+\prftree[r]{$\Elim{\loli}$}
+ {\Gamma \vdash f: (A \loli B)}
+ {\Delta \vdash s: A}
+ {\Gamma, \Delta \vdash (f\ s): B}
+$$
+\begin{align*}
+&\beta\text{-reduction: } ((\lambda x. s)\ t) \equiv s[x:=t]
+\\
+&\eta\text{-conversion: } (\lambda x. (f\ x)) \equiv f \text{ when $x$ is not free in $f$}
+\end{align*}
+#+end_figure
+
+#+caption: Rules and equations for the $\with$ product type
+#+begin_figure
+$$
+\prftree[r]{$\Intro{\with}$}
+ {\Gamma \vdash s: A}
+ {\Gamma \vdash t: B}
+ {\Gamma \vdash \tuple{s}{t}: (A \with B)}
+\hspace{2em}
+\prftree[r]{$\Elim{\with}_1$}
+ {\Gamma \vdash s: (A \with B)}
+ {\Gamma \vdash \fst{s}: A}
+\hspace{2em}
+\prftree[r]{$\Elim{\with}_2$}
+ {\Gamma \vdash s: (A \with B)}
+ {\Gamma \vdash \snd{s}: B}
+$$
+\begin{align*}
+&\beta\text{-reduction: } \fst{\tuple{s}{t}} \equiv s
+\\
+&\beta\text{-reduction: } \snd{\tuple{s}{t}} \equiv t
+\\
+&\eta\text{-conversion: } \tuple{\fst{s}}{\snd{s}} \equiv s
+\end{align*}
+#+end_figure
+
+#+caption: Rules and equations for the $\tens$ product type
+#+begin_figure
+$$
+\prftree[r]{$\Intro{\tens}$}
+ {\Gamma \vdash s: A}
+ {\Delta \vdash t: B}
+ {\Gamma, \Delta \vdash \tenstup{s}{t}: (A \tens B)}
+\hspace{2em}
+\prftree[r]{$\Elim{\tens}$}
+ {\Gamma, \Lin{x: A}, \Lin{y: B} \vdash s: C}
+ {\Delta \vdash t: (A \tens B)}
+ {\Gamma, \Delta \vdash (\tenscase{t}{x}{y}{s}): C}
+$$
+\begin{align*}
+&\beta\text{-reduction: } (\tenscase{\tenstup{s}{t}}{x}{y}{u}) \equiv u[x:=s][y:=t]
+\\
+&\eta\text{-conversion: } (\tenscase{s}{x}{y}{\tenstup{x}{y}}) \equiv s
+\end{align*}
+#+end_figure
+
+#+caption: Rules and equations for the $\bang$ exponential type
+#+begin_figure
+$$
+\prftree[r]{$\Intro{\bang}$}
+ {\Int{\Gamma} \vdash s: A}
+ {\Int{\Gamma} \vdash \bang{s}: \bang{A}}
+\hspace{2em}
+\prftree[r]{$\Elim{\bang}$}
+ {\Gamma, \Int{x: A} \vdash s: B}
+ {\Delta \vdash t: \bang{A}}
+ {\Gamma, \Delta \vdash (\bangcase{t}{x}{s})}
+$$
+\begin{align*}
+&\beta\text{-reduction: } (\bangcase{\bang{t}}{x}{s}) \equiv s[x:=t]
+\\
+&\eta\text{-conversion: } (\bangcase{s}{x}{\bang{x}}) \equiv s
+\end{align*}
+#+end_figure
+
 ** TODO Intuitionistic embedding, revisited
 
+\newpage
 #+begin_export latex
 \bibliography{ComputationalTrinitarianism}
 \bibliographystyle{apacite}
