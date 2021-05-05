@@ -822,7 +822,7 @@ for X ranging over base types.
 
 Objects of STLC are *well-typed* terms of the untyped \lambda-calculus. A well-typed term is a term that is obtainable by deductions of the type system. A well-typed term is also called a *program*. A context of a contextualized typing judgment in STLC is a list of typing judgments, where the terms being typed are variables, and every variable appears in the context at most once. When concatenating contexts, it is implicitly assumed that they don't share any variables.
 
-Analogues to the structural rules from logic exist for STLC. The only difference is that the type-theoretical variants provide additional information on how to handle terms. All three rules are listed in Figure [[fig:stlc_struct]].
+Analogues to the structural rules from logic exist for STLC. The only difference is that the type-theoretical variants provide additional information on their action on terms. All three rules are listed in Figure [[fig:stlc_struct]], along with the identity axiom.
 
 The exchange rules remains mostly unchanged. It asserts that changing the order of variable typings in the context has no effect on neither the typed term nor its type.
 
@@ -830,8 +830,10 @@ The weakening rule plays the same role as logical weakening, but it also states 
 
 The contraction rule expresses that the type of an expression does not depend on specific values of its free variables, only their types. That is to say, any two variables $x$ and $y$ of the same type may be replaced by a new variable $z$ without changing the resulting type. It employs variable substitution, which is a metaoperation \mdash the symbols '$[$', '$:=$' and '$]$' are not part of the language of lambda calculus. The metaterm $s[x:=z]$ stands for the term $s$ with free occurrences of the variable $x$ replaced by the term $z$.
 
+The identity axiom claims that every variable from the context can be derived.
+
 #+name: fig:stlc_struct
-#+caption: Structural rules for STLC
+#+caption: Structural rules and the identity axiom for STLC
 #+begin_figure
 $$
 \prftree[r]{Exchange}
@@ -850,9 +852,16 @@ $$
  {\Gamma, x: A, y: A \vdash s: B}
  {\Gamma, z: A \vdash s[x:=z][y:=z]: B}
 $$
+
+$$
+\prftree[r]{Id}
+ {x: A \vdash x: A}
+$$
 #+end_figure
 
-The introduction and elimination rules for function types mirror the structure of implication deduction rules in intuitionistic logic.
+The introduction and elimination rules for function types mirror the structure of implication deduction rules in intuitionistic logic. Whereas the logical interpretation relied on hypotheses, the type-theoretical interpretation is given in terms of binding variables and applying abstractions. The premise of the introduction rule presents a term $t$, and among its free variables might be the variable $x$ ($x$ is free in $t$ if it was derived using the identity axiom, or it might not be referenced in $t$ if it was derived using weakening). The conclusion then produces a \lambda-term which explicitly binds this variable.
+
+The elimination rule introduces an application term, and together with \beta-reduction it gives a notion of "computation", which corresponds to the implication proof reduction rule. As a consequence of the \eta-conversion, we know that every object of the function type is equivalent to a \lambda-term.
 
 #+caption: Rules and equations of the function type
 #+begin_figure
@@ -867,11 +876,13 @@ $$
  {\Gamma, \Delta \vdash (f\;t): B}
 $$
 \begin{align*}
-&\beta\text{-reduction: } ((\lambda x. t)\;s) = t[x := s]
+&\beta\text{-reduction: } ((\lambda x. t)\;s) \equiv t[x := s]
 \\[1ex]
-&\eta\text{-conversion: } (\lambda x. (f\;x)) = f \text{ when $x$ is not free if $f$}
+&\eta\text{-conversion: } (\lambda x. (f\;x)) \equiv f \text{ when $x$ is not free in $f$}
 \end{align*}
 #+end_figure
+
+On the other hand, the induction and elimination rules for product types looks exactly like logical conjunction. Previously, we saw that conjunction in intuitionistic logic encodes the availability of proofs of both of its constituents, and this notion is made explicit as the product involves storing both terms. The elimination rules with \beta-reduction say that either of the two original terms may be recovered, and the reductions correspond to proof reduction of intuitionistic conjunction. The \eta-conversion for product types fulfills the same role as the one for function types \mdash we see that every object of a product type is equivalent to a term constructed with the $\Intro{\times}$ rule.
 
 #+caption: Rules and equations of the product type
 #+begin_figure
@@ -892,13 +903,21 @@ $$
  {\Gamma \vdash \snd{s} : B}
 $$
 \begin{align*}
-&\beta\text{-reduction: } \fst{\tuple{s}{t}} = s
+&\beta\text{-reduction: } \fst{\tuple{s}{t}} \equiv s
 \\[1ex]
-&\beta\text{-reduction: } \snd{\tuple{s}{t}} = t
+&\beta\text{-reduction: } \snd{\tuple{s}{t}} \equiv t
 \\[1ex]
-&\eta\text{-conversion: } \tuple{\fst{s}}{\snd{s}} = s
+&\eta\text{-conversion: } \tuple{\fst{s}}{\snd{s}} \equiv s
 \end{align*}
 #+end_figure
+
+The resemblance between STLC and intuitionistic logic is striking, and it has a name: the /Curry-Howard correspondence/. We can see a correspondence on three different levels.
+
+First, the propositions from intuitionistic logic correspond to types. The judgment /$A$ true/ amounts to finding an appropriate term $t$ for which we can make the typing judgment $t: A$.
+
+Second, every logical rule in intuitionistic logic has an equivalent in STLC, and every rule has an associated syntactic construct. Consequently, the term encodes the deduction tree that led to its construction, up to commuting structural rules. In other words, programs are proofs.
+
+Lastly, the \beta-reduction rules, which are computational in nature, correspond to proof reductions. Therefore, computation is proof reduction.
 
 ** TODO Intuitionistic embedding, revisited
 
