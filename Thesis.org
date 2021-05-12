@@ -823,7 +823,7 @@ for X ranging over base types.
 
 Objects of STLC are *well-typed* terms of the untyped \lambda-calculus. A well-typed term is a term that is obtainable by deductions of the type system. A well-typed term is also called a *program*. A context of a contextualized typing judgment in STLC is a list of typing judgments, where the terms being typed are variables, and every variable appears in the context at most once. When concatenating contexts, it is implicitly assumed that they don't share any variables.
 
-Analogues to the structural rules from logic exist for STLC. The only difference is that the type-theoretical variants provide additional information on their action on terms. All three rules are listed in Figure [[fig:stlc_struct]], along with the identity axiom.
+Analogues to the structural rules from intuitionistic logic exist for STLC. The only difference is that the type-theoretical variants provide additional information on their action on terms. All three rules are listed in Figure [[fig:stlc_struct]], along with the identity axiom.
 
 The exchange rules remains mostly unchanged. It asserts that changing the order of variable typings in the context has no effect on neither the typed term nor its type.
 
@@ -862,8 +862,22 @@ $$
 
 The introduction and elimination rules for function types mirror the structure of implication deduction rules in intuitionistic logic. Whereas the logical interpretation relied on hypotheses, the type-theoretical interpretation is given in terms of binding variables and applying abstractions. The premise of the introduction rule presents a term $t$, and among its free variables might be the variable $x$ ($x$ is free in $t$ if it was derived using the identity axiom, or it might not be referenced in $t$ if it was derived using weakening). The conclusion then produces a \lambda-term which explicitly binds this variable.
 
-The elimination rule introduces an application term, and together with \beta-reduction it gives a notion of "computation", which corresponds to the implication proof reduction rule. As a consequence of the \eta-conversion, we know that every object of the function type is equivalent to a \lambda-term.
+The elimination rule introduces an application term, and together with \beta-reduction it gives a notion of "computation", which corresponds to the implication proof reduction rule. As a consequence of the \eta-conversion, we know that every object of the function type is equivalent to a \lambda-term. The rules and equations are listed in Figure [[fig:stlc_fun]].
 
+The condition of $x$ not being free in $f$ for the \eta-conversion can be justified by looking at the expanded form of the equality, which is obtained by annotating the terms with their proof trees.
+$$
+\vcenter{\prfsummary{\Gamma \vdash f}}
+\hspace{2em}\equiv\hspace{2em}
+\vcenter{\prftree[r]{$\Intro{\to}$}
+ {\prftree[r]{$\Elim{\to}$}
+   {\prfsummary{\Gamma \vdash f: (A \to B)}}
+   {\prftree[r]{Id}{x: A \vdash x: A}}
+   {\Gamma, x: A \vdash (f\ x): B}}
+ {\Gamma \vdash (\lambda x. (f\ x)): (A \to B)}}
+$$
+We see that the tree contains a typing in the context $\Gamma, x: A$. If $x$ was free in $f$, then the list $\Gamma$ would already contain a typing of the variable $x$, leading to an invalid proof.
+
+#+name: fig:stlc_fun
 #+caption: Rules and equations of the function type
 #+begin_figure
 $$
@@ -878,23 +892,22 @@ $$
 $$
 \begin{align*}
 &\beta\text{-reduction: } ((\lambda x. s)\ t) \equiv s[x := t]
-\\[1ex]
+\\
 &\eta\text{-conversion: } (\lambda x. (f\ x)) \equiv f \text{ when $x$ is not free in $f$}
 \end{align*}
 #+end_figure
 
-On the other hand, the induction and elimination rules for product types looks exactly like logical conjunction. Previously, we saw that conjunction in intuitionistic logic encodes the availability of proofs of both of its constituents, and this notion is made explicit as the product involves storing both terms. The elimination rules with \beta-reduction say that either of the two original terms may be recovered, and the reductions correspond to proof reduction of intuitionistic conjunction. The \eta-conversion for product types fulfills the same role as the one for function types \mdash we see that every object of a product type is equivalent to a term constructed with the $\Intro{\times}$ rule.
+On the other hand, the induction and elimination rules for product types looks exactly like logical conjunction. Previously, we saw that conjunction in intuitionistic logic encodes the availability of proofs of both of its constituents, and this notion is made explicit as the product involves storing both terms. The elimination rules with \beta-reduction say that either of the two original terms may be recovered, and the reductions correspond to proof reduction of intuitionistic conjunction. The \eta-conversion for product types fulfills the same role as the one for function types \mdash we see that every object of a product type is equivalent to a term constructed with the $\Intro{\times}$ rule. The rules and equations are listed in Figure [[fig:stlc_prod]].
 
+#+name: fig:stlc_prod
 #+caption: Rules and equations of the product type
 #+begin_figure
 $$
 \prftree[r]{$\Intro{\times}$}
  {\Gamma \vdash s: A}
  {\Gamma \vdash t: B}
- {\Gamma, \Delta \vdash \tuple{s}{t}: (A \times B)}
-$$
-
-$$
+ {\Gamma \vdash \tuple{s}{t}: (A \times B)}
+\hspace{2em}
 \prftree[r]{$\Elim{\times}_1$}
  {\Gamma \vdash s: (A \times B)}
  {\Gamma \vdash \fst{s} : A}
@@ -905,16 +918,16 @@ $$
 $$
 \begin{align*}
 &\beta\text{-reduction: } \fst{\tuple{s}{t}} \equiv s
-\\[1ex]
+\\
 &\beta\text{-reduction: } \snd{\tuple{s}{t}} \equiv t
-\\[1ex]
+\\
 &\eta\text{-conversion: } \tuple{\fst{s}}{\snd{s}} \equiv s
 \end{align*}
 #+end_figure
 
 The resemblance between STLC and intuitionistic logic is striking, and it has a name: the /Curry-Howard correspondence/. We can see a correspondence on three different levels.
 
-First, the propositions from intuitionistic logic correspond to types. The judgment /$A$ true/ amounts to finding an appropriate term $t$ for which we can make the typing judgment $t: A$.
+First, the propositions from intuitionistic logic correspond to types. The judgment /$A$ true/ amounts to having an appropriate term $t$ for which we can make the typing judgment $t: A$.
 
 Second, every logical rule in intuitionistic logic has an equivalent in STLC, and every rule has an associated syntactic construct. Consequently, the term encodes the deduction tree that led to its construction, up to commuting structural rules. In other words, programs are proofs.
 
