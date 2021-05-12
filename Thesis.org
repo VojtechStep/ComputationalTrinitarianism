@@ -937,7 +937,16 @@ Lastly, the \beta-reduction rules, which are computational in nature, correspond
 
 Given the correspondence between intuitionistic logic and the simply typed \lambda-calculus, we might wonder if there is a programming language corresponding to linear logic, and indeed there is.
 
-#+caption: Stuctural rules and identity axioms for linear lambda calculus
+In this section, we introduce a programming language called /linear \lambda-calculus/, or LLC. Its form is given by assigning terms to the logical deduction rules of linear logic.
+
+The context of contextualized judgments in LLC is a list of type judgments, each of which is enclosed in either square brackets $\Int{\_}$, indicating an intuitionistic assumption, or angle brackets $\Lin{\_}$, indicating a linear assumption. As with STLC, the terms typed in assumptions must be variables, and each variable can appear in the context at most once.
+
+The type system includes two axioms, one for every assumption kind, and they are used for introducing variables. The structural rules are almost identical to the ones of STLC, with the exception that they only act on intuitionistic assumptions. The axioms and structural rules are listed in Figure [[fig:llc_struct]]. The Exchange rule does not show any brackets around its assumptions, which is done to indicate that any two assumptions can be exchanged. This syntactic deviation is made in the name of not having to specify four separate exchange rules, one for each combination of an intuitionistic/linear pair.
+
+We can see how the contraction rule allows an intuitionistic variable to appear more than once in a proof \mdash instances of two separate intuitionistic assumptions of the same type can be replaced by one variable.
+
+#+name: fig:llc_struct
+#+caption: Structural rules and identity axioms for LLC
 #+begin_figure
 $$
 \prftree[r]{$\Lin{\text{Id}}$}
@@ -964,6 +973,9 @@ $$
 $$
 #+end_figure
 
+The rules of linear functions assign terms to $\loli$ introduction and elimination, producing linear abstraction and linear application. As a consequence of $\lambda$ expression being formed strictly by binding linear variables, we can conclude that every variable bound by a $\lambda$ expression is used exactly once in its body. Therefore, the \beta-reduction is correct, meaning that the expression $t$ being substituted will end up being used exactly once. Both rules and equations for linear functions are listed in Figure [[fig:llc_fun]].
+
+#+name: fig:llc_fun
 #+caption: Rules and equations for the $\loli$ function type
 #+begin_figure
 $$
@@ -983,6 +995,15 @@ $$
 \end{align*}
 #+end_figure
 
+The $\with$ product's terms and equations correspond to the $\times$ product from STLC. The introduction rule is used for forming a tuple of two resources, each of which references the exact same context, and the elimination rules allow the consumer to pick which component they want. The reduction equations identify components of a tuple with the objects extracted using the eliminators, and the conversion equation identifies every object of a $\with$ type with one constructed using the introduction rule. The rules and equations are listed in Figure [[fig:llc_with]].
+
+The $\with$ product is the reason why we differentiate between "using" a variable exactly once in a program, and having the variable "appear" exactly once in a program. In the contextualized typing judgment
+$$
+x: A \vdash \tuple{x}{x}: (A \with A)
+$$
+the variable $x$ is /used/ exactly once, because a $\with$ product can only be used by extracting one of its components, even though $x$ /appears/ twice in the program.
+
+#+name: fig:llc_with
 #+caption: Rules and equations for the $\with$ product type
 #+begin_figure
 $$
@@ -1008,6 +1029,23 @@ $$
 \end{align*}
 #+end_figure
 
+A tuple of two independent resources $s$ and $t$ is an instance of a $\tens$ product, and it is written $\tenstup{x}{y}$. This syntax was chosen to indicate that the two resources exist "in parallel", in contrast to the $\with$ product. The elimination rule specifies a syntactic construction known in functional languages as /pattern matching/ \mdash if the term $s$ assumes two linear variables $x$ and $y$, then a value of the appropriate $\tens$ type can be deconstructed into its parts, and the construct binds each part to the corresponding variable. Since they are both linear variables, the \beta-reduction once again preserves the property of using the components of a $\tens$ product exactly once. The rules and equations are listed in Figure [[fig:llc_tens]].
+
+The \eta-conversion for the $\tens$ product differs from what we have seen so far \mdash past conversion were, in some sense, direct opposites of the corresponding \beta-reductions. Where \beta-reductions allowed to remove an introduction followed by an elimination, the \eta-conversions allowed wrapping a proof into an elimination followed by an introduction. On the other hand, annotating the terms of the \eta-conversion for $\tens$ products gives the following diagram.
+$$
+\vcenter{\prfsummary{\Gamma \vdash t: (A \tens B)}}
+\hspace{2em}\equiv\hspace{2em}
+\vcenter{\prftree[r]{$\Elim{\tens}$}
+ {\prfsummary{\Gamma \vdash t: (A \tens B)}}
+ {\prftree[r]{$\Intro{\tens}$}
+   {\prftree[r]{$\Lin{\text{Id}}$}{\Lin{x: A} \vdash x: A}}
+   {\prftree[r]{$\Lin{\text{Id}}$}{\Lin{y: B} \vdash y: B}}
+   {\Lin{x: A}, \Lin{y: B} \vdash \tenstup{x}{y}: (A \tens B)}}
+ {\Gamma \vdash (\tenscase{t}{x}{y}{\tenstup{x}{y}}): (A \tens B)}}
+$$
+We can see that the order of introduction/elimination is reversed for this conversion. Note, however, that this proof tree is not subject to \beta-reduction, because the introduction and elimination rules act on different instances of the connective \mdash we introduce the term $\tenstup{x}{y}$, but eliminate the term $t$. The reason for this pattern change is that the $\tens$ product has a different /polarity/. While all the previous types were negative types, the $\tens$ product is positive. Exploration of type polarity is, however, out of scope of this work, therefore the interested reader may consult \cite{Zeilberger2009}.
+
+#+name: fig:llc_tens
 #+caption: Rules and equations for the $\tens$ product type
 #+begin_figure
 $$
