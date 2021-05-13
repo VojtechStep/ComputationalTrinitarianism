@@ -1066,6 +1066,9 @@ $$
 \end{align*}
 #+end_figure
 
+The $\bang$ exponential is another example of a positive type. The pattern matching term $(\bangcase{t}{x}{s})$ decomposes a source $t$ into its "template" $x$, which can then be used however many times is necessary in the program $s$. The rules and equations are listed in Figure [[fig:llc_bang]].
+
+#+name: fig:llc_bang
 #+caption: Rules and equations for the $\bang$ exponential type
 #+begin_figure
 $$
@@ -1084,6 +1087,37 @@ $$
 &\eta\text{-conversion: } (\bangcase{s}{x}{\bang{x}}) \equiv s
 \end{align*}
 #+end_figure
+
+Equipped with an explicit notation for proof terms, we can see why this system distinguishes between intuitionistic assumptions and exponential types as two representations of free resources. While intuitionistic assumptions can only represent /variables/, objects of exponential types can be entire programs, containing linear variables. One might be tempted to simplify LLC by removing intuitionistic assumptions and replacing them with assumptions of exponential types, for example giving rise to the alternative rule for contraction:
+$$
+\prftree[r]{$\bang{\text{Contraction}}$}
+ {\Gamma, x: \bang{A}, y: \bang{A} \vdash s: B}
+ {\Gamma, z: \bang{A} \vdash s[x:=z][y:=z]: B}
+$$
+but we will see that this system breaks linearity when applying \beta-reductions.
+
+The best way to approach this topic is with an example. Let the type $W$ represent a proposition "I have a cup of water", and the type $G$ represent "I have a liter of gas in the tank of my car". Consequently, the types $\bang{W}$ represents a water source, because it can provide an unlimited amount of cups of water, and the type $G \loli \bang{W}$ represents a procedure for obtaining a water source using a moving car. Specifically, imagine the variable $c: G$ being a car with gas in the tank, and the function $f: A \loli \bang{W}$ being the ability to drive to a neighboring city, bringing back a water fountain. Then the program $(f\ c): \bang{W}$ represents the fountain obtained by going into the other city, consuming the gas in the process.
+
+We can derive the following program, which says that water from one such fountain can be distributed into two fountains.
+$$
+\prftree[r]{$\Elim{\loli}$}
+ {\prftree[r]{$\Intro{\loli}$}
+   {\prftree[r]{$\bang{\text{Contraction}}$}
+     {\prftree[r]{$\Intro{\tens}$}
+       {\prftree[r]{$\Lin{\text{Id}}$}{\Lin{x: \bang{W}} \vdash x: \bang{W}}}
+       {\prftree[r]{$\Lin{\text{Id}}$}{\Lin{y: \bang{W}} \vdash y: \bang{W}}}
+       {\Lin{x: \bang{W}}, \Lin{y: \bang{W}} \vdash \tenstup{x}{y}: (\bang{W} \tens \bang{W})}}
+     {\Lin{z: \bang{W}} \vdash \tenstup{z}{z}: (\bang{W} \tens \bang{W})}}
+   {\vdash (\lambda z. \tenstup{z}{z}): (\bang{W} \loli (\bang{W} \tens \bang{W}))}}
+ {\prfsummary{\Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash (f\ c): \bang{W}}}
+ {\Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash (\lambda z. \tenstup{z}{z})\ (f\ c): (\bang{W} \tens \bang{W})}
+$$
+This program is subject to \beta-reduction, because of the sequence of $\loli$ introduction and elimination. However, reducing the program leads to the typing\\
+$\Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash \tenstup{(f\ c)}{(f\ c)}: (\bang{W} \tens \bang{W})$, which is clearly not valid, because the linear variables $f$ and $c$ are used twice. This is akin to taking two trips in the car, but only having fuel for one trip.
+
+The term assignment with intuitionistic assumptions solves this problem by not allowing multiple-use variables to be bound as arguments to lambdas. Instead, the argument must be always linear, and later consumed by exponential pattern matching. That is to say, the above program is written $\Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash (\bangcase{(f\ c)}{z}{\tenstup{z}{z}}): (\bang{W} \tens \bang{W})$, where the linear variables are correctly used exactly once.
+
+Flavors of linear logic and their term assignments without intuitionistic assumptions exist, for example \cite{Benton1993}. In general, these variants provide term assignments for the structural rules also. This thesis presents the variant with kinded assumptions, for its closer resemblance to the rules of STLC.
 
 ** TODO Intuitionistic embedding, revisited
 
