@@ -565,9 +565,9 @@ where $X$ stands for an atomic proposition, and $A$ and $B$ stand for arbitrary 
 
 On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
 
-There are only two judgments in intuitionistic logic, and these are /$A$ type/ and /$A$ true/ for an intuitionistic proposition $A$. These are interpreted as /$A$ type/ and /$A$ avail/, respectively, defining the action of the translation operator on judgments.
+There are only two judgments in intuitionistic logic, and these are /$A$ prop/ and /$A$ true/ for an intuitionistic proposition $A$. These are interpreted as /$A$ prop/ and /$A$ avail/, respectively, defining the action of the translation operator on judgments.
 \begin{align*}
-  \LinTrans{A\ type} &= A\ type \\
+  \LinTrans{A\ prop} &= A\ prop \\
   \LinTrans{A\ true} &= A\ avail
 \end{align*}
 
