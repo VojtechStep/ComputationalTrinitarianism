@@ -1141,6 +1141,21 @@ Flavors of linear logic and their term assignments without intuitionistic assump
 
 ** TODO Intuitionistic embedding, revisited
 
+- Types same as propositions
+- Terms following rules
+  - $\LinTrans{x} = x$
+  - $\LinTrans{(\lambda x. s)} = (\lambda y. (\bangcase{y}{x}{\LinTrans{s}}))$
+  - $\LinTrans{(s\ t)} = (\LinTrans{s}\ \bang{\LinTrans{t}})$
+  - $\LinTrans{\tuple{s}{t}} = \tuple{\LinTrans{s}}{\LinTrans{t}}$
+  - $\LinTrans{\fst{s}} = \fst{\LinTrans{s}}$
+  - $\LinTrans{\snd{s}} = \snd{\LinTrans{s}}$
+- Equation commutativity
+  - Substitution commutativity
+  - $\LinTrans{s[x:=t]} = \LinTrans{s}[x:=t]$
+  - Beta reduction
+  - Eta expansion
+    - Commuting conversions \cite{Barber1996}
+
 \newpage
 #+begin_export latex
 \bibliography{ComputationalTrinitarianism}
