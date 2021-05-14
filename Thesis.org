@@ -1076,6 +1076,8 @@ $$
 
 The $\bang$ exponential is another example of a positive type. The pattern matching term $(\bangcase{t}{x}{s})$ decomposes a source $t$ into its "template" $x$, which can then be used however many times is necessary in the program $s$. The rules and equations are listed in Figure [[fig:llc_bang]].
 
+At first sight, it might not be obvious why the \beta-reduction holds. After all, the substitution might result in $t$ being used non-linearly. Upon further inspection, we see that since $t$ was promoted to $\bang{t}$ using the $\Intro{\bang}$ rule, it can only use intuitionistic variables. Therefore, the substitution cannot break any linearity contracts.
+
 #+name: fig:llc_bang
 #+caption: Rules and equations for the $\bang$ exponential type
 #+begin_figure
