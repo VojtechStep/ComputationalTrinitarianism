@@ -951,7 +951,7 @@ The context of contextualized judgments in LLC is a list of type judgments, each
 
 The type system includes two axioms, one for every assumption kind, and they are used for introducing variables. The structural rules are almost identical to the ones of STLC, with the exception that they only act on intuitionistic assumptions. The axioms and structural rules are listed in Figure [[fig:llc_struct]]. The Exchange rule does not show any brackets around its assumptions, which is done to indicate that any two assumptions can be exchanged. This syntactic deviation is made in the name of not having to specify four separate exchange rules, one for each combination of an intuitionistic/linear pair.
 
-We can see how the contraction rule allows an intuitionistic variable to appear more than once in a proof \mdash instances of two separate intuitionistic assumptions of the same type can be replaced by one variable.
+We can see how the contraction rule allows an intuitionistic variable to be used more than once in a proof \mdash instances of two separate intuitionistic assumptions of the same type can be replaced by one variable.
 
 #+name: fig:llc_struct
 #+caption: Structural rules and identity axioms for LLC
@@ -1127,7 +1127,7 @@ $$
        {\Lin{x: \bang{W}}, \Lin{y: \bang{W}} \vdash \tenstup{x}{y}: (\bang{W} \tens \bang{W})}}
      {\Lin{z: \bang{W}} \vdash \tenstup{z}{z}: (\bang{W} \tens \bang{W})}}
    {\vdash (\lambda z. \tenstup{z}{z}): (\bang{W} \loli (\bang{W} \tens \bang{W}))}}
- {\prfsummary{\Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash (f\ c): \bang{W}}}
+ {\hspace{-3em}\prfsummary{\Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash (f\ c): \bang{W}}}
  {\Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash (\lambda z. \tenstup{z}{z})\ (f\ c): (\bang{W} \tens \bang{W})}
 $$
 This program is subject to \beta-reduction, because of the sequence of $\loli$ introduction and elimination. However, reducing the program leads to the typing\\
