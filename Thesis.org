@@ -830,7 +830,7 @@ The exchange rules remains mostly unchanged. It asserts that changing the order 
 
 The weakening rule plays the same role as logical weakening, but it also states that the conclusion deduces the same term of the same type as the premise. As stated above, there is an implicit assumption that the variable $x$ is not contained in the context $\Gamma$.
 
-The contraction rule expresses that the type of an expression does not depend on specific values of its free variables, only their types. That is to say, any two variables $x$ and $y$ of the same type may be replaced by a new variable $z$ without changing the resulting type. It employs variable substitution, which is a metaoperation \mdash the symbols '$[$', '$:=$' and '$]$' are not part of the language of lambda calculus. The metaterm $s[x:=z]$ stands for the term $s$ with free occurrences of the variable $x$ replaced by the term $z$.
+The contraction rule expresses that the type of an expression does not depend on specific values of its free variables, only their types. That is to say, any two variables $x$ and $y$ of the same type may be replaced by a new variable $z$ without changing the resulting type. It employs capture-avoiding variable substitution as defined in \cite{Sorensen2006}, which is a metaoperation \mdash the symbols '$[$', '$:=$' and '$]$' are not part of the language of lambda calculus. The metaterm $s[x:=z]$ stands for the term $s$ with free occurrences of the variable $x$ replaced by the term $z$.
 
 The identity axiom claims that every variable from the context can be derived.
 
@@ -1240,6 +1240,8 @@ For translating programs, we find the terms corresponding to translating derivat
 &\LinTrans{\snd{s}} = \snd{\LinTrans{s}} &\Elim{\times}_2
 \end{align*}
 for $x$ ranging over variables and $s$ and $t$ ranging over well-typed terms.
+
+TODO: specify rules for substitution earlier
 
 - Equation commutativity
   - Substitution commutativity
