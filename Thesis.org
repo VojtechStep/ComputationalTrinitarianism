@@ -1233,7 +1233,7 @@ For the intuitionistic correspondence between types and propositions, we obtain 
 For translating programs, we find the terms corresponding to translating derivation rules of intuitionistic logic.
 \begin{align*}
 &\LinTrans{x} = x &\mathrm{Id} \\
-&\LinTrans{(\lambda x. s)} = (\lambda y. \bangcase{t}{x}{s}) &\Intro{\to} \\
+&\LinTrans{(\lambda x. s)} = (\lambda y. \bangcase{y}{x}{s}) \text{ for $y$ not free in $s$} &\Intro{\to} \\
 &\LinTrans{(s\ t)} = (\LinTrans{s}\ \bang{\LinTrans{t}}) &\Elim{\to} \\
 &\LinTrans{\tuple{s}{t}} = \tuple{\LinTrans{s}}{\LinTrans{t}} &\Intro{\times} \\
 &\LinTrans{\fst{s}} = \fst{\LinTrans{s}} &\Elim{\times}_1 \\
