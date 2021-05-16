@@ -1219,14 +1219,28 @@ Flavors of linear logic and their term assignments without intuitionistic assump
 
 ** TODO Intuitionistic embedding, revisited
 
-- Types same as propositions
-- Terms following rules
-  - $\LinTrans{x} = x$
-  - $\LinTrans{(\lambda x. s)} = (\lambda y. \bangcase{y}{x}{\LinTrans{s}})$
-  - $\LinTrans{(s\ t)} = (\LinTrans{s}\ \bang{\LinTrans{t}})$
-  - $\LinTrans{\tuple{s}{t}} = \tuple{\LinTrans{s}}{\LinTrans{t}}$
-  - $\LinTrans{\fst{s}} = \fst{\LinTrans{s}}$
-  - $\LinTrans{\snd{s}} = \snd{\LinTrans{s}}$
+Type theory extends the proof-theoretical point of view through programs encoding proofs. Since we are able to embed intuitionistic logic into linear logic, we want to also embed STLC into LLC, and this embedding needs to follow two conditions. First, it needs to agree with the Curry-Howard correspondence \mdash that is to say, embedding of types must behave the same as embedding of propositions, embedding of programs must behave the same as embedding of proofs and embedding of computations must behave the same as embedding of proof reductions. Secondly, equivalent programs in STLC must translate to equivalent programs in LLC.
+
+The first condition is satisfied rudimentarily \mdash we define the translations of types, programs and computations by adding terms to the proof trees used in defining their logical counterparts. Then, agreement with the Curry-Howard correspondence is reached by definition.
+
+For the intuitionistic correspondence between types and propositions, we obtain the following type embedding
+\begin{align*}
+\LinTrans{X} &= X \\
+\LinTrans{A \times B} &= \LinTrans{A} \with \LinTrans{B} \\
+\LinTrans{A \to B} &= \bang{\LinTrans{A}} \loli \LinTrans{B}
+\end{align*}
+
+For translating programs, we find the terms corresponding to translating derivation rules of intuitionistic logic.
+\begin{align*}
+&\LinTrans{x} = x &\mathrm{Id} \\
+&\LinTrans{(\lambda x. s)} = (\lambda y. \bangcase{t}{x}{s}) &\Intro{\to} \\
+&\LinTrans{(s\ t)} = (\LinTrans{s}\ \bang{\LinTrans{t}}) &\Elim{\to} \\
+&\LinTrans{\tuple{s}{t}} = \tuple{\LinTrans{s}}{\LinTrans{t}} &\Intro{\times} \\
+&\LinTrans{\fst{s}} = \fst{\LinTrans{s}} &\Elim{\times}_1 \\
+&\LinTrans{\snd{s}} = \snd{\LinTrans{s}} &\Elim{\times}_2
+\end{align*}
+for $x$ ranging over variables and $s$ and $t$ ranging over well-typed terms.
+
 - Equation commutativity
   - Substitution commutativity
   - $\LinTrans{s[x:=t]} = \LinTrans{s}[x:=t]$
