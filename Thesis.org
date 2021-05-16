@@ -345,11 +345,11 @@ The new implication connective is historically called "lollipop", and it's writt
 
 Interestingly, there are two conjunction connectives \mdash the "tensor", written $A \tens B$, and the "with", written $A \with B$. The tensor represents a conjunction "containing" /both/ resources $A$ and $B$, while the "with" lists two resources that are both available, but not at the same time \mdash the recipient of such a resource needs to choose either $A$ or $B$.
 
-The last connective is a new concept entirely. The exponential operator $!A$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\ avail}$ and why they are both necessary once we take a look at program evaluation in [[*Type theory][Part III]].
+The last connective is a new concept entirely. The exponential operator $\bang{A}$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\ avail}$ and why they are both necessary once we take a look at program evaluation in [[*Type theory][Part III]].
 
 The propositions of this logic can also be described by the simple grammar
 $$
-A, B ::= X \binor (A \loli B) \binor (A \tens B) \binor (A \with B) \  \binor \  !A
+A, B ::= X \binor (A \loli B) \binor (A \tens B) \binor (A \with B) \  \binor \  \bang{A}
 $$
 for X ranging over atomic propositions. The deduction rules are listed in Figure [[fig:linear_deduct]].
 
@@ -521,11 +521,11 @@ $$
 
 #+end_figure
 
-The $\bang$ ("of course") connective is supposed to extend the expressive power of linear logic to reason about free resources. A judgment of the form /$!A$ avail/ does not represent an instance of the resource $A$, but rather /a source of/[fn:3] these resources. The idea is that a resource $A$ can be pulled out from this source at any time, or even never at all, allowing us to model free resources \mdash the judgment /$!A$ avail/ serves as a statement that $A$ is a free resource.
+The $\bang$ ("of course") connective is supposed to extend the expressive power of linear logic to reason about free resources. A judgment of the form /$\bang{A}$ avail/ does not represent an instance of the resource $A$, but rather /a source of/[fn:3] these resources. The idea is that a resource $A$ can be pulled out from this source at any time, or even never at all, allowing us to model free resources \mdash the judgment /$\bang{A}$ avail/ serves as a statement that $A$ is a free resource.
 
 To produce one of these sources, the introduction rule provides us with a way of extending proofs based on only intuitionistic assumptions. Intuitionistic assumptions are another way of modeling free resources, so the essence of the introduction rule is an observation that, given a recipe of creating one unit of a resource $A$ from free ingredients $\Int{\Gamma}$, we can duplicate those free ingredients however many times is necessary to supply more instances of the resource, and that we don't mind throwing the ingredients away in the case that there is no demand for it.
 
-Dually to the introduction rule, which relays how to create a source from free ingredients, the elimination rule describes how a source can satiate an undisclosed demand. A proof built on an intuitionistic assumption gives no guarantees about the number of times it uses the associated resource $A$. To satisfy this assumption, we can provide the proof with a source $!A$, which can adapt to its requirements.
+Dually to the introduction rule, which relays how to create a source from free ingredients, the elimination rule describes how a source can satiate an undisclosed demand. A proof built on an intuitionistic assumption gives no guarantees about the number of times it uses the associated resource $A$. To satisfy this assumption, we can provide the proof with a source $\bang{A}$, which can adapt to its requirements.
 
 Reducing a sequence of $\bang$ introduction and elimination looks similar to reducing an implication in intuitionistic logic, because it operates on the same principle \mdash replacing assumptions with auxiliary proofs, while acknowledging the fact that the assumptions might appear zero or more times. In the Figure [[fig:lin_exp_red]], the expression $\Int{A} \cdots$ represents zero or more intuitionistic assumptions of the judgment /$A$ avail/, and the proof tree $s$ is devoid of contraction and weakening on the judgment /$A$ avail/. Instead, these are all applied in the step represented by the double derivation line. The reduction then replaces each instance of the intuitionistic assumption /$A$ avail/ with a derivation tree $t$, which produces a resource $A$ from other intuitionistic assumptions. The double line in the reduced proof signifies applications of contraction and weakening to the assumptions $\Int{\Delta}$, corresponding to the double line in the non-reduced proof.
 
