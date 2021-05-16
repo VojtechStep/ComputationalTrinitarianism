@@ -1241,11 +1241,49 @@ For translating programs, we find the terms corresponding to translating derivat
 \end{align*}
 for $x$ ranging over variables and $s$ and $t$ ranging over well-typed terms.
 
+Showing commutativity of equations with translation first requires commutativity of substitution with translation. We need to show that for every well-typed term $s$ from STLC, the following equation holds
+$$
+\LinTrans{s[x:=t]} \equiv \LinTrans{s}[x:=\LinTrans{t}]
+$$
+This is accomplished using structural induction over terms of STLC.
+
+This property trivially holds for variables. For $x$ and $y$ two distinct variables, we have the following equalities
+\begin{align*}
+\LinTrans{x[x:=t]} &= \LinTrans{t} = x[x:=\LinTrans{t}] = \LinTrans{x}[x:=\LinTrans{t}] \\
+\LinTrans{y[x:=t]} &= \LinTrans{y} = y = y[x:=\LinTrans{t}] = \LinTrans{y}[x:=\LinTrans{t}]
+\end{align*}
+
+For the induction step, we assume that the property holds for every subterm, and we produce the equivalences, for $x$ and $y$ two distinct variables and $s$ and $t$ well-typed terms
+\begin{align*}
+\LinTrans{(s\ t)[x:=u]}
+&= \LinTrans{(s[x:=u]\ t[x:=u])} \\
+&= (\LinTrans{s[x:=u]}\ \bang{\LinTrans{t[x:=u]}}) \\
+&= (\LinTrans{s}[x:=\LinTrans{u}]\ \bang{\LinTrans{t}[x:=\LinTrans{u}]}) \\
+&= (\LinTrans{s}\ \bang{\LinTrans{t}})[x:=\LinTrans{u}] \\
+&= \LinTrans{(s\ t)}[x:=\LinTrans{u}] \\
+\LinTrans{(\lambda x. s)[x:=t]}
+&= \LinTrans{(\lambda x. s)} \\
+&= (\lambda y. \bangcase{y}{x}{\LinTrans{s}}) \\
+&= (\lambda y. \bangcase{y[x:=\LinTrans{t}]}{x}{\LinTrans{s}}) \\
+&= (\lambda y. \bangcase{y}{x}{\LinTrans{s}}[x:=\LinTrans{t}]) \\
+&= (\lambda y. \bangcase{y}{x}{\LinTrans{s}})[x:=\LinTrans{t}] \\
+&= \LinTrans{(\lambda x. s)}[x:=\LinTrans{t}] \\
+\LinTrans{(\lambda y. s)[x:=t]}
+&= \LinTrans{\lambda y. s[x:=t]} \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{s[x:=t]}}) \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{s}[x:=\LinTrans{t}]}) \\
+&= (\lambda z. \bangcase{z[x:=\LinTrans{t}]}{y}{\LinTrans{s}[x:=\LinTrans{t}]}) \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{s}}[x:=\LinTrans{t}]) \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{s}})[x:=\LinTrans{t}] \\
+&= \LinTrans{(\lambda y. s)}[x:=\LinTrans{t}]
+\end{align*}
+
 TODO: specify rules for substitution earlier
 
 - Equation commutativity
   - Substitution commutativity
-  - $\LinTrans{s[x:=t]} = \LinTrans{s}[x:=t]$
+    - Structural induction
+    - $\LinTrans{s[x:=t]} = \LinTrans{s}[x:=\LinTrans{t}]$
   - Beta reduction
   - Eta expansion
     - Commuting conversions \cite{Barber1996}
