@@ -800,7 +800,7 @@ Writing down the translation of $p'$, we can see that the two conclusions are eq
 
 Because all proof reductions are composed of sequenced implication and conjunction reductions, it follows that the defined translation commutes with every proof reduction.
 
-* TODO Type theory
+* Type theory
 
 Type theory is the study of types, and it serves as a constructive way of organizing mathematical objects. Types are descriptions of constructions, and in a constructive system, every existing object needs a recipe for how it can be constructed. It follows that every mathematical object has an associated type.
 
@@ -1241,7 +1241,7 @@ where the linear variables are correctly used exactly once.
 
 Flavors of linear logic and their term assignments without intuitionistic assumptions exist, for example \cite{Benton1993}. In general, these variants provide term assignments for the structural rules also. This thesis presents the variant with kinded assumptions, for its closer resemblance to the rules of STLC.
 
-** TODO Intuitionistic embedding, revisited
+** Intuitionistic embedding, revisited
 
 Type theory extends the proof-theoretical point of view through programs encoding proofs. Since we are able to embed intuitionistic logic into linear logic, we want to also embed STLC into LLC, and this embedding needs to follow two conditions. First, it needs to agree with the Curry-Howard correspondence \mdash that is to say, embedding of types must behave the same as embedding of propositions, embedding of programs must behave the same as embedding of proofs and embedding of computations must behave the same as embedding of proof reductions. Secondly, equivalent programs in STLC must translate to equivalent programs in LLC.
 
@@ -1257,7 +1257,7 @@ For the intuitionistic correspondence between types and propositions, we obtain 
 For translating programs, we find the terms corresponding to translating derivation rules of intuitionistic logic.
 \begin{align*}
 &\LinTrans{x} = x &\mathrm{Id} \\
-&\LinTrans{(\lambda x. s)} = (\lambda y. \bangcase{y}{x}{s}) \text{ for $y$ not free in $s$} &\Intro{\to} \\
+&\LinTrans{(\lambda x. s)} = (\lambda y. \bangcase{y}{x}{\LinTrans{s}}) \text{ for $y$ not free in $s$} &\Intro{\to} \\
 &\LinTrans{(s\ t)} = (\LinTrans{s}\ \bang{\LinTrans{t}}) &\Elim{\to} \\
 &\LinTrans{\tuple{s}{t}} = \tuple{\LinTrans{s}}{\LinTrans{t}} &\Intro{\times} \\
 &\LinTrans{\fst{s}} = \fst{\LinTrans{s}} &\Elim{\times}_1 \\
@@ -1320,10 +1320,41 @@ For the induction step, we assume that the property holds for every subterm, and
 &= \LinTrans{\snd{t}}[x:=\LinTrans{s}] \\
 \end{align*}
 
-- Equation commutativity
-  - Beta reduction
-  - Eta expansion
-    - Commuting conversions \cite{Barber1996}
+Next, we need to show that equivalent STLC terms are translated to equivalent LLC terms. This is accomplished by showing that this property holds for every \beta-reduction and every \eta-conversion equation. That is, for every equation $s \equiv s'$, we need to show that $\LinTrans{s} \equiv \LinTrans{s}$.
+
+Proofs of commutativity for the \beta-reductions are obtained by the corresponding proofs of commutativity for proof reductions.
+\begin{align*}
+\LinTrans{((\lambda x. s)\ t)}
+&= (\LinTrans{(\lambda x. s)}\ \bang{\LinTrans{t}}) \\
+&= ((\lambda y. \bangcase{y}{x}{\LinTrans{s}})\ \bang{\LinTrans{t}}) \\
+&\equiv \bangcase{\bang{\LinTrans{t}}}{x}{\LinTrans{s}} \\
+&\equiv \LinTrans{s}[x:=\LinTrans{t}] \\
+&= \LinTrans{s[x:=t]} \\
+\LinTrans{\fst{\tuple{s}{t}}}
+&= \fst{\LinTrans{\tuple{s}{t}}} \\
+&= \fst{\tuple{\LinTrans{s}}{\LinTrans{t}}} \\
+&\equiv \LinTrans{s} \\
+\LinTrans{\snd{\tuple{s}{t}}}
+&= \snd{\LinTrans{\tuple{s}{t}}} \\
+&= \snd{\tuple{\LinTrans{s}}{\LinTrans{t}}} \\
+&\equiv \LinTrans{t} \\
+\end{align*}
+
+We have not specified what \eta-conversions correspond to in logic, so the verification is not as simple as following existing proofs, however it is still straight-forward.
+\begin{align*}
+\LinTrans{(\lambda x. (f\ x))}
+&= (\lambda y. \bangcase{y}{x}{\LinTrans{(f\ x)}}) \\
+&= (\lambda y. \bangcase{y}{x}{(\LinTrans{f}\ \bang{\LinTrans{x}})}) \\
+&\equiv (\lambda y. (\LinTrans{f}\ \bangcase{y}{x}{\bang{x}})) \\
+&\equiv (\lambda y. (\LinTrans{f}\ y)) \\
+&\equiv \LinTrans{f} \\
+\LinTrans{\tuple{\fst{s}}{\snd{s}}}
+&= \tuple{\LinTrans{\fst{s}}}{\LinTrans{\snd{s}}} \\
+&= \tuple{\fst{\LinTrans{s}}}{\snd{\LinTrans{s}}} \\
+&\equiv \LinTrans{s}
+\end{align*}
+
+Since we covered all equations from STLC, we can conclude that equivalent programs translate to equivalent programs.
 
 \newpage
 #+begin_export latex
