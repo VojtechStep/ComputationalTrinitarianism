@@ -168,7 +168,7 @@ Just as there can be zero assumptions in a contextualized judgement, there can b
 
 A proof in this updated notation is now a proper tree, with a contextualized judgement at the root, contextualized judgements in the inner nodes, axioms at the leaves, and deduction rules connecting the nodes.
 
-When composing deductions, we sometimes produce redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*. These rules must preserve the validity of the proof, meaning that the proof after a reduction must still consist only of derivations specified for the logic. This condition is called /local soundness/ \cite{Pfenning2004}, and we will revisit it when talking about linear logic.
+When composing deductions, we sometimes produce redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*. These rules must preserve well-formedness of the proof, meaning that the proof after a reduction must still consist only of derivations specified for the logic. This condition is called /local soundness/ \cite{Pfenning2004}.
 
 ** Intuitionistic logic
 
@@ -243,9 +243,9 @@ When formulating the proof reduction rule for a particular connective, one needs
 $$
 \prftree[r]{$\Elim{\land}_1$}
  {\prftree[r]{$\Intro{\land}$}
-   {\prfsummary[s]{\Gamma \vdash_T A}}
+   {\prfsummary[$s$]{\Gamma \vdash_T A}}
    {}
-   {\prfsummary[t]{\Gamma \vdash_T B}}
+   {\prfsummary[$t$]{\Gamma \vdash_T B}}
    {\Gamma \vdash_T A \land B}}
  {\Gamma \vdash_T A}
 $$
@@ -258,13 +258,13 @@ It is easy to see that the conclusion $\Gamma \vdash A\ true$ could have been re
 $$
 \vcenter{\prftree[r]{$\Elim{\land}_1$}
  {\prftree[r]{$\Intro{\land}$}
-   {\prfsummary[s]{\Gamma \vdash_T A}}
+   {\prfsummary[$s$]{\Gamma \vdash_T A}}
    {}
-   {\prfsummary[t]{\Gamma \vdash_T B}}
+   {\prfsummary[$t$]{\Gamma \vdash_T B}}
    {\Gamma \vdash_T A \land B}}
  {\Gamma \vdash_T A}}
 \prfRed
-\vcenter{\prfsummary[s]{\Gamma \vdash_T A}}
+\vcenter{\prfsummary[$s$]{\Gamma \vdash_T A}}
 $$
 #+end_figure
 
@@ -281,18 +281,18 @@ $$
 \vcenter{\prftree[r]{$\Elim{\to}$}
  {\prftree[r]{$\Intro{\to}$}
    {\prftree[double]
-     {\prfsummary[s]
+     {\prfsummary[$s$]
        {\left(\vcenter{\prftree[r]{Id}{A \vdash_T A}}\right) \cdots}
        {\Gamma, A \cdots \vdash_T B}}
      {\Gamma, A \vdash_T B}}
    {\Gamma \vdash_T A \to B}}
- {\prfsummary[t]{\Delta \vdash_T A}}
+ {\prfsummary[$t$]{\Delta \vdash_T A}}
  {\Gamma, \Delta \vdash_T B}}
 \prfRed
 \vcenter{\prftree[double]
  {\prfStackPremises
-   {\left(\vcenter{\prfsummary[t]{\Delta \vdash_T A}}\right) \cdots}
-   {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
+   {\left(\vcenter{\prfsummary[$t$]{\Delta \vdash_T A}}\right) \cdots}
+   {\prfsummary[$s$]{\Gamma, \Delta \cdots \vdash_T B}}}
  {\Gamma, \Delta \vdash_T B}}
 $$
 #+end_figure
@@ -320,8 +320,8 @@ $$
  {\prftree[r]{$\Intro{\to}$}
   {\prftree[r]{Weak}
     {\prftree[r]{Id}
-      {A \vdash_T B}}
-    {A, B \vdash_T \to A}}
+      {A \vdash_T A}}
+    {A, B \vdash_T A}}
   {A \vdash_T B \to A}}
  {\vdash_T A \to (B \to A)}
 $$
@@ -331,7 +331,7 @@ In intuitionistic logic, we judged a proposition to be true, and the judgment ha
 
 One simple way to prevent "invalid" usage of resources is to remove the contraction and weakening rules altogether. However, this approach severely limits the expressivity of the language. We might still want to model "free" resources, meaning resources that can be used any number of times, even zero, but conveying this information would not be possible in such a system. Instead, we introduce an annotation for unbound resources, and limit contraction and weakening so that they can only be used on these "intuitionistic" resources. This alternative gives us strictly greater expressivity than intuitionistic logic, as we will see that every intuitionistic proof can be translated to an equivalent linear proof.
 
-The introduction of unbound resources necessitates differentiating between two kinds of assumptions in contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\ avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\ avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are valid propositions, and the bracket notation can only appear on the left side of a turnstile.
+The introduction of unbound resources necessitates differentiating between two kinds of assumptions in contextualized judgments \mdash a /linear/ assumption of the judgment /$A$ avail/ is written $\Lin{A\ avail}$, and indicates that the conclusion uses the fact that $A$ is available /exactly once/. An /intuitionistic/ assumption of the judgment /$A$ avail/, written $\Int{A\ avail}$, makes no guarantees about its usage in the conclusion \mdash it may be used zero, one, or even more times. It is important to emphasize that these glyphs are not a part of the object language \mdash neither $\Lin{A}$ nor $\Int{A}$ are well-formed propositions, and the bracket notation can only appear on the left side of a turnstile.
 
 Contraction and weakening are now limited to only intuitionistic assumptions, meaning that judgments can be linearly assumed multiple times. These new rules lead to a general context $\Gamma$ behaving like a multiset. Every intuitionistic judgment can be made to have a multiplicity of one (using the new contraction and weakening), and multiplicity of linear assumptions is given by their usage in the conclusion.
 
@@ -455,17 +455,17 @@ Proof reduction for the lollipop is similar in spirit to the intuitionistic impl
 $$
 \vcenter{\prftree[r]{$\Elim{\loli}$}
  {\prftree[r]{$\Intro{\loli}$}
-   {\prfsummary[s]
+   {\prfsummary[$s$]
      {\prftree[r]{$\Lin{\text{Id}}$}
        {\Lin{A} \vdash_R A}}
      {\Gamma, \Lin{A} \vdash_R B}}
    {\Gamma \vdash_R A \loli B}}
- {\prfsummary[t]{\Delta \vdash_R A}}
+ {\prfsummary[$t$]{\Delta \vdash_R A}}
  {\Gamma, \Delta \vdash_R B}}
 \prfRed
 \vcenter{\prfStackPremises
- {\prfsummary[t]{\Delta \vdash_R A}}
- {\prfsummary[s]{\Gamma, \Delta \vdash_R B}}}
+ {\prfsummary[$t$]{\Delta \vdash_R A}}
+ {\prfsummary[$s$]{\Gamma, \Delta \vdash_R B}}}
 $$
 #+end_figure
 
@@ -477,13 +477,13 @@ The $\with$ ("with") deduction rules exactly mirror the intuitionistic conjuncti
 $$
 \vcenter{\prftree[r]{$\Elim{\with}_1$}
  {\prftree[r]{$\Intro{\with}$}
-   {\prfsummary[s]{\Gamma \vdash_R A}}
+   {\prfsummary[$s$]{\Gamma \vdash_R A}}
    {}
-   {\prfsummary[t]{\Gamma \vdash_R B}}
+   {\prfsummary[$t$]{\Gamma \vdash_R B}}
    {\Gamma \vdash_T A \with B}}
  {\Gamma \vdash_T A}}
 \prfRed
-\vcenter{\prfsummary[s]{\Gamma \vdash_R A}}
+\vcenter{\prfsummary[$s$]{\Gamma \vdash_R A}}
 $$
 #+end_figure
 
@@ -498,7 +498,7 @@ The reduction rule, shown in Figure [[fig:lin_tens_red]], describes how to perfo
 #+begin_figure
 $$
 \vcenter{\prftree[r]{$\Elim{\tens}$}
- {\prfsummary[s]
+ {\prfsummary[$s$]
    {\prftree[r]{$\Lin{\text{Id}}$}
      {\Lin{A} \vdash_R A}}
    {}
@@ -506,16 +506,16 @@ $$
      {\Lin{B} \vdash_R B}}
    {\Gamma, \Lin{A}, \Lin{B} \vdash_R C}}
  {\prftree[r]{$\Intro{\tens}$}
-   {\prfsummary[t]{\Delta \vdash_R A}}
+   {\prfsummary[$t$]{\Delta \vdash_R A}}
    {}
-   {\prfsummary[u]{\Theta \vdash_R B}}
+   {\prfsummary[$u$]{\Theta \vdash_R B}}
    {\Delta, \Theta \vdash_R A \tens B}}
  {\Gamma, \Delta, \Theta \vdash_R C}}
 \prfRed
-\vcenter{\prfsummary[s]
- {\prfsummary[t]{\Delta \vdash_R A}}
+\vcenter{\prfsummary[$s$]
+ {\prfsummary[$t$]{\Delta \vdash_R A}}
  {}
- {\prfsummary[u]{\Theta \vdash_R B}}
+ {\prfsummary[$u$]{\Theta \vdash_R B}}
  {\Gamma, \Delta, \Theta \vdash_R C}}
 $$
 
@@ -535,18 +535,18 @@ Reducing a sequence of $\bang$ introduction and elimination looks similar to red
 $$
 \vcenter{\prftree[r]{$\Elim{\bang}$}
  {\prftree[double]
-   {\prfsummary[s]
+   {\prfsummary[$s$]
      {\left(\vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{A} \vdash_R A}}\right) \cdots}
      {\Gamma, \Int{A} \cdots \vdash_R B}}
    {\Gamma, \Int{A} \vdash_R B}}
  {\prftree[r]{$\Intro{\bang}$}
-   {\prfsummary[t]{\Int{\Delta} \vdash_R A}}
+   {\prfsummary[$t$]{\Int{\Delta} \vdash_R A}}
    {\Int{\Delta} \vdash_R \bang{A}}}
  {\Gamma, \Int{\Delta} \vdash_R B}}
 \prfRed
 \vcenter{\prftree[double]
  {\prfStackPremises
-   {\left(\vcenter{\prfsummary[t]{\Int{\Delta} \vdash_R A}}\right) \cdots}
+   {\left(\vcenter{\prfsummary[$t$]{\Int{\Delta} \vdash_R A}}\right) \cdots}
    {\prfsummary[s]{\Gamma, \Int{\Delta} \cdots \vdash_R B}}}
  {\Gamma, \Int{\Delta} \vdash_R B}}
 $$
@@ -674,7 +674,7 @@ $$
   {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
 $$
 
-We can extend the notion of translating deduction rules into translating entire proof trees. The linear translation of an intuitionistic proof tree $p$ is denoted $\LinTrans{p}$, and it is constructed by replacing the intuitionistic contextualized judgments and deduction rules by their linear translations. Because the deduction rules are translated into valid linear deductions, and because the premises and conclusions are consistently translated, we can be certain that the new deduction tree is correctly constructed and represents a valid linear proof.
+We can extend the notion of translating deduction rules into translating entire proof trees. The linear translation of an intuitionistic proof tree $p$ is denoted $\LinTrans{p}$, and it is constructed by replacing the intuitionistic contextualized judgments and deduction rules by their linear translations. Because the deduction rules are translated into well-formed linear deductions, and because the premises and conclusions are consistently translated, we can be certain that the new deduction tree is correctly constructed and represents a well-formed linear proof.
 
 Finally, we need to show that reduction and translation commute. That is, given an intuitionistic proof $p$ and its reduction $p \prfRed[0em] p'$, there is an equivalent reduction $\LinTrans{p} \LinTrans{\prfRed[0em]} \LinTrans{p}'$ such that its result is the same as translating $p'$. This condition is represented by the following diagram:
 
@@ -692,21 +692,21 @@ For conjunction reduction, we take a general reducible proof
 $$
 p \prfEq \vcenter{\prftree[r]{$\Elim{\land}_1$}
   {\prftree[r]{$\Intro{\land}$}
-    {\prfsummary[s]{\Gamma \vdash_T A}}
-    {\prfsummary[t]{\Gamma \vdash_T B}}
+    {\prfsummary[$s$]{\Gamma \vdash_T A}}
+    {\prfsummary[$t$]{\Gamma \vdash_T B}}
     {\Gamma \vdash_T A \land B}}
   {\Gamma \vdash_T A}}
 $$
 its reduced form
 $$
-p' \prfEq \vcenter{\prfsummary[s]{\Gamma \vdash_T A}}
+p' \prfEq \vcenter{\prfsummary[$s$]{\Gamma \vdash_T A}}
 $$
 and its translation
 $$
 \LinTrans{p} \prfEq \vcenter{\prftree[r]{$\Elim{\with}_1$}
   {\prftree[r]{$\Intro{\with}$}
-    {\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
-    {\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{B}}}
+    {\prfsummary[$\LinTrans{s}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
+    {\prfsummary[$\LinTrans{t}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{B}}}
     {\LinTrans{\Gamma} \vdash_R \LinTrans{A} \with \LinTrans{B}}}
   {\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
 $$
@@ -714,7 +714,7 @@ $$
 We can verify that indeed
 \begin{align*}
 \LinTrans{p}'
-&\prfEq \vcenter{\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
+&\prfEq \vcenter{\prfsummary[$\LinTrans{s}$]{\LinTrans{\Gamma} \vdash_R \LinTrans{A}}}
 \\[1ex]
 &\prfEq \LinTrans{p'}
 \end{align*}
@@ -724,20 +724,20 @@ $$
 p \prfEq \vcenter{\prftree[r]{$\Elim{\to}$}
   {\prftree[r]{$\Intro{\to}$}
     {\prftree[double]
-      {\prfsummary[s]
+      {\prfsummary[$s$]
         {\left(\vcenter{\prftree[r]{Id}{A \vdash_T A}}\right) \cdots}
         {\Gamma, A \cdots \vdash_T B}}
       {\Gamma, A \vdash_T B}}
     {\Gamma \vdash_T A \to B}}
-  {\prfsummary[t]{\Delta \vdash_T A}}
+  {\prfsummary[$t$]{\Delta \vdash_T A}}
   {\Gamma, \Delta \vdash_T B}}
 $$
 its reduced form
 $$
 p' \prfEq \vcenter{\prftree[double]
   {\prfStackPremises
-    {\left(\vcenter{\prfsummary[t]{\Delta \vdash_T A}}\right) \cdots}
-    {\prfsummary[s]{\Gamma, \Delta \cdots \vdash_T B}}}
+    {\left(\vcenter{\prfsummary[$t$]{\Delta \vdash_T A}}\right) \cdots}
+    {\prfsummary[$s$]{\Gamma, \Delta \cdots \vdash_T B}}}
   {\Gamma, \Delta \vdash_T B}}
 $$
 and its translation
@@ -746,7 +746,7 @@ $$
   {\prftree[r]{$\Intro{\loli}$}
     {\prftree[r]{$\Elim{\bang}$}
       {\prftree[double]
-        {\prfsummary[$\LinTrans{\text{s}}$]
+        {\prfsummary[$\LinTrans{s}$]
           {\left(\vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{\LinTrans{A}} \vdash_R \LinTrans{A}}}\right) \cdots}
           {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \cdots \vdash_R \LinTrans{B}}}
         {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}}
@@ -754,7 +754,7 @@ $$
       {\LinTrans{\Gamma}, \Lin{\bang{\LinTrans{A}}} \vdash_R \LinTrans{B}}}
     {\LinTrans{\Gamma} \vdash_R \bang{\LinTrans{A}} \loli \LinTrans{B}}}
   {\prftree[r]{$\Intro{\bang}$}
-    {\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}
+    {\prfsummary[$\LinTrans{t}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}
     {\LinTrans{\Delta} \vdash_R \bang{\LinTrans{A}}}}
   {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
 $$
@@ -765,20 +765,20 @@ We can define the translation of the implication reduction as first reducing the
 &\underset{\loli}{\prfRed}
 \vcenter{\prftree[r]{$\Elim{\bang}$}
   {\prftree[double]
-    {\prfsummary[$\LinTrans{\text{s}}$]
+    {\prfsummary[$\LinTrans{s}$]
       {\left(\vcenter{\prftree[r]{$\Int{\text{Id}}$}{\Int{\LinTrans{A}} \vdash_R \LinTrans{A}}}\right) \cdots}
       {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \cdots \vdash_R \LinTrans{B}}}
     {\LinTrans{\Gamma}, \Int{\LinTrans{A}} \vdash_R \LinTrans{B}}}
   {\prftree[r]{$\Intro{\bang}$}
-    {\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}
+    {\prfsummary[$\LinTrans{t}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}
     {\LinTrans{\Delta} \vdash_R \bang{\LinTrans{A}}}}
   {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
 \\[2ex]
 &\underset{\bang}{\prfRed}
 \vcenter{\prftree[double]
   {\prfStackPremises
-    {\left(\vcenter{\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}\right) \cdots}
-    {\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma}, \LinTrans{\Delta} \cdots \vdash_R \LinTrans{B}}}}
+    {\left(\vcenter{\prfsummary[$\LinTrans{t}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}\right) \cdots}
+    {\prfsummary[$\LinTrans{s}$]{\LinTrans{\Gamma}, \LinTrans{\Delta} \cdots \vdash_R \LinTrans{B}}}}
   {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
 \\[2ex]
 &\prfEq
@@ -791,8 +791,8 @@ Writing down the translation of $p'$, we can see that the two conclusions are eq
   &\prfEq
   \vcenter{\prftree[double]
     {\prfStackPremises
-      {\left(\vcenter{\prfsummary[$\LinTrans{\text{t}}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}\right) \cdots}
-      {\prfsummary[$\LinTrans{\text{s}}$]{\LinTrans{\Gamma}, \LinTrans{\Delta} \cdots \vdash_R \LinTrans{B}}}}
+      {\left(\vcenter{\prfsummary[$\LinTrans{t}$]{\LinTrans{\Delta} \vdash_R \LinTrans{A}}}\right) \cdots}
+      {\prfsummary[$\LinTrans{s}$]{\LinTrans{\Gamma}, \LinTrans{\Delta} \cdots \vdash_R \LinTrans{B}}}}
     {\LinTrans{\Gamma}, \LinTrans{\Delta} \vdash_R \LinTrans{B}}}
   \\[2ex]
   &\prfEq \LinTrans{p}'
@@ -876,7 +876,7 @@ $$
    {\Gamma, x: A \vdash (f\ x): B}}
  {\Gamma \vdash (\lambda x. (f\ x)): (A \to B)}}
 $$
-We see that the tree contains a typing in the context $\Gamma, x: A$. If $x$ was free in $f$, then the list $\Gamma$ would already contain a typing of the variable $x$, leading to an invalid proof.
+We see that the tree contains a typing in the context $\Gamma, x: A$. If $x$ was free in $f$, then the list $\Gamma$ would already contain a typing of the variable $x$, leading to a proof that is not well-formed.
 
 #+name: fig:stlc_fun
 #+caption: Rules and equations of the function type
@@ -1231,7 +1231,7 @@ This program is subject to \beta-reduction, because of the sequence of $\loli$ i
 $$
 \Lin{f: (G \loli \bang{W})}, \Lin{c: G} \vdash \tenstup{(f\ c)}{(f\ c)}: (\bang{W} \tens \bang{W})
 $$
-which is clearly not valid, because the linear variables $f$ and $c$ are used twice. This is akin to taking two trips in the car, but only having fuel for one trip.
+which clearly does not produce a well-typed term, because the linear variables $f$ and $c$ are used twice. This is akin to taking two trips in the car, but only having fuel for one trip. In other words, the system would not be locally sound.
 
 The term assignment with intuitionistic assumptions solves this problem by not allowing multiple-use variables to be bound as arguments to lambdas. Instead, the argument must be always linear, and later consumed by exponential pattern matching. That is to say, the above program is written
 $$
@@ -1368,7 +1368,7 @@ Since we covered all equations from STLC, we can conclude that equivalent progra
 
 [fn:3] Or /a generator of/, or /an infinite pocket of/
 
-[fn:2] The judgment /$A$ prop/ (and subsequently /$A$ type/) is used more frequently in predicate logic and dependent type theories, which are out of scope for this thesis. The valid propositions of the relevant fragment can be described more easily with a simple grammar.
+[fn:2] The judgment /$A$ prop/ (and subsequently /$A$ type/) is used more frequently in predicate logic and dependent type theories, which are out of scope for this thesis. The well-formed propositions of the relevant fragment can be described more easily with a simple grammar.
 
 [fn:1] The notation is borrowed from Gentzen's other proof calculus, the sequent calculus. To prevent confusion of the two systems, we prefer the term /contextualized judgment/ to Gentzen's /sequent/.
 
