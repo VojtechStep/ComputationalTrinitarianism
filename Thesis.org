@@ -1110,6 +1110,30 @@ s, t &::=\ &&x \\
 \end{alignat*}
 for $x$ and $y$ ranging over variables.
 
+Substitution of LLC terms is defined analogously to substitution of STLC terms. The rules are listed in Figure [[fig:llc_subst]], and they are defined for distinct variables $x$, $y$ and $z$, and for LLC terms $s$, $t$ and $u$. The substitution avoids variable capture \mdash if a free variable in $s$ would become bound following the substitution, then the substitution is not defined, and renaming variables must precede.
+
+#+name: fig:llc_subst
+#+caption: Substitution of LLC terms
+#+begin_figure
+\begin{align*}
+x[x:=s] &= s \\
+y[x:=s] &= y \\
+(\lambda x. t)[x:=s] &= (\lambda x. t) \\
+(\lambda y. t)[x:=s] &= (\lambda y. t[x:=s]) \\
+(t\ u)[x:=s] &= (t[x:=s]\ u[x:=s]) \\
+\tuple{t}{u}[x:=s] &= \tuple{t[x:=s]}{u[x:=s]} \\
+\fst{t}[x:=s] &= \fst{t[x:=s]} \\
+\snd{t}[x:=s] &= \snd{t[x:=s]} \\
+\tenstup{t}{u}[x:=s] &= \tenstup{t[x:=s]}{u[x:=s]} \\
+\tenscase{t}{x}{y}{u}[x:=s] &= \tenscase{t[x:=s]}{x}{y}{u} \\
+\tenscase{t}{y}{x}{u}[x:=s] &= \tenscase{t[x:=s]}{y}{x}{u[x:=s]} \\
+\tenscase{t}{y}{z}{u}[x:=s] &= \tenscase{t[x:=s]}{y}{z}{u[x:=s]} \\
+(\bang{t})[x:=s] &= \bang{(t[x:=s])} \\
+\bangcase{t}{x}{u}[x:=s] &= \bangcase{t[x:=s]}{x}{u} \\
+\bangcase{t}{y}{u}[x:=s] &= \bangcase{t[x:=s]}{y}{u[x:=s]}
+\end{align*}
+#+end_figure
+
 ** Commuting conversions
 In addition to equations describing relationships between introductions and eliminations of the same type, there are also equations relating rules of different types. These equations, called *commuting conversions*, describe valid ways of moving pattern matching terms through the program. For example, when given the program
 $$
@@ -1243,47 +1267,60 @@ for $x$ ranging over variables and $s$ and $t$ ranging over well-typed terms.
 
 Showing commutativity of equations with translation first requires commutativity of substitution with translation. We need to show that for every well-typed term $s$ from STLC, the following equation holds
 $$
-\LinTrans{s[x:=t]} \equiv \LinTrans{s}[x:=\LinTrans{t}]
+\LinTrans{t[x:=s]} \equiv \LinTrans{t}[x:=\LinTrans{s}]
 $$
 This is accomplished using structural induction over terms of STLC.
 
 This property trivially holds for variables. For $x$ and $y$ two distinct variables, we have the following equalities
 \begin{align*}
-\LinTrans{x[x:=t]} &= \LinTrans{t} = x[x:=\LinTrans{t}] = \LinTrans{x}[x:=\LinTrans{t}] \\
-\LinTrans{y[x:=t]} &= \LinTrans{y} = y = y[x:=\LinTrans{t}] = \LinTrans{y}[x:=\LinTrans{t}]
+\LinTrans{x[x:=s]} &= \LinTrans{s} = x[x:=\LinTrans{s}] = \LinTrans{x}[x:=\LinTrans{s}] \\
+\LinTrans{y[x:=s]} &= \LinTrans{y} = y = y[x:=\LinTrans{s}] = \LinTrans{y}[x:=\LinTrans{s}]
 \end{align*}
 
-For the induction step, we assume that the property holds for every subterm, and we produce the equivalences, for $x$ and $y$ two distinct variables and $s$ and $t$ well-typed terms
+For the induction step, we assume that the property holds for every subterm, and we produce the following equalities, for $x$ and $y$ two distinct variables and $s$ and $t$ well-typed terms in STLC
 \begin{align*}
-\LinTrans{(s\ t)[x:=u]}
-&= \LinTrans{(s[x:=u]\ t[x:=u])} \\
-&= (\LinTrans{s[x:=u]}\ \bang{\LinTrans{t[x:=u]}}) \\
-&= (\LinTrans{s}[x:=\LinTrans{u}]\ \bang{\LinTrans{t}[x:=\LinTrans{u}]}) \\
-&= (\LinTrans{s}\ \bang{\LinTrans{t}})[x:=\LinTrans{u}] \\
-&= \LinTrans{(s\ t)}[x:=\LinTrans{u}] \\
-\LinTrans{(\lambda x. s)[x:=t]}
-&= \LinTrans{(\lambda x. s)} \\
-&= (\lambda y. \bangcase{y}{x}{\LinTrans{s}}) \\
-&= (\lambda y. \bangcase{y[x:=\LinTrans{t}]}{x}{\LinTrans{s}}) \\
-&= (\lambda y. \bangcase{y}{x}{\LinTrans{s}}[x:=\LinTrans{t}]) \\
-&= (\lambda y. \bangcase{y}{x}{\LinTrans{s}})[x:=\LinTrans{t}] \\
-&= \LinTrans{(\lambda x. s)}[x:=\LinTrans{t}] \\
-\LinTrans{(\lambda y. s)[x:=t]}
-&= \LinTrans{\lambda y. s[x:=t]} \\
-&= (\lambda z. \bangcase{z}{y}{\LinTrans{s[x:=t]}}) \\
-&= (\lambda z. \bangcase{z}{y}{\LinTrans{s}[x:=\LinTrans{t}]}) \\
-&= (\lambda z. \bangcase{z[x:=\LinTrans{t}]}{y}{\LinTrans{s}[x:=\LinTrans{t}]}) \\
-&= (\lambda z. \bangcase{z}{y}{\LinTrans{s}}[x:=\LinTrans{t}]) \\
-&= (\lambda z. \bangcase{z}{y}{\LinTrans{s}})[x:=\LinTrans{t}] \\
-&= \LinTrans{(\lambda y. s)}[x:=\LinTrans{t}]
+\LinTrans{(\lambda x. t)[x:=s]}
+&= \LinTrans{(\lambda x. t)} \\
+&= (\lambda y. \bangcase{y}{x}{\LinTrans{t}}) \\
+&= (\lambda y. \bangcase{y[x:=\LinTrans{s}]}{x}{\LinTrans{t}}) \\
+&= (\lambda y. \bangcase{y}{x}{\LinTrans{t}}[x:=\LinTrans{s}]) \\
+&= (\lambda y. \bangcase{y}{x}{\LinTrans{t}})[x:=\LinTrans{s}] \\
+&= \LinTrans{(\lambda x. t)}[x:=\LinTrans{s}] \\
+\LinTrans{(\lambda y. t)[x:=s]}
+&= \LinTrans{(\lambda y. t[x:=s])} \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{t[x:=s]}}) \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{t}[x:=\LinTrans{s}]}) \\
+&= (\lambda z. \bangcase{z[x:=\LinTrans{s}]}{y}{\LinTrans{t}[x:=\LinTrans{s}]}) \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{t}}[x:=\LinTrans{s}]) \\
+&= (\lambda z. \bangcase{z}{y}{\LinTrans{t}})[x:=\LinTrans{s}] \\
+&= \LinTrans{(\lambda y. t)}[x:=\LinTrans{s}] \\
+\LinTrans{(t\ u)[x:=s]}
+&= \LinTrans{(t[x:=s]\ u[x:=s])} \\
+&= \LinTrans{t[x:=s]}\ \bang{\LinTrans{u[x:=s]}} \\
+&= \LinTrans{t}[x:=\LinTrans{s}]\ \bang{\LinTrans{u}[x:=\LinTrans{s}]} \\
+&= \LinTrans{t}\ \bang{\LinTrans{u}}[x:=\LinTrans{s}] \\
+&= \LinTrans{(t\ u)}[x:=\LinTrans{s}] \\
+\LinTrans{\tuple{t}{u}[x:=s]}
+&= \LinTrans{\tuple{t[x:=s]}{u[x:=s]}} \\
+&= \tuple{\LinTrans{t[x:=s]}}{\LinTrans{u[x:=s]}} \\
+&= \tuple{\LinTrans{t}[x:=\LinTrans{s}]}{\LinTrans{u}[x:=\LinTrans{s}]} \\
+&= \tuple{\LinTrans{t}}{\LinTrans{u}}[x:=\LinTrans{s}] \\
+&= \LinTrans{\tuple{t}{u}}[x:=\LinTrans{s}] \\
+\LinTrans{\fst{t}[x:=s]}
+&= \LinTrans{\fst{t[x:=s]}} \\
+&= \fst{\LinTrans{t[x:=s]}} \\
+&= \fst{\LinTrans{t}[x:=\LinTrans{s}]} \\
+&= \fst{\LinTrans{t}}[x:=\LinTrans{s}] \\
+&= \LinTrans{\fst{t}}[x:=\LinTrans{x}] \\
+\LinTrans{\snd{t}[x:=s]}
+&= \LinTrans{\snd{t[x:=s]}} \\
+&= \snd{\LinTrans{t[x:=s]}} \\
+&= \snd{\LinTrans{t}[x:=\LinTrans{s}]} \\
+&= \snd{\LinTrans{t}}[x:=\LinTrans{s}] \\
+&= \LinTrans{\snd{t}}[x:=\LinTrans{s}] \\
 \end{align*}
-
-TODO: specify rules for substitution earlier
 
 - Equation commutativity
-  - Substitution commutativity
-    - Structural induction
-    - $\LinTrans{s[x:=t]} = \LinTrans{s}[x:=\LinTrans{t}]$
   - Beta reduction
   - Eta expansion
     - Commuting conversions \cite{Barber1996}
