@@ -56,6 +56,27 @@
 #+latex_header: \newcommand{\bang}{{!}}
 #+latex_header: \newcommand{\bangcase}[3]{\left(\Case #1 \Of \bang{#2} \In #3 \right)}
 
+# Categories
+# Axioms
+#+latex_header: \DeclareMathOperator{\Src}{\mathsf{src}}
+#+latex_header: \DeclareMathOperator{\Tar}{\mathsf{tar}}
+#+latex_header: \DeclareMathOperator{\Hom}{\mathsf{hom}}
+#+latex_header: \DeclareMathOperator{\Id}{\mathsf{id}}
+#+latex_header: \DeclareMathOperator{\Comp}{\circ}
+#+latex_header: \newcommand{\src}[1]{\Src(#1)}
+#+latex_header: \newcommand{\tar}[1]{\Tar(#1)}
+#+latex_header: \renewcommand{\hom}[2]{\Hom(#1, #2)}
+#+latex_header: \newcommand{\id}[0]{\Id}
+#+latex_header: \newcommand{\comp}[0]{\Comp}
+#+latex_header: \newcommand{\cat}[1]{\mathcal{#1}}
+
+# Examples
+#+latex_header: \newcommand{\Set}{\mathbf{Set}}
+#+latex_header: \newcommand{\Grp}{\mathbf{Grp}}
+
+# Natural transformations
+#+latex_header: \newcommand{\nat}[2]{#1 \Rightarrow #2}
+
 #+latex_header: \newcommand\WorkTitle{Computational trinitarianism and Linear types}
 #+latex_header: \newcommand\FirstandFamilyName{Vojtěch Štěpančík}
 #+latex_header: \newcommand\Supervisor{Ing. Matěj Dostál, Ph.D.}
@@ -1359,7 +1380,111 @@ We have not specified what \eta-conversions correspond to in logic, so the verif
 
 Since we covered all equations from STLC, we can conclude that equivalent programs translate to equivalent programs.
 
-\newpage
+* TODO Category theory
+
+Category theory is the study of categories, which allow for expressing many mathematical structures and properties via diagrams of arrows between abstract objects \cite{MacLane1998}. Categorical semantics, as opposed to the traditional set-theoretical interpretations, have the advantage of being defined with more general structures, not limiting oneself to sets specifically \cite[pp.129--132]{Crole1993}.
+
+This chapter introduces only those categorical concepts that are necessary for giving categorical semantics to the linear lambda calculus. For a broader introduction to category theory, see \cite{MacLane1998} or \cite{Adamek1990}. The ultimate objective is to represent types as objects in a category, programs as arrows from a context object to a target object, and type constructors as functors.
+
+A *category* is composed of two collections, the *objects* and the *arrows*, two operations on any arrow, the *source* and the *target*, and two properties, the *arrow composition* operator and the existence of *identity arrows*, which are the left and right identity for the composition.
+
+The source and target operations, written $\Src$ and $\Tar$, respectively, each associates an object to an arrow \mdash an arrow $a$ with $\src{a} = X$ and $\tar{a} = Y$ is written graphically as $a: X \to Y$. The collection of arrows between objects $X$ and $Y$ is written $\hom{X}{Y}$.
+
+The composition operator asserts that for any two arrows with matching ends, for example $a: X \to Y$ and $b: Y \to Z$, there exists an arrow $b \comp a: X \to Z$. This composition is associative, that is the following equality holds for any three arrows $a: X \to Y$, $b: Y \to Z$, $c: Z \to W$ for any four objects $X$, $Y$, $Z$ and $W$
+$$
+c \comp (b \comp a) = (c \comp b) \comp a
+$$
+
+The property of identity arrows asserts that every object $X$ is equipped with the identity arrow $\id_X: X \to X$. In situations where the object is apparent from context, we choose to omit the subscript and simply write $\id$. The identity arrows serve as identities for composition, which is described by the equations
+\begin{align*}
+\id_{\tar{a}} \comp a &= a \\
+a \comp \id_{\src{a}} &= a
+\end{align*}
+
+Examples of categories include $\Set$, which is the category with all sets for objects and functions for arrows, or $\Grp$, the category of all groups and homomorphisms between them.
+
+An important tool of category theory are commutative diagrams. A commutative diagram is a diagram for which commutativity is either assumed or proven. Such a diagram contains nodes, which represent objects, and directed edges, which represent arrows. For example, we can construct a commutative diagram which represents the property of the identity arrow being the identity of arrow composition.
+#+begin_center
+\begin{tikzcd}
+X \arrow[r, "a"] \arrow[rd, "a"] & Y \arrow[d, "\id_Y"] \arrow[rd, "b"] & \\
+& Y \arrow[r, "b"] & Z
+\end{tikzcd}
+#+end_center
+This diagram commutes when the two triangles commute, and we can see that the left triangle expresses the equality $\id_Y \comp a = a$, and the right one $b \comp \id_Y = b$.
+
+An arrow $a: X \to Y$ is an *isomorphism* if there is another arrow $a^{-1}: Y \to X$ such that the diagram
+#+begin_center
+\begin{tikzcd}
+X \arrow[loop, "\id_X"', distance=2em, in=215, out=145] \arrow[r, shift left, "a"] & Y \arrow[loop, "\id_Y"', distance=2em, in=35, out=325] \arrow[l, shift left, "a^{-1}"]
+\end{tikzcd}
+#+end_center
+commutes. Commutativity with the identity arrows is automatic, so the information provided by the diagram are the equations $a^{-1} \comp a = \id_X$ and $a \comp a^{-1} = \id_Y$. Isomorphisms are also called invertible arrows.
+
+In the remainder of this thesis, we will only consider *locally small categories*, which have the property that for every two objects $X$ and $Y$, the collection $\hom{X}{Y}$ is a set. For example the category *Set* is locally small, because although the objects form a proper class, there is only a set of functions between any two given sets.
+
+We introduce the notion of structure-preserving mappings between categories, called *functors*. Given two categories $\cat{C}$ and $\cat{D}$, a functor $F$ from $\cat{C}$ to $\cat{D}$, denoted $F: \cat{C} \to \cat{D}$, needs to map contents of $\cat{C}$ to contents of $\cat{D}$ while preserving the categorical structure \mdash the contents of a category are its objects and arrows, and the structure is described by the source and target assignments, arrow composition and identity arrows.
+
+In other words, a functor $F: \cat{C} \to \cat{D}$ consists of a mapping from objects of $\cat{C}$ to objects of $\cat{D}$ and another mapping from arrows of $\cat{C}$ to arrows of $\cat{D}$, the two of which interact in such a way that for any arrow $a$ in $\cat{C}$, its image $Fa$ is an arrow in $\cat{D}$ whose source and target are the images of the source and target of $a$, graphically the image of an arrow $a: X \to Y$ is $Fa: FX \to FY$. Additionally, the identity arrows in $\cat{C}$ map to identity arrows in $\cat{D}$, so that $F\id_X = \id_{FX}$ for all objects $X$ in $\cat{C}$, and the compositions of arrows in $\cat{C}$ maps to composition of arrows in $\cat{D}$, following the equation $F(b \comp a) = Fb \comp Fa$. These laws are represented by the commutative diagrams in Figure [[fig:functor_laws]].
+
+#+name: fig:functor_laws
+#+caption: Functor laws
+#+begin_figure
+#+begin_center
+\begin{tikzcd}
+X \arrow[d, "a"] \\
+Y
+\end{tikzcd}
+$\Rightarrow$
+\begin{tikzcd}
+FX \arrow[d, "Fa"] \\
+FY
+\end{tikzcd}
+\hspace{2em}
+\begin{tikzcd}
+X \arrow[loop, "\id_X"', distance=2em, in=305, out=235]
+\end{tikzcd}
+$\Rightarrow$
+\begin{tikzcd}
+FX \arrow[loop, "F\id_X"', distance=2em, in=305, out=235] \arrow[loop, "\id_{FX}", distance=2em, in=55, out=125]
+\end{tikzcd}
+\hspace{2em}
+\begin{tikzcd}
+X \arrow[r, "a"] \arrow[dr, "b \comp a"'] & Y \arrow[d, "b"] \\
+& Z
+\end{tikzcd}
+$\Rightarrow$
+\begin{tikzcd}
+FX \arrow[r, "Fa"] \arrow[dr, "F(b \comp a)"'] & FY \arrow[d, "Fb"] \\
+& FZ
+\end{tikzcd}
+#+end_center
+#+end_figure
+
+Because we are interested in functors with multiple parameters, we also need to describe the concept of a *product category*. Given two categories $\cat{C}$ and $\cat{D}$, their product is the category $\cat{C} \times \cat{D}$. Objects of this category are ordered pairs $\tuple{C}{D}$, where $C$ is an object of $\cat{C}$ and $D$ is an object of $\cat{D}$, and arrows of this category are ordered pairs $\tuple{f}{g}: \tuple{C}{D} \to~\tuple{C'}{D'}$, where $f: C \to C'$ and $g: D \to D'$ are arrows of $\cat{C}$ and $\cat{D}$, respectively. Identity and composition are defined in the obvious way, the identity arrow being $\id_{\tuple{C}{D}} = \tuple{\id_C}{\id_D}$ and composition being $\tuple{f'}{g'} \comp \tuple{f}{g} = \tuple{f' \comp f}{g' \comp g}$.
+
+A functor $F: \cat{C} \times \cat{D} \to \cat{B}$ can be regarded as a mapping with two arguments, one from $\cat{C}$ and one from $\cat{D}$. For example, we can define the Cartesian product on sets as a functor $\_ \times \_: \Set \times \Set \to \Set$. It takes a pair of two sets, $\tuple{A}{B}$, and maps it to the Cartesian product $A \times B$, which is itself a set. The action on arrows is defined element-wise. When the domain of a functor is not a binary product category, but a more general n-ary product category, then we talk about n-ary functors.
+
+In the context of n-ary functors, we can refer to the property of being *functorial in an argument*. When saying that a functor $F: \cat{C} \times \cat{D} \to \cat{B}$ is /functorial in $\cat{C}$/, we mean that fixing an object $D$ of $\cat{D}$ gives rise to a functor $\hat{F}: \cat{C} \to \cat{B}$, which is defined by its action on objects $C$ of $\cat{C}$ by $\hat{F}C = F\tuple{C}{D}$, and by its action on arrows $a: C \to C'$ by $\hat{F}a = F\tuple{a}{\id_D}: F\tuple{C}{D} \to F\tuple{C'}{D}$. This notion is extended from binary to n-ary functors, by implying that all arguments other than the one for which we study functoriality are fixed. A functor is functorial in all its arguments, and conversely a mapping that is functorial in all its arguments is a functor.
+
+Furthermore, we will work with mappings between functors, called *natural transformations*. Given two categories $\cat{C}$ and $\cat{D}$, and two functors $F, G: \cat{C} \to \cat{D}$, a natural transformation $\varphi: \nat{F}{G}$ consists of a family of arrows $\varphi_C: FC \to GC$ (its *components*), indexed by objects of $\cat{C}$, such that the following diagram commutes for all objects $X$ and $Y$, all arrows $f: X \to Y$ from $\cat{C}$.
+#+begin_center
+\begin{tikzcd}
+FX \arrow[r, "Ff"] \arrow[d, "\varphi_X"] & FY \arrow[d, "\varphi_Y"] \\
+GX \arrow[r, "Gf"] & GY
+\end{tikzcd}
+#+end_center
+
+When all the components of a natural transformation are isomorphisms, we talk call it a *natural isomorphism*.
+
+Similarly to functoriality in an argument, we can talk about *naturality in an argument* when n-ary functors are involved. The definition is also analogous \mdash provided two functors $F, G: \cat{C} \times \cat{D} \to \cat{B}$, a natural transformation $\varphi: \nat{F}{G}$ is /natural in $\cat{C}$/ if fixing an object $D$ in $\cat{D}$ gives rise to a natural transformation $\hat{\varphi}: \nat{F}{G}$, which is given by its components $\hat{\varphi}_C = \varphi_{\tuple{C}{D}}$. The naturality property is expressed by the following diagram, which uses functoriality of $F$ and $G$ in $\cat{C}$
+#+begin_center
+\begin{tikzcd}
+F\tuple{C}{D} \arrow[r, "F\tuple{f}{\id_D}"] \arrow[d, "\hat{\varphi}_C"] & F\tuple{C'}{D} \arrow[d, "\hat{\varphi}_{C'}"] \\
+G\tuple{C}{D} \arrow[r, "G\tuple{f}{\id_D}"] & G\tuple{C'}{D}
+\end{tikzcd}
+#+end_center
+Naturality of natural transformations between n-ary functors is defined in the obvious way, by asserting that fixing all arguments except the one of interest yields a natural transformation. A natural transformation is natural in all its arguments, and a mapping between functors that is natural in all arguments is a natural transformation.
+
 * References
 #+begin_export latex
 \renewcommand*{\refname}{\vspace*{-1em}}
