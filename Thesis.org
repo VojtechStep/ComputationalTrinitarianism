@@ -40,18 +40,21 @@
 #+latex_header: \newcommand{\LinTrans}[1]{\left\llbracket #1 \right\rrbracket_L}
 
 # Product type
-#+latex_header: \newcommand{\tuple}[2]{(#1, #2)}
-#+latex_header: \DeclareMathOperator{\Fst}{fst}
-#+latex_header: \DeclareMathOperator{\Snd}{snd}
-#+latex_header: \newcommand{\fst}[1]{(\Fst\ #1)}
-#+latex_header: \newcommand{\snd}[1]{(\Snd\ #1)}
+#+latex_header: \newcommand{\tuple}[2]{\left( #1, #2 \right)}
+#+latex_header: \DeclareMathOperator{\Fst}{\mathsf{fst}}
+#+latex_header: \DeclareMathOperator{\Snd}{\mathsf{snd}}
+#+latex_header: \newcommand{\fst}[1]{\left(\Fst #1 \right)}
+#+latex_header: \newcommand{\snd}[1]{\left(\Snd #1 \right)}
 
 # Tensor Tuple
-#+latex_header: \newcommand{\tenstup}[2]{| #1, #2 |}
-#+latex_header: \newcommand{\tenscase}[4]{(\mathrm{case\ } #1 \mathrm{\ of\ } \tenstup{#2}{#3} \mathrm{\ in\ } #4)}
+#+latex_header: \newcommand{\tenstup}[2]{\left| #1, #2 \right|}
+#+latex_header: \DeclareMathOperator{\Case}{\mathsf{case}}
+#+latex_header: \DeclareMathOperator{\Of}{\mathsf{of}}
+#+latex_header: \DeclareMathOperator{\In}{\mathsf{in}}
+#+latex_header: \newcommand{\tenscase}[4]{\left(\Case #1 \Of \tenstup{#2}{#3} \In #4 \right)}
 # With Tuple
 #+latex_header: \newcommand{\bang}{{!}}
-#+latex_header: \newcommand{\bangcase}[3]{(\mathrm{case\ } #1 \mathrm{\ of\ } \bang{#2} \mathrm{\ in\ } #3)}
+#+latex_header: \newcommand{\bangcase}[3]{\left(\Case #1 \Of \bang{#2} \In #3 \right)}
 
 #+latex_header: \newcommand\WorkTitle{Computational trinitarianism and Linear types}
 #+latex_header: \newcommand\FirstandFamilyName{Vojtěch Štěpančík}
@@ -1357,9 +1360,11 @@ We have not specified what \eta-conversions correspond to in logic, so the verif
 Since we covered all equations from STLC, we can conclude that equivalent programs translate to equivalent programs.
 
 \newpage
+* References
 #+begin_export latex
-\bibliography{ComputationalTrinitarianism}
+\renewcommand*{\refname}{\vspace*{-1em}}
 \bibliographystyle{apacite}
+\bibliography{ComputationalTrinitarianism}
 #+end_export
 
 * Footnotes
