@@ -6,6 +6,8 @@
 #+latex_header: \usepackage{stmaryrd}
 #+latex_header: \usepackage{mathtools}
 #+latex_header: \usepackage{tikz-cd}
+#+latex_header: \tikzcdset{every label/.append style={font=\small}}
+#+latex_header: \tikzcdset{every diagram/.append style={row sep={4em}, column sep={4em}}}
 #+latex_header: \usepackage{apacite}
 #+latex_header: \usepackage{fancyhdr}
 #+latex_header: \usepackage[english]{babel}
@@ -677,14 +679,12 @@ $$
 We can extend the notion of translating deduction rules into translating entire proof trees. The linear translation of an intuitionistic proof tree $p$ is denoted $\LinTrans{p}$, and it is constructed by replacing the intuitionistic contextualized judgments and deduction rules by their linear translations. Because the deduction rules are translated into well-formed linear deductions, and because the premises and conclusions are consistently translated, we can be certain that the new deduction tree is correctly constructed and represents a well-formed linear proof.
 
 Finally, we need to show that reduction and translation commute. That is, given an intuitionistic proof $p$ and its reduction $p \prfRed[0em] p'$, there is an equivalent reduction $\LinTrans{p} \LinTrans{\prfRed[0em]} \LinTrans{p}'$ such that its result is the same as translating $p'$. This condition is represented by the following diagram:
-
-\begin{center}
+#+begin_center
 \begin{tikzcd}
-p \arrow[rr, maps to, "\Rightarrow"] \arrow[dd, maps to, "\LinTrans{\_}"] & & p' \arrow[dd, maps to, "\LinTrans{\_}"] \\
-\\
-\LinTrans{p} \arrow[rr, maps to, "\LinTrans{\Rightarrow}"]      & & \LinTrans{p}' = \LinTrans{p'}
+p \arrow[r, maps to, "\Rightarrow"] \arrow[d, maps to, "\LinTrans{\_}"] & p' \arrow[d, maps to, "\LinTrans{\_}"] \\
+\LinTrans{p} \arrow[r, maps to, "\LinTrans{\Rightarrow}"] & \LinTrans{p}' = \LinTrans{p'}
 \end{tikzcd}
-\end{center}
+#+end_center
 
 To prove this commutativity, it suffices to prove it for the two intuitionistic reductions individually.
 
