@@ -1150,7 +1150,7 @@ y[x:=s] &= y \\
 \snd{t}[x:=s] &= \snd{t[x:=s]} \\
 \tenstup{t}{u}[x:=s] &= \tenstup{t[x:=s]}{u[x:=s]} \\
 \tenscase{t}{x}{y}{u}[x:=s] &= \tenscase{t[x:=s]}{x}{y}{u} \\
-\tenscase{t}{y}{x}{u}[x:=s] &= \tenscase{t[x:=s]}{y}{x}{u[x:=s]} \\
+\tenscase{t}{y}{x}{u}[x:=s] &= \tenscase{t[x:=s]}{y}{x}{u} \\
 \tenscase{t}{y}{z}{u}[x:=s] &= \tenscase{t[x:=s]}{y}{z}{u[x:=s]} \\
 (\bang{t})[x:=s] &= \bang{(t[x:=s])} \\
 \bangcase{t}{x}{u}[x:=s] &= \bangcase{t[x:=s]}{x}{u} \\
