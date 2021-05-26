@@ -880,8 +880,8 @@ The identity axiom claims that every variable from the context can be derived.
 #+begin_figure
 $$
 \prftree[r]{Exchange}
- {\Gamma, x: A, y: B, \Delta \vdash t: C}
- {\Gamma, y: B, x: A, \Delta \vdash t: C}
+ {\Gamma, x: A, y: B, \Delta \vdash s: C}
+ {\Gamma, y: B, x: A, \Delta \vdash s: C}
 $$
 
 $$
@@ -902,7 +902,7 @@ $$
 $$
 #+end_figure
 
-The introduction and elimination rules for function types mirror the structure of implication deduction rules in intuitionistic logic. Whereas the logical interpretation relied on hypotheses, the type-theoretical interpretation is given in terms of binding variables and applying abstractions. The premise of the introduction rule presents a term $t$, and among its free variables might be the variable $x$ ($x$ is free in $t$ if it was derived using the identity axiom, or it might not be referenced in $t$ if it was derived using weakening). The conclusion then produces a \lambda-term which explicitly binds this variable.
+The introduction and elimination rules for function types mirror the structure of implication deduction rules in intuitionistic logic. Whereas the logical interpretation relied on hypotheses, the type-theoretical interpretation is given in terms of binding variables and applying abstractions. The premise of the introduction rule presents a term $s$, and among its free variables might be the variable $x$ ($x$ is free in $s$ if it was derived using the identity axiom, or it might not be referenced in $s$ if it was derived using weakening). The conclusion then produces a \lambda-term which explicitly binds this variable.
 
 The elimination rule introduces an application term, and together with \beta-reduction it gives a notion of "computation", which corresponds to the implication proof reduction rule. As a consequence of the \eta-conversion, we know that every object of the function type is equivalent to a \lambda-term. The rules and equations are listed in Figure [[fig:stlc_fun]].
 
@@ -978,7 +978,7 @@ for $x$ ranging over variables.
 
 The resemblance between STLC and intuitionistic logic is striking, and it has a name: the /Curry-Howard correspondence/. We can see a correspondence on three different levels.
 
-First, the propositions from intuitionistic logic correspond to types. The judgment /$A$ true/ amounts to having an appropriate term $t$ for which we can make the typing judgment $t: A$.
+First, the propositions from intuitionistic logic correspond to types. The judgment /$A$ true/ amounts to having an appropriate term $s$ for which we can make the typing judgment $s: A$.
 
 Second, every logical rule in intuitionistic logic has an equivalent in STLC, and every rule has an associated syntactic construct. Consequently, the term encodes the deduction tree that led to its construction, up to commuting structural rules. In other words, programs are proofs.
 
@@ -1084,17 +1084,17 @@ A tuple of two independent resources $s$ and $t$ is an instance of a $\tens$ pro
 
 The \eta-conversion for the $\tens$ product differs from what we have seen so far \mdash past conversion were, in some sense, direct opposites of the corresponding \beta-reductions. Where \beta-reductions allowed to remove an introduction followed by an elimination, the \eta-conversions allowed wrapping a proof into an elimination followed by an introduction. On the other hand, annotating the terms of the \eta-conversion for $\tens$ products gives the following diagram.
 $$
-\vcenter{\prfsummary{\Gamma \vdash t: (A \tens B)}}
+\vcenter{\prfsummary{\Gamma \vdash s: (A \tens B)}}
 \hspace{2em}\equiv\hspace{2em}
 \vcenter{\prftree[r]{$\Elim{\tens}$}
- {\prfsummary{\Gamma \vdash t: (A \tens B)}}
+ {\prfsummary{\Gamma \vdash s: (A \tens B)}}
  {\prftree[r]{$\Intro{\tens}$}
    {\prftree[r]{$\Lin{\text{Id}}$}{\Lin{x: A} \vdash x: A}}
    {\prftree[r]{$\Lin{\text{Id}}$}{\Lin{y: B} \vdash y: B}}
    {\Lin{x: A}, \Lin{y: B} \vdash \tenstup{x}{y}: (A \tens B)}}
- {\Gamma \vdash \tenscase{t}{x}{y}{\tenstup{x}{y}}: (A \tens B)}}
+ {\Gamma \vdash \tenscase{s}{x}{y}{\tenstup{x}{y}}: (A \tens B)}}
 $$
-We can see that the order of introduction/elimination is reversed for this conversion. Note, however, that this proof tree is not subject to \beta-reduction, because the introduction and elimination rules act on different instances of the connective \mdash we introduce the term $\tenstup{x}{y}$, but eliminate the term $t$. The reason for this pattern change is that the $\tens$ product has a different /polarity/. While all the previous types were negative types, the $\tens$ product is positive. Intuitively, positive types encode structure, while negative types encode behavior. Exploration of type polarity is, however, out of scope for this thesis, therefore the interested reader may consult \cite{Zeilberger2009}.
+We can see that the order of introduction/elimination is reversed for this conversion. Note, however, that this proof tree is not subject to \beta-reduction, because the introduction and elimination rules act on different instances of the connective \mdash we introduce the term $\tenstup{x}{y}$, but eliminate the term $s$. The reason for this pattern change is that the $\tens$ product has a different /polarity/. While all the previous types were negative types, the $\tens$ product is positive. Intuitively, positive types encode structure, while negative types encode behavior. Exploration of type polarity is, however, out of scope for this thesis, therefore the interested reader may consult \cite{Zeilberger2009}.
 
 #+name: fig:llc_tens
 #+caption: Rules and equations for the $\tens$ product type
@@ -1179,15 +1179,15 @@ y[x:=s] &= y \\
 ** Commuting conversions
 In addition to equations describing relationships between introductions and eliminations of the same type, there are also equations relating rules of different types. These equations, called *commuting conversions*, describe valid ways of moving pattern matching terms through the program. For example, when given the program
 $$
-\tenscase{t}{x}{y}{(f\ {\tenstup{x}{y}})}
+\tenscase{s}{x}{y}{(f\ {\tenstup{x}{y}})}
 $$
 one might feel that it ought to be equivalent to the program
 $$
-(f\ t)
+(f\ s)
 $$
-because the object $t$ is being deconstructed only to be reconstructed in the same manner later, exactly like in the \eta-conversion rule for the $\tens$ product. Alas, \eta-conversion is not applicable in this case, because the $\tens$ elimination-introduction pair is interleaved with function application. Commuting conversions give us a framework for "tunneling" pattern matching, so that the first program can be rewritten to
+because the object $s$ is being deconstructed only to be reconstructed in the same manner later, exactly like in the \eta-conversion rule for the $\tens$ product. Alas, \eta-conversion is not applicable in this case, because the $\tens$ elimination-introduction pair is interleaved with function application. Commuting conversions give us a framework for "tunneling" pattern matching, so that the first program can be rewritten to
 $$
-(f\ \tenscase{t}{x}{y}{\tenstup{x}{y}})
+(f\ \tenscase{s}{x}{y}{\tenstup{x}{y}})
 $$
 where \eta-conversion is applicable.
 
@@ -1201,31 +1201,31 @@ C[\_], D[\_] &::=\ &&\_ \\
 \end{alignat*}
 for $x$ and $y$ ranging over variables and $s$ ranging over terms of LLC.
 
-In effect, a term-with-holes is a program constructed without the use of the $\Intro{\bang}$ rule, with a subexpression replaced by '_', called a hole. Note that a term-with-holes $C[\_]$ uses exactly one hole. Emphasis is once again on the terminology "uses", because multiple holes may appear in a term-with-holes, if it was constructed using the $\tuple{C[\_]}{D[\_]}$ rule. Next, we provide a way to fill the hole \mdash $C[t]$ is defined as the term $C[\_]$ with the hole replaced by the term $t$.
+In effect, a term-with-holes is a program constructed without the use of the $\Intro{\bang}$ rule, with a subexpression replaced by '_', called a hole. Note that a term-with-holes $C[\_]$ uses exactly one hole. Emphasis is once again on the terminology "uses", because multiple holes may appear in a term-with-holes, if it was constructed using the $\tuple{C[\_]}{D[\_]}$ rule. Next, we provide a way to fill the hole \mdash $C[s]$ is defined as the term $C[\_]$ with the hole replaced by the term $s$.
 
-The commuting conversions are listed in Figure [[fig:comm_conv]]. The motivating example mentioned above is an application of the first commuting conversion, with the term-with-holes $C[\_]$ being equal to $(f\ \_)$, and the term $t$ being equal to $\tenstup{x}{y}$.
+The commuting conversions are listed in Figure [[fig:comm_conv]]. The motivating example mentioned above is an application of the first commuting conversion, with the term-with-holes $C[\_]$ being equal to $(f\ \_)$, and the term $s$ being equal to $\tenstup{x}{y}$.
 
 The requirements on the bindings of variables arise naturally when one writes down the proof trees for the terms on the two sides of the equations. When considering the first commuting conversion, the proof tree of the left side has the form
 $$
 \prftree[r]{$\Elim{\tens}$}
  {\prfsummary
-   {\Theta, \Lin{x: A}, \Lin{y: B} \vdash u: E}
-   {\Gamma, \Theta, \Lin{x: A}, \Lin{y: B} \vdash C[u]: D}}
+   {\Theta, \Lin{x: A}, \Lin{y: B} \vdash t: E}
+   {\Gamma, \Theta, \Lin{x: A}, \Lin{y: B} \vdash C[t]: D}}
  {}
- {\Delta \vdash t: (A \tens B)}
- {\Gamma, \Theta, \Delta \vdash \tenscase{t}{x}{y}{C[u]}: D}
+ {\Delta \vdash s: (A \tens B)}
+ {\Gamma, \Theta, \Delta \vdash \tenscase{s}{x}{y}{C[t]}: D}
 $$
 and the right side has the form
 $$
 \prfsummary
  {\prftree[r]{$\Elim{\tens}$}
-   {\Theta, \Lin{x: A}, \Lin{y: B} \vdash u: E}
+   {\Theta, \Lin{x: A}, \Lin{y: B} \vdash t: E}
    {}
-   {\Delta \vdash t: (A \tens B)}
-   {\Theta, \Delta \vdash \tenscase{t}{x}{y}{u}: E}}
- {\Gamma, \Theta, \Delta \vdash C[\tenscase{t}{x}{y}{u}]: D}
+   {\Delta \vdash s: (A \tens B)}
+   {\Theta, \Delta \vdash \tenscase{s}{x}{y}{t}: E}}
+ {\Gamma, \Theta, \Delta \vdash C[\tenscase{s}{x}{y}{t}]: D}
 $$
-Since the first derivation contains the context $\Gamma, \Theta, \Lin{x: A}, \Lin{y: B}$, we know that neither $x$ or $y$ may appear in $\Gamma$, which contains the free variables of $C[\_]$. The second condition specifies that the $x$ and $y$ that are free in $u$ are the same $x$ and $y$ that are bound by the pattern matching in the final term. The only way to make them differ would be if the proof tree of $C[\_]$ first bound them for $u$, and then introduced them as new variables. For example, the term-with-hole
+Since the first derivation contains the context $\Gamma, \Theta, \Lin{x: A}, \Lin{y: B}$, we know that neither $x$ or $y$ may appear in $\Gamma$, which contains the free variables of $C[\_]$. The second condition specifies that the $x$ and $y$ that are free in $t$ are the same $x$ and $y$ that are bound by the pattern matching in the final term. The only way to make them differ would be if the proof tree of $C[\_]$ first bound them for $t$, and then introduced them as new variables. For example, the term-with-hole
 $$
 (((\lambda y. (\lambda x. \_))\ x)\ y)
 $$
@@ -1239,7 +1239,7 @@ Similar reasoning is used for obtaining the conditions of the second commuting c
 \begin{align*}
 \tenscase{s}{x}{y}{C[t]} &\equiv C[\tenscase{s}{x}{y}{t}] &&\text{when $x$ and $y$ are not free in $C[\_]$} \\
 & &&\text{and when $C[\_]$ does not bind $x$ or $y$} \\
-\bangcase{s}{x}{C[t]} &\equiv C[\bangcase{s}{x}{u}] &&\text{when $x$ is not free in $C[\_]$} \\
+\bangcase{s}{x}{C[t]} &\equiv C[\bangcase{s}{x}{t}] &&\text{when $x$ is not free in $C[\_]$} \\
 & &&\text{and when C[\_] does not bind $x$}
 \end{align*}
 #+end_figure
