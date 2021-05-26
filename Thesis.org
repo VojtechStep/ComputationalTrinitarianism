@@ -523,8 +523,8 @@ $$
    {\prfsummary[$s$]{\Gamma \vdash_R A}}
    {}
    {\prfsummary[$t$]{\Gamma \vdash_R B}}
-   {\Gamma \vdash_T A \with B}}
- {\Gamma \vdash_T A}}
+   {\Gamma \vdash_R A \with B}}
+ {\Gamma \vdash_R A}}
 \prfRed
 \vcenter{\prfsummary[$s$]{\Gamma \vdash_R A}}
 $$
