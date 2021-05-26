@@ -93,8 +93,25 @@
 ...
 \declaration{In Prague on ... ... 2021}
 \abstractpage
-\vglue60mm
+
+This thesis focuses on extending the Curry-Howard correspondence into a linear setting. Instead of the traditional equivalence of intuitionistic logic and simply typed $\lambda$-calculus, we present a formulation of linear logic, which corresponds to a language referred to as \textit{linear $\lambda$-calculus}. We show the correspondence on three levels --- types as propositions, programs as proofs and computation as reduction.
+
+Further, we show an embedding of intuitionistic logic into linear logic, and an analogous embedding of intuitionistic programs into linear programs. The last chapter describes a class of categories with structure, which reflect the behavior of linear programs.
+\\[10pt]
+\textit{Keywords:
+\parbox[t]{0.8\linewidth}{natural deduction, linear logic, linear types, type theory, \\ Curry-Howard correspondence, categorical semantics}}
+
+\vglue40mm
 \noindent{\Huge \textbf{Abstrakt}}
+\vskip2.75\baselineskip
+
+\noindent
+Tato práce se zabývá rozšířením Curryovy-Howardovy korespondence do lineárního prostředí. Místo tradiční ekvivalence intuicionistické logiky a jednoduše typovaného $\lambda$-kalkulu zavádíme formulaci lineární logiky, která odpovídá jazyku nazývanému \textit{lineární $\lambda$-kalkulus}. Korespondenci ukazujeme na třech úrovních --- typy jako výroky, programy jako důkazy a výpočet jako redukce.
+
+Dále popisujeme vnoření intuicionistické logiky do lineární logiky, a analogické vnoření intuicionistických programů do lineárních programů. Poslední kapitola se věnuje třídě kategorií se strukturou, které odrážejí chování lineárních programů.
+\\[10pt]
+\textit{Klíčová slova:
+\parbox[t]{0.8\linewidth}{přirozená dedukce, lineární logika, lineární typy, teorie typů, \\ Curryova-Howardova korespondence, kategorická semantika}}
 
 \tableofcontents
 \listoffigures
