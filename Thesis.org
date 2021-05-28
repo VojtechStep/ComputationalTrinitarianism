@@ -1763,9 +1763,9 @@ X \tens Y \arrow[r, "B_{X, Y}"] \arrow[rd, "\id"'] & Y \tens X \arrow[d, "B_{Y, 
 #+end_center
 
 
-* References
 #+begin_export latex
-\renewcommand*{\refname}{\vspace*{-1em}}
+\chapter*{References}
+\renewcommand{\refname}{}
 \bibliographystyle{apacite}
 \bibliography{ComputationalTrinitarianism}
 #+end_export
