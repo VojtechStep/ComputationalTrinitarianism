@@ -1525,13 +1525,23 @@ while naturality in $Y$ is represented by the diagram
 \end{tikzcd}
 #+end_center
 
+There are other, equivalent, definitions of adjunct functors. We present one of them here, because the text to follow uses properties of the definition above as well as the one listed below. We leave out the proof that these two definitions are equivalent, since this work has been done already for example in \cite{MacLane1998}.
+
+An adjunction is also determined by a functor $F: \cat{C} \to \cat{D}$ and for every object $D$ in $\cat{D}$, an object $G_0D$ in $\cat{C}$ with an arrow $\epsilon_D: FG_0D \to D$, such that for every arrow $f: FC \to D$ in $\cat{D}$, there is a unique arrow $f^{\flat}: C \to G_0D$, such that the following diagram commutes
+#+begin_center
+\begin{tikzcd}
+D & FG_0D \arrow[l, "\epsilon_D"'] \\
+& FC \arrow[lu, "f"] \arrow[u, "Ff^{\flat}"']
+\end{tikzcd}
+#+end_center
+
 ** Models of intuitionistic programs
 
 For modeling the simply typed \lambda-calculus, we need a way to interpret types, contexts and programs, and in such a way that the interpretation preserves \beta and \eta equivalences.
 
 The types and contexts are represented by objects in a category, and programs are interpreted as arrows from context objects to target type objects \mdash thus to interpret a contextualized type judgment $\Gamma \vdash t: A$, we first need an object $\CatTrans{\Gamma}$, then an object $\CatTrans{A}$, and then find an appropriate arrow $\CatTrans{t}: \CatTrans{\Gamma} \to \CatTrans{A}$. Because the semantic brackets hinder readability of diagrams significantly, we choose to use the same name for a meta object in type theory and its categorical interpretation, so the above example will be henceforth written as $t: \Gamma \to A$ or @@latex:\begin{tikzcd}[cramped,column sep=normal]B \arrow[r, "t"] & A\end{tikzcd}@@.
 
-The category for interpreting STLC needs to be equipped with additional structure. We begin by introducing the *product* in a category (which is different from a product of categories), which is a generalization of the Cartesian product from set theory. A product of two object $X$ and $Y$, usually denoted $X \times Y$, is another object in the same category equipped with two arrows, $\pi_1: X \times Y \to X$ and $\pi_2: X \times Y \to Y$, such that for all other objects $W$ and arrows $p: W \to X$ and $q: W \to Y$, there is a unique arrow $m: W \to X \times Y$ satisfying the equations $p = \pi_1 \comp m$ and $q: \pi_2 \comp m$. This property is captured in the commuting diagram
+The category for interpreting STLC needs to be equipped with additional structure. We begin by introducing the *product* in a category (which is different from a product of categories), which is a generalization of the Cartesian product from set theory. A product of two object $X$ and $Y$, usually denoted $X \times Y$, is another object in the same category equipped with two arrows, $\pi_1: X \times Y \to X$ and $\pi_2: X \times Y \to Y$, such that for all other objects $W$ and arrows $p: W \to X$ and $q: W \to Y$, there is a unique arrow $m: W \to X \times Y$, called the *factoring arrow*, satisfying the equations $p = \pi_1 \comp m$ and $q: \pi_2 \comp m$. This property is captured in the commuting diagram
 #+begin_center
 \begin{tikzcd}
 & W \arrow[ld, "p"'] \arrow[rd, "q"] \arrow[d, dashrightarrow, "m"] & \\
@@ -1549,6 +1559,8 @@ We focus on categories that have all binary products, which means that the produ
 #+end_center
 The symmetric isomorphism $\One \times X \cong X$ is provable in the same manner.
 
+Categories with all binary products come equipped with a *product functor* $\_ \times \_: \cat{C} \times \cat{C} \to \cat{C}$, which to each pair of objects $\tuple{C}{D}$ associates their product $C \times D$.
+
 This structure is enough for us to model contexts. Interpretation of the empty context is the unit $\One$, and context concatenation $\Gamma, A$ is interpreted as the product $\CatTrans{\Gamma} \times A$. Since the product is associative, we omit parentheses.
 
 Composition of arrows reflects substitution \mdash two arrows $s: A \to B$ and $t: B \to C$ represent two programs, the first program $x: A \vdash s: B$ possibly having a free variable of type $A$, and the second program $y: B \vdash t: C$ possibly having a free variable of type $B$. The "possibly" indicates that these variables might not appear in the program if they were introduced via weakening. Upon carefully choosing variable names to prevent accidental captures and conflicts, we interpret the substitution $x: A \vdash t[y:=s]: C$ as the composition $t \comp s: A \to C$.
@@ -1561,14 +1573,21 @@ $$
 $$
 
 The exchange rule is satisfied by the symmetry of the product \mdash there is an isomorphism $p_{X, Y}: X \times Y \to Y \times X$ for all objects $X$ and $Y$, satisfying the property $p_{Y, X} \comp p_{X, Y} = \id_{X \times Y}$.
+$$
+\prftree[r]{Exchange}
+{\Gamma \times A \times B \times \Delta \xrightarrow{s} B}
+{\Gamma \times B \times A \times \Delta \cong \Gamma \times A \times B \times \Delta \xrightarrow{s} B}
+$$
 
-The contraction rule is given interpretation via the $\prodar{\id_A}{\id_A}: A \to A \times A$.
+The contraction rule is given interpretation via the arrow $\prodar{\id_A}{\id_A}: A \to A \times A$.
 $$
 \prftree[r]{Contraction}
 {\Gamma \times A \times A \xrightarrow{s} B}
 {\Gamma \times A \xrightarrow{\id_\Gamma \times \prodar{\id_A}{\id_A}} \Gamma \times A \times A \xrightarrow{s} B}
 $$
-We can represent this rule, as well as all other deduction rules, via a natural transformation \cite{Benton1993Re}. We choose to present the premises and the conclusion of a rule with appropriate functors, whose arguments are the parts of the rule that "don't change" during the application of the rule, and which are parameterized by the objects that change. Specifically for the contraction rule, we choose the family of functors $P_A, C_A: \op{\cat{C}} \times \cat{C} \to \Set$, which are parameterized by the object $A$, and functorial in the objects $\Gamma$ and $B$. The premise functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A \times A}{B}$, and the conclusion functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A}{B}$. The family of natural transformations $\varphi^A$ have for components the arrows $\varphi^A_{\Gamma, B}: P_A\tuple{\Gamma}{B} \to C_A\tuple{\Gamma}{B}$.
+This association is uniquely determined, because the identity arrows are unique, and so is the arrow $\prodar{\id_A}{\id_A}$.
+
+We can represent this rule, as well as all other deduction rules, via a natural transformation \cite{Benton1993Re}. We choose to present the premises and the conclusion of a rule with appropriate functors, whose arguments are the parts of the rule that "don't change" during the application of the rule, and which are parameterized by the objects that change. Specifically for the contraction rule, we choose the family of functors $P_A, C_A: \op{\cat{C}} \times \cat{C} \to \Set$ (for /premise functor/ and /conclusion functor/), which are parameterized by the object $A$, and functorial in the objects $\Gamma$ and $B$. The premise functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A \times A}{B}$, and the conclusion functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A}{B}$. The family of natural transformations $\varphi^A$ have for components the arrows $\varphi^A_{\Gamma, B}: P_A\tuple{\Gamma}{B} \to C_A\tuple{\Gamma}{B}$.
 
 This formulation gives rise to two naturality diagrams, one for the naturality in $\Gamma$ and one for the naturality in $B$. In all natural transformations describing derivation rules, the naturality in context objects corresponds to the ability of replacing variables with expressions of the same type. We give a worked example for the contraction rule, and we don't describe the naturality in context objects for other rules.
 
@@ -1584,14 +1603,127 @@ Because the components of $\varphi^A$ are arrows in the category $\Set$, we know
 #+name: fig:ccc_contr
 #+caption: Element chasing for the naturality diagram of \(\varphi^A_{\_, B}\)
 #+begin_sidewaysfigure
+#+begin_center
 \begin{tikzcd}
 (\Gamma \times A \times A \xrightarrow{s} B) \arrow[r, mapsto, "P_A\tuple{f}{\id_B}"] \arrow[dd, mapsto, "\varphi^A_{\Gamma, B}"] & (\Gamma' \times A \times A \xrightarrow{f \times \id_{A \times A}} \Gamma \times A \times A \xrightarrow{s} B) \arrow[d, mapsto, "\varphi^A_{\Gamma', B}"] \\
 & \Gamma' \times A \xrightarrow{\id_{\Gamma'} \times \prodar{\id_A}{\id_A}} \Gamma' \times A \times A \xrightarrow{f \times \id_{A \times A}} \Gamma \times A \times A \xrightarrow{s} B \arrow[d, phantom, "=" description] \\
 (\Gamma \times A \xrightarrow{\id_\Gamma \times \prodar{\id_A}{\id_A}} \Gamma \times A \times A \xrightarrow{s} B) \arrow[r, mapsto, "C_A\tuple{f}{\id_B}"] & (\Gamma' \times A \xrightarrow{f \times \id_A} \Gamma \times A \xrightarrow{\id_\Gamma \times \prodar{\id_A}{\id_A}} \Gamma \times A \times A \xrightarrow{s} B)
 \end{tikzcd}
+#+end_center
 #+end_sidewaysfigure
 
-The arrow in the upper left corner represents a program with possibly three free variables, one of the type $\Gamma$, and two of the type $A$. For explanation's sake we assign names to the variables, but keep in mind that the names can always be chosen to avoid accidental capture and conflicts. We say that the arrow $s$ is an interpretation of a program $u: \Gamma, x: A, y: A \vdash s: B$. Following this program to the right, we pre-compose the arrow $f: \Gamma' \to \Gamma$, which represents a program $w: \Gamma' \vdash f: \Gamma$. Composition corresponds to substitution, so the program represented by the arrow in the upper right is $w: \Gamma', x: A, y: A \vdash s[u:=f]: B$. Chasing the programs vertically, we apply the contraction rule, so the bottom left arrow is the program $u: \Gamma, z: A \vdash s[x:=z][y:=z]$, and the bottom right arrow is the program $w: \Gamma', z: A \vdash (s[u:=f])[x:=z][y:=z]$. However, the importance of the naturality property is that the bottom right program must be the same irrespective of the choice of the path. Transporting the bottom left arrow to the right, we obtain the program $w: \Gamma', z: A \vdash (s[x:=z][y:=z])[u:=f]$, and the equation $(s[u:=f])[x:=z][y:=z] = (s[x:=z][y:=z])[u:=f]$.
+The arrow in the upper left corner represents a program with possibly three free variables, one of the type $\Gamma$, and two of the type $A$. For explanation's sake we assign names to the variables, but keep in mind that the names can always be chosen to avoid accidental capture and conflicts. We say that the arrow $s$ is an interpretation of a program $u: \Gamma, x: A, y: A \vdash s: B$. Following this program to the right, we pre-compose the arrow $f: \Gamma' \to \Gamma$, which represents a program $w: \Gamma' \vdash f: \Gamma$. Composition corresponds to substitution, so the program represented by the arrow in the upper right is $w: \Gamma', x: A, y: A \vdash s[u:=f]: B$. Chasing the programs vertically, we apply the contraction rule, so the bottom left arrow is the program $u: \Gamma, z: A \vdash s[x:=z][y:=z]$, and the bottom right arrow is the program $w: \Gamma', z: A \vdash (s[u:=f])[x:=z][y:=z]$. However, the importance of the naturality property is that the bottom right program must be the same irrespective of the choice of the path. Transporting the bottom left arrow to the right, we obtain the program $w: \Gamma', z: A \vdash (s[x:=z][y:=z])[u:=f]$, and the equation $(s[u:=f])[x:=z][y:=z] = (s[x:=z][y:=z])[u:=f]$. As mentioned, this equation corresponds to the fact variables in the context can be substituted.
+
+Naturality in $B$ gives rise to a similar equation, namely $(f[w:=s])[x:=z][y:=z] = f[w:=s[x:=z][y:=z]]$, which also holds by appropriately choosing variable names.
+
+Weakening is defined with the projection arrow $\pi_1: \Gamma \times B \to \Gamma$.
+$$
+\prftree[r]{Weakening}
+{\Gamma \xrightarrow{s} A}
+{\Gamma \times B \xrightarrow{\pi_1} \Gamma \xrightarrow{s} A}
+$$
+The premise and conclusion functors $P_B, C_B: \op{\cat{C}} \times \cat{C} \to \Set$ are connected via the natural transformations $\varphi^B: \nat{P_B}{C_B}$, and nothing of note is provided by the naturality.
+
+The existence of all binary products plays the role of product type formation \mdash if $A$ and $B$ are objects in $\cat{C}$, then $A \times B$ is also an object in $\cat{C}$. The product projections give meaning to the $\Elim{\times}$ rules, specifically
+$$
+\prftree[r]{$\Elim{\times}_1$}
+{\Gamma \xrightarrow{s} A \times B}
+{\Gamma \xrightarrow{s} A \times B \xrightarrow{\pi_1} A}
+\hspace{2em}
+\prftree[r]{$\Elim{\times}_2$}
+{\Gamma \xrightarrow{s} A \times B}
+{\Gamma \xrightarrow{s} A \times B \xrightarrow{\pi_2} A}
+$$
+the family of functors indexed by $A$ and $B$ being $P_{A,B}, C_{A, B}: \op{\cat{C}} \to \Set$ defined by $P_{A, B}\Gamma = \hom{\Gamma}{A \times B}$ and $C_{A, B}\Gamma = \hom{\Gamma}{A}$, and analogously for the other component. The functors only take one argument, the context.
+
+The product introduction is formulated in terms of the factoring arrow, with the deduction
+$$
+\prftree[r]{$\Intro{\times}$}
+{\Gamma \xrightarrow{s} A}
+{}
+{\Gamma \xrightarrow{t} B}
+{\Gamma \xrightarrow{\prodar{s}{t}} A \times B}
+$$
+and functors $P_{A, B}, C_{A, B}: \op{\cat{C}} \to \Set$ defined by $P_{A, B}\Gamma = \hom{\Gamma}{A} \times \hom{\Gamma}{B}$ and $C_{A, B}\Gamma = \hom{\Gamma}{A \times B}$.
+
+Equations are modeled with commutative diagrams. The \beta-reductions correspond exactly to the product property
+#+begin_center
+\begin{tikzcd}
+& \Gamma \arrow[ld, "s"'] \arrow[d, "\prodar{s}{t}"] \arrow[rd, "t"] \\
+A & A \times B \arrow[l, "\pi_1"] \arrow[r, "\pi_2"] & B
+\end{tikzcd}
+#+end_center
+with the left triangle describing the equation $\fst{\tuple{s}{t}} \equiv s$ and the right triangle describing the equation $\snd{\tuple{s}{t}} \equiv t$.
+
+The \eta-conversion corresponds to the diagram
+#+begin_center
+\begin{tikzcd}
+A \times B \arrow[d, "\pi_1"] & \Gamma \arrow[l, "s"'] \arrow[r, "s"] \arrow[d, dashed, "\prodar{\pi_1 \comp s}{\pi_2 \comp s}"] & A \times B \arrow[d, "\pi_2"] \\
+A & A \times B \arrow[l, "\pi_1"] \arrow[r, "\pi_2"] & B
+\end{tikzcd}
+#+end_center
+Because of the product property, the dashed arrow is a unique arrow that makes the two squares commute. However, the arrow $s$ also makes the squares commute, so the two arrows must be equal, making the terms they represent, $s$ and $\tuple{\fst{s}}{\snd{s}}$, equivalent.
+
+To model function types, we introduce another categorical concept \mdash the *exponential*. The exponential of two objects $C$ and $D$ in a category $\cat{C}$ is another object in the same category, denoted $D^C$, equipped with an arrow $\epsilon: D^C \times C \to D$ (called the *evaluator*), such that for all other objects $W$ and arrows $h: W \times C \to D$, there is a unique arrow $h^{\flat}: W \to D^C$, satisfying the equation $\epsilon \comp (h^{\flat} \times \id_C) = h$. This property is captured in the commuting diagram
+#+begin_center
+\begin{tikzcd}
+D & D^C \times C \arrow[l, "\epsilon"'] \\
+& W \times C \arrow[lu, "h"] \arrow[u, "h^{\flat} \times \id"']
+\end{tikzcd}
+\hspace{2em}
+\begin{tikzcd}
+D^C \\
+W \arrow[u, dashed, "h^{\flat}"]
+\end{tikzcd}
+#+end_center
+If a category has an exponential $D^C$ for all objects $C$ and $D$, then it gives rise to a functor $\_^-: \op{\cat{C}} \times \cat{C} \to \cat{C}$, and the property corresponds to an adjunction with the product functor \mdash for every object $C$ in $\cat{C}$, the functor $\_ \times C$ is left adjoint to the functor $\_^C$. In other words, there is a bijection between the \(\Hom\)-sets $\hom{B \times C}{D}$ and $\hom{B}{D^C}$.
+
+A category equipped with all binary products, a unit object for the product, and all exponentials, is called a *Cartesian closed category*. This is all the structure necessary for interpreting STLC, which we show by interpreting rules and equations for the function type via exponentials.
+
+The $\Intro{\to}$ rule takes advantage of the bijection of \(\Hom\)-sets
+$$
+\prftree[r]{$\Intro{\to}$}
+{\Gamma \times A \xrightarrow{s} B}
+{\Gamma \xrightarrow{s^{\flat}} B^A}
+$$
+with the natural transformation between $P_{A,B}\Gamma = \hom{\Gamma \times A}{B}$ and $C_{A, B}\Gamma = \hom{\Gamma}{B^A}$ being the natural isomorphism with \(\Hom\)-set bijections for components.
+
+The $\Elim{\to}$ rule uses the $\epsilon$ evaluator
+$$
+\prftree[r]{$\Elim{\to}$}
+{\Gamma \xrightarrow{s} B^A}
+{}
+{\Delta \xrightarrow{t} A}
+{\Gamma \times \Delta \xrightarrow{s \times t} B^A \times A \xrightarrow{\epsilon} B}
+$$
+with the obvious premise and conclusion functors taking for arguments $\Gamma$ and $\Delta$.
+
+The \beta-reduction equation is expressed via the commutative diagram
+#+begin_center
+\begin{tikzcd}
+\Gamma \times \Delta \arrow[r, "\id \times t"] \arrow[d, "s^{\flat} \times t"'] & \Gamma \times A \arrow[d, "s"] \\
+B^A \times A \arrow[r, "\epsilon"'] & B
+\end{tikzcd}
+#+end_center
+where we decompose the arrow $\Gamma \times \Delta \xrightarrow{s^{\flat} \times t} B^A \times A$ as $\Gamma \times \Delta \xrightarrow{\id \times t} \Gamma \times A \xrightarrow{s^{\flat} \times \id}$ and factor out $\id \times t$ to obtain the equivalent diagram
+#+begin_center
+\begin{tikzcd}
+\Gamma \times \Delta \arrow[r, "\id \times t"] & \Gamma \times A \arrow[rd, "s"] \arrow[d, "s^{\flat} \times \id"'] \\
+& B^A \times A \arrow[r, "\epsilon"'] & B
+\end{tikzcd}
+#+end_center
+which commutes by definition, because the triangle is exactly the one described in the adjunction property.
+
+For the \eta-conversion, we demand that the arrow $f: \Gamma \to B^A$ be equal to the arrow $(\epsilon \comp (f \times \id))^{\flat}: \Gamma \to B^A$. Writing out the adjunction triangle for the arrow $\epsilon \comp (f \times \id): \Gamma \times A \to B$, we obtain
+#+begin_center
+\begin{tikzcd}
+B & B^A \times A \arrow[l, "\epsilon"'] \\
+B^A \times A \arrow[u, "\epsilon"] & \Gamma \times A \arrow[u, "(\epsilon \comp (f \times \id))^{\flat} \times \id"'] \arrow[l, "f \times \id"]
+\end{tikzcd}
+#+end_center
+By the adjunction property, the arrow $(\epsilon \comp (f \times \id))^{\flat}: \Gamma \to B^A$ is the unique arrow that makes the square commute. But since we can replace it with the arrow $f$ and obtain a commuting diagram, we conclude that the two arrows are equal.
+
+As such, we are able to interpret types, programs and equations of the simply typed \lambda-calculus in Cartesian closed categories.
 
 ** Models of linear programs
 
