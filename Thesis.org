@@ -123,21 +123,17 @@ Tato práce se zabývá rozšířením Curryovy-Howardovy korespondence do line�
 Dále popisujeme vnoření intuicionistické logiky do lineární logiky, a analogické vnoření intuicionistických programů do lineárních programů. Poslední kapitola se věnuje třídě kategorií se strukturou, které odrážejí chování lineárních programů.
 \\[10pt]
 \textit{Klíčová slova:
-\parbox[t]{0.8\linewidth}{přirozená dedukce, lineární logika, lineární typy, teorie typů, \\ Curryova-Howardova korespondence, kategorická semantika}}
+\parbox[t]{0.8\linewidth}{přirozená dedukce, lineární logika, lineární typy, teorie typů, \\ Curryova-Howardova korespondence, kategoriální semantika}}
 
 \tableofcontents
 \listoffigures
 \mainbodystarts
 #+end_export
 
-* COMMENT Topic
-
-Computational trinitarianism describes the intimate relationship between logic, category theory and type theory. This relationship identifies propositions of a logic with a type of a corresponding type system, and also establishes a correspondence between a proof of a proposition, a term (program) of a given type, and a generalized element of an object in a category.
-A linear type system is a special kind of a substructural type system with important applications in computer science. An advantage of a linear type system resides in its ability to place constraints on the usage of (or access to) variables (resources).
-The aim of the bachelor thesis is to describe linear logic as an example of a substructural logic, to construct a linear type system stemming from that logic, and to give their categorical semantics via categories with structure.
-The style and presentation of the thesis will be theoretical.
-
-* TODO Introduction
+* Introduction
+:PROPERTIES:
+:UNNUMBERED: t
+:END:
 
 * Logic
 
@@ -168,13 +164,9 @@ $$
 where the label $\Intro{\land}$ is an abbreviation for "conjunction introduction".
 
 Gentzen used the concept of assumptions to formulate the rules for implication. If, given that /$A$ true/, we could sequence the deduction rules in such a way that we get the judgement /$B$ true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure\nbsp[[fig:localized_hyp]]\nbsp(left). The symbol $\vdots$ stands for a sequence of deduction rules that can derive the judgement /$B$ true/ from the judgement /$A$ true/.
-
-A proof in natural deduction is tree-like, with the judgement to be proven at the root, assumptions at the leaves, and deduction rules between the nodes. It is not a proper tree, because it needs to keep track of which implication introductions discharge which assumptions, so additional structure to manage backreferences is necessary.
-
-In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally, allowing us to degenerate the proof structure to a proper tree. We say that a *contextualized judgement*[fn:1] has the form $\Gamma \vdash J$, where \Gamma is a sequence of zero or more assumptions, called the *context*, and $J$ is the judgement. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure\nbsp[[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, S$ is a new context, which includes all the assumptions from \Gamma, and the assumption $S$. This concatenation is extended in the obvious way to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
-
 #+name: fig:localized_hyp
 #+caption: Gentzen's assumption notation (left) and notation for localized assumptions (right)
+#+attr_latex: :options [!h]
 #+begin_figure
 $$
 \prftree[r]{$(\Intro{\to})_{\prfref<A>}$}
@@ -189,7 +181,11 @@ $$
 $$
 #+end_figure
 
-The behaviour of the context is specified in the metalanguage, using deduction rules. These rules are called *structural rules*, and usually include Weakening, Contraction, and Exchange, which are listed in Figure\nbsp[[fig:structural]]. These three rules encode semantics similar to those of a finite set.
+A proof in natural deduction is tree-like, with the judgement to be proven at the root, assumptions at the leaves, and deduction rules between the nodes. It is not a proper tree, because it needs to keep track of which implication introductions discharge which assumptions, so additional structure to manage backreferences is necessary.
+
+In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally, allowing us to degenerate the proof structure to a proper tree. We say that a *contextualized judgement*[fn:1] has the form $\Gamma \vdash J$, where \Gamma is a sequence of zero or more assumptions, called the *context*, and $J$ is the judgement. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure\nbsp[[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, S$ is a new context, which includes all the assumptions from \Gamma, and the assumption $S$. This concatenation is extended in the obvious way to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
+
+The behaviour of the context is specified in the metalanguage, using deduction rules. (TODO: deduction rules are not structural rules) These rules are called *structural rules*, and usually include Weakening, Contraction, and Exchange, which are listed in Figure\nbsp[[fig:structural]]. These three rules encode semantics similar to those of a finite set.
 
 Weakening allows one to add arbitrary assumptions to the context without invalidating the derived judgement. Contraction states that assumptions may be used multiple times. Exchange asserts that the order in which assumptions appear in the context is irrelevant.
 
@@ -217,25 +213,27 @@ $$
 $$
 #+end_figure
 
-Apart from the structural rules, the logic also specifies *logical rules*. These describe how the logical connectives participate in derivations. Conventionally, they come in pairs of introduction and elimination, the former defining how a proposition containing the connective is created, and the latter defining how such a proposition is "used" and split apart.
+Apart from the structural rules, the logic also specifies *logical rules*. These describe how the logical connectives participate in derivations. (TODO: wording) Conventionally, they come in pairs of introduction and elimination, the former defining how a proposition containing the connective is created, and the latter defining how such a proposition is "used" and split apart.
 
 Just as there can be zero assumptions in a contextualized judgement, there can be zero premises in a deduction rule. Such rules are called *axioms*, and the judgments in their conclusions are always derivable.
 
 A proof in this updated notation is now a proper tree, with a contextualized judgement at the root, contextualized judgements in the inner nodes, axioms at the leaves, and deduction rules connecting the nodes.
 
-When composing deductions, we sometimes produce redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*. These rules must preserve well-formedness of the proof, meaning that the proof after a reduction must still consist only of derivations specified for the logic. This condition is called /local soundness/ \cite{Pfenning2004}.
+When composing deductions, we sometimes produce (TODO: proofs with?) redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*. These rules must preserve well-formedness of the proof, meaning that the proof after a reduction must still consist only of derivations specified for the logic. This condition is called /local soundness/ \cite{Pfenning2004}.
+
+(TODO: "material is standard, my contribution can be found...")
 
 ** Intuitionistic logic
 
-Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A\ true \vdash A\ true$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also axiomatizes the law of excluded middle, $\vdash (A \lor \lnot A)\ true$. The philosophical difference between classical and intuitionistic logic is that classical logic is content with knowing whether a proposition is true or whether it is false. After all, those are the only options. Intuitionistic logic, on the other hand, requires a constructive proof \mdash a "recipe", turning the assumptions into the conclusion. The law of excluded middle allows for proofs where one judges a proposition to be true, just because it cannot be false. This goes against the intuitionistic line of reasoning, because merely showing that something has to exists doesn't provide the mathematician with a way to construct it. In intuitionistic logic, the judgement /$(A \lor \lnot A)$ true/ can still be made, but it needs to be accompanied with either a proof of /$A$ true/ or /$\lnot A$ true/ \cite{Sorensen2006}.
+Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A\ true \vdash A\ true$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also axiomatizes the law of excluded middle, $\vdash (A \lor \lnot A)\ true$. The philosophical difference between classical and intuitionistic logic is that classical logic is content with knowing whether a proposition is true or whether it is false. After all, those are the only options. Intuitionistic logic, on the other hand, requires a constructive proof \mdash a "recipe", turning the assumptions into the conclusion. The law of excluded middle allows for proofs where one judges a proposition to be true, just because it cannot be false. This goes against the intuitionistic line of reasoning, because merely showing that something has to exists does not provide the mathematician with a way to construct it. In intuitionistic logic, the judgement /$(A \lor \lnot A)$ true/ can still be made, but it needs to be accompanied with either a proof of /$A$ true/ or /$\lnot A$ true/ \cite{Sorensen2006}.
 
-Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth"). For example, the formula $A, B \vdash_T C$ is short for $A\ true, B\ true \vdash C\ true$. This notation will be used exclusively in the diagrams to prevent them from spreading too wide, and we will use the full form in the body of the thesis.
+Since intuitionistic logic is an example of a (TODO: is it?) traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth"). For example, the formula $A, B \vdash_T C$ is short for $A\ true, B\ true \vdash C\ true$. This notation will be used exclusively in the diagrams to prevent them from spreading too wide, and we will use the full form in the body of the thesis.
 
 The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The propositions of this fragment can be described by the following Backus-Naur form:
 $$
 A, B ::= X \binor (A \to B) \binor (A \land B)
 $$
-for X ranging over atomic propositions. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
+for X ranging over atomic propositions. The rules (TODO: for?) of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
 
 #+name: fig:intuit_deduct
 #+caption: Deduction rules for the meet-implicative fragment of propositional intuitionistic logic
@@ -294,7 +292,7 @@ The rules consist of the one axiom Id mentioned above, the three structural rule
 
 /Conjunction introduction/, labeled $\Intro{\land}$ in the deduction rules, states that given a proof of /$A$ true/ and a proof of /$B$ true/, the two proofs combined give a proof of /$(A \land B$) true/. The respective elimination rules allow one to extract one of the proofs of /$A$ true/ or /$B$ true/ from /$(A \land B)$ true/, even after they were combined.
 
-When formulating the proof reduction rule for a particular connective, one needs to look at a generic example of a reducible proof. For sequencing a conjunction introduction and a conjunction elimination, we need to represent generic proofs of the premises, then apply the two rules in succession, and finally justify an alternative path to reach the conclusion. We can represent the generic proofs with the symbol $\vdots$, much like how Gentzen formulated assumptions. For the conjunction reduction, the generic schema would look like the following tree, with the subproofs labeled $s$ and $t$.
+When formulating the proof reduction rule for a particular connective, one needs to look at a generic example of a reducible proof. For sequencing a conjunction introduction and a conjunction elimination, we need to represent generic proofs of the premises, then apply the two rules in succession, and finally justify an alternative path to reach the conclusion. We can represent the generic proofs with the symbol $\vdots$, (TODO: wording) much like how Gentzen formulated assumptions. For the conjunction reduction, the generic schema looks like the following tree, with the subproofs labeled $s$ and $t$.
 $$
 \prftree[r]{$\Elim{\land}_1$}
  {\prftree[r]{$\Intro{\land}$}
@@ -325,7 +323,7 @@ $$
 
 /Implication introduction/, labeled $\Intro{\to}$, once again builds on abstracting away an assumption. If a judgement /$B$ true/ can be made under an assumption /$A$ true/, then the proof tree can be seen as a way of turning a proof of /$A$ true/ (or multiple proofs of /$A$ true/) into a proof of /$B$ true/. The implication elimination is then a method for providing such a proof of $A$.
 
-The proof reduction rule must take into account that the judgment /\(A\)\nbsp{}true/ might have been assumed zero or multiple times in the proof of /$B$ true/, and the context later modified with contractions or weakenings to reach the contextualized judgment $\Gamma, A\ true \vdash B\ true$. Every assumption of /$A$ true/ that is used in the proof must have been introduced by the identity rule, and the ones that aren't used were introduced by weakening. As shown in \cite{Wadler1993}, applications of structural and logic rules commute, so for every proof where contraction and weakening are used, there is an equivalent proof with all the contractions and weakenings pushed to the root of the proof tree. In other words, for every proof of $\Gamma, J_1 \vdash J_2$, where $J_1$ and $J_2$ stand for arbitrary judgments, there is an equivalent proof which consists of a contraction- and weakening-less subproof of $\Gamma, J_1 \cdots \vdash J_2$, followed by applications of contraction and weakening to accommodate the context, where the ellipsis indicates zero or more assumptions of $J_1$. The final applications of contraction and weakening are represented by a doubled derivation line, to indicate that it's multiple steps shown as one.
+The proof reduction rule must take into account that the judgment /\(A\)\nbsp{}true/ might have been assumed zero or multiple times in the proof of /$B$ true/, and the context later modified with contractions or weakenings to reach the contextualized judgment $\Gamma, A\ true \vdash B\ true$. Every assumption of /$A$ true/ that is used in the proof must have been introduced by the identity rule, and the ones that are not used were introduced by weakening. As shown in \cite{Wadler1993}, applications of structural and logic rules commute, so for every proof where contraction and weakening are used, there is an equivalent proof with all the contractions and weakenings pushed to the root of the proof tree. In other words, for every proof of $\Gamma, J_1 \vdash J_2$, where $J_1$ and $J_2$ stand for arbitrary judgments, there is an equivalent proof which consists of a contraction- and weakening-less subproof of $\Gamma, J_1 \cdots \vdash J_2$, followed by applications of contraction and weakening to accommodate the context, where the ellipsis indicates zero or more assumptions of $J_1$. The final applications of contraction and weakening are represented by a doubled derivation line, to indicate that it's multiple steps shown as one.
 
 (TODO: wording) The role of the proof reduction is then to take the proof of $\Delta \vdash A\ true$, and replace with it the instances of $A\ true \vdash A\ true$ in the proof of $\Gamma, A\ true \vdash B\ true$. The full proof reduction rule is shown in Figure\nbsp[[fig:intuit_impl_red]].
 
@@ -578,7 +576,7 @@ $$
 
 The $\bang$ ("bang") connective is supposed to extend the expressive power of linear logic to reason about free resources. A judgment of the form /$\bang{A}$ avail/ does not represent an instance of the resource $A$, but rather /a source of/[fn:3] these resources. The idea is that a resource $A$ can be pulled out from this source at any time, or even never at all, allowing us to model free resources \mdash the judgment /$\bang{A}$ avail/ serves as a statement that $A$ is a free resource.
 
-To produce one of these sources, the introduction rule provides us with a way of extending proofs based on only intuitionistic assumptions. Intuitionistic assumptions are another way of modeling free resources, so the essence of the introduction rule is an observation that, given a recipe of creating one unit of a resource $A$ from free ingredients $\Int{\Gamma}$, we can duplicate those free ingredients however many times is necessary to supply more instances of the resource, and that we don't mind throwing the ingredients away in the case that there is no demand for it.
+To produce one of these sources, the introduction rule provides us with a way of extending proofs based on only intuitionistic assumptions. Intuitionistic assumptions are another way of modeling free resources, so the essence of the introduction rule is an observation that, given a recipe of creating one unit of a resource $A$ from free ingredients $\Int{\Gamma}$, we can duplicate those free ingredients however many times is necessary to supply more instances of the resource, and that we do not mind throwing the ingredients away in the case that there is no demand for it.
 
 Dually to the introduction rule, which relays how to create a source from free ingredients, the elimination rule describes how a source can satiate an undisclosed demand. A proof built on an intuitionistic assumption gives no guarantees about the number of times it uses the associated resource $A$. To satisfy this assumption, we can provide the proof with a source $\bang{A}$, which can adapt to its requirements.
 
@@ -619,7 +617,7 @@ The intuitionistic propositions come in three flavors: base propositions, conjun
 \end{align*}
 where $X$ stands for an atomic proposition, and $A$ and $B$ stand for arbitrary intuitionistic propositions.
 
-On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
+On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. (TODO: wording) When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
 
 There are only two judgments in intuitionistic logic, and these are /$A$ prop/ and /$A$ true/ for an intuitionistic proposition $A$. These are interpreted as /$A$ prop/ and /$A$ avail/, respectively, defining the action of the translation operator on judgments.
 \begin{align*}
@@ -678,7 +676,7 @@ The axiom of intuitionistic logic is translated into the intuitionistic axiom of
 \end{align*}
 \newpage
 
-Translation of the intuitionistic conjunction is defined in terms of the $\with$ conjunction, so it is expected that the deduction rules of one will correspond to the deduction rules of the other. That is indeed the case, as the translation is given below. It uses the equality $\LinTrans{A \land B} = \LinTrans{A} \with \LinTrans{B}$.
+Translation of the intuitionistic conjunction is defined in terms of the $\with$ conjunction, so it is expected that the deduction rules of one will correspond to the deduction rules of the other.(TODO: wording) That is indeed the case, as the translation is given below. It uses the equality $\LinTrans{A \land B} = \LinTrans{A} \with \LinTrans{B}$.
 \begin{align*}
 \LinTrans{\vcenter{\prftree[r]{$\Intro{\land}$}
     {\Gamma \vdash_T A}
@@ -875,7 +873,7 @@ A, B ::= X \binor (A \to B) \binor (A \times B)
 $$
 for X ranging over base types.
 
-Objects of STLC are *well-typed* terms of the untyped \lambda-calculus. A well-typed term is a term that is obtainable by deductions of the type system. A well-typed term is also called a *program*. A context of a contextualized typing judgment in STLC is a list of typing judgments, where the terms being typed are variables, and every variable appears in the context at most once. When concatenating contexts, it is implicitly assumed that they don't share any variables.
+Objects of STLC are *well-typed* terms of the untyped \lambda-calculus. A well-typed term is a term that is obtainable by deductions of the type system. A well-typed term is also called a *program*. A context of a contextualized typing judgment in STLC is a list of typing judgments, where the terms being typed are variables, and every variable appears in the context at most once. When concatenating contexts, it is implicitly assumed that they do not share any variables.
 
 Analogues to the structural rules from intuitionistic logic exist for STLC. The only difference is that the type-theoretical variants provide additional information on their action on terms. All three rules are listed in Figure [[fig:stlc_struct]], along with the identity axiom.
 
@@ -1374,6 +1372,8 @@ For the induction step, we assume that the property holds for every subterm, and
 &= \LinTrans{\snd{t}}[x:=\LinTrans{s}] \\
 \end{align*}
 
+# NOTE: Maybe unnecessary later
+\pagebreak
 Next, we need to show that equivalent STLC terms are translated to equivalent LLC terms. This is accomplished by showing that this property holds for every \beta-reduction and every \eta-conversion equation. That is, for every equation $s \equiv s'$, we need to show that $\LinTrans{s} \equiv \LinTrans{s}$.
 
 Proofs of commutativity for the \beta-reductions are obtained by the corresponding proofs of commutativity for proof reductions.
@@ -1432,9 +1432,9 @@ a \comp \id_{\src{a}} &= a
 \end{align*}
 In situations where the object is apparent from context, we choose to omit the subscript and simply write $\id$.
 
-Examples of categories include $\Set$, which is the category with all sets for objects and functions for arrows, or $\Grp$, the category of all groups and homomorphisms between them.
+Examples of categories include $\Set$, the category with all sets for objects and functions for arrows, or $\Grp$, the category of all groups and homomorphisms between them.
 
-For every category $\cat{C}$, there exists the *opposite category* $\op{\cat{C}}$. The opposite category has the exact same objects and identity arrows as the original category, but the arrows are reversed \mdash the collection of arrows $\hom{X}{Y}$ in $\cat{C}$ corresponds to the collection of arrows $\hom{Y}{X}$ in $\op{\cat{C}}$.
+For every category $\cat{C}$, there exists the *opposite category* $\op{\cat{C}}$. The opposite category has the exact same objects and identity arrows as the original category, but the arrows are reversed \mdash the collection of arrows $\hom{X}{Y}$ in $\cat{C}$ corresponds to the collection of arrows $\hom{Y}{X}$ in $\op{\cat{C}}$, and the composition $a \comp b$ in $\op{\cat{C}}$ corresponds to the composition $b \comp a$ in $\cat{C}$.
 
 An important tool of category theory are commutative diagrams. A commutative diagram is a diagram for which commutativity is either assumed or proven. Such a diagram contains nodes, which represent objects, and directed edges, which represent arrows. For example, we can construct a commutative diagram which represents the property of the identity arrow being the identity of arrow composition.
 #+begin_center
@@ -1451,7 +1451,7 @@ In the remainder of this thesis, we will only consider *locally small categories
 
 We introduce the notion of structure-preserving mappings between categories, called *functors*. Given two categories $\cat{C}$ and $\cat{D}$, a functor $F$ from $\cat{C}$ to $\cat{D}$, denoted $F: \cat{C} \to \cat{D}$, needs to map contents of $\cat{C}$ to contents of $\cat{D}$ while preserving the categorical structure \mdash the contents of a category are its objects and arrows, and the structure is described by the source and target assignments, arrow composition and identity arrows.
 
-In other words, a functor $F: \cat{C} \to \cat{D}$ consists of a mapping from objects of $\cat{C}$ to objects of $\cat{D}$ and another mapping from arrows of $\cat{C}$ to arrows of $\cat{D}$, the two of which interact in such a way that for any arrow $a$ in $\cat{C}$, its image $Fa$ is an arrow in $\cat{D}$ whose source and target are the images of the source and target of $a$, graphically the image of an arrow $a: X \to Y$ is $Fa: FX \to FY$. Additionally, the identity arrows in $\cat{C}$ map to identity arrows in $\cat{D}$, so that $F\id_X = \id_{FX}$ for all objects $X$ in $\cat{C}$, and the compositions of arrows in $\cat{C}$ maps to composition of arrows in $\cat{D}$, following the equation $F(b \comp a) = Fb \comp Fa$. These laws are represented by the commutative diagrams in Figure [[fig:functor_laws]].
+A functor $F: \cat{C} \to \cat{D}$ consists of a mapping from objects of $\cat{C}$ to objects of $\cat{D}$ and another mapping from arrows of $\cat{C}$ to arrows of $\cat{D}$, the two of which interact in such a way that for any arrow $a$ in $\cat{C}$, its image $Fa$ is an arrow in $\cat{D}$ whose source and target are the images of the source and target of $a$, graphically the image of an arrow $a: X \to Y$ is $Fa: FX \to FY$. Additionally, the identity arrows in $\cat{C}$ map to identity arrows in $\cat{D}$, so that $F\id_X = \id_{FX}$ for all objects $X$ in $\cat{C}$, and the compositions of arrows in $\cat{C}$ maps to composition of arrows in $\cat{D}$, following the equation $F(b \comp a) = Fb \comp Fa$. These laws are represented by the commutative diagrams in Figure [[fig:functor_laws]].
 
 #+name: fig:functor_laws
 #+caption: Functor laws
@@ -1479,13 +1479,13 @@ FX \arrow[r, "Fa"] \arrow[dr, "F(b \comp a)"'] & FY \arrow[d, "Fb"] \\
 #+end_center
 #+end_figure
 
-Because we are interested in functors with multiple parameters, we also need to describe the concept of a *product category*. Given two categories $\cat{C}$ and $\cat{D}$, their product is the category $\cat{C} \times \cat{D}$. Objects of this category are ordered pairs $\tuple{C}{D}$, where $C$ is an object of $\cat{C}$ and $D$ is an object of $\cat{D}$, and arrows of this category are ordered pairs $\tuple{f}{g}: \tuple{C}{D} \to~\tuple{C'}{D'}$, where $f: C \to C'$ and $g: D \to D'$ are arrows of $\cat{C}$ and $\cat{D}$, respectively. Identity and composition are defined in the obvious way, the identity arrow being $\id_{\tuple{C}{D}} = \tuple{\id_C}{\id_D}$ and composition being $\tuple{f'}{g'} \comp \tuple{f}{g} = \tuple{f' \comp f}{g' \comp g}$.
+Because we are interested in functors with multiple parameters, we also need to describe the concept of a *product category*. Given two categories $\cat{C}$ and $\cat{D}$, their product is denoted by $\cat{C} \times \cat{D}$. Objects of this category are ordered pairs $\tuple{C}{D}$, where $C$ is an object of $\cat{C}$ and $D$ is an object of $\cat{D}$, and arrows of this category are ordered pairs $\tuple{f}{g}: \tuple{C}{D} \to~\tuple{C'}{D'}$, where $f: C \to C'$ and $g: D \to D'$ are arrows of $\cat{C}$ and $\cat{D}$, respectively. Identity and composition are defined in the obvious way, the identity arrow being $\id_{\tuple{C}{D}} = \tuple{\id_C}{\id_D}$ and composition being $\tuple{f'}{g'} \comp \tuple{f}{g} = \tuple{f' \comp f}{g' \comp g}$.
 
 A functor $F: \cat{C} \times \cat{D} \to \cat{B}$ can be regarded as a mapping with two arguments, one from $\cat{C}$ and one from $\cat{D}$. For example, we can define the Cartesian product on sets as a functor $\_ \times \_: \Set \times \Set \to \Set$. It takes a pair of two sets, $\tuple{A}{B}$, and maps it to the Cartesian product $A \times B$, which is itself a set. The action on arrows is defined element-wise. When the domain of a functor is not a binary product category, but a more general \(n\)-ary product category, then we talk about \(n\)-ary functors.
 
-In the context of \(n\)-ary functors, we can refer to the property of being *functorial in an argument*. When saying that a functor $F: \cat{C} \times \cat{D} \to \cat{B}$ is /functorial in $\cat{C}$/, we mean that fixing any object $D$ of $\cat{D}$ gives rise to a functor $\hat{F}: \cat{C} \to \cat{B}$, which is defined by its action on objects $C$ of $\cat{C}$ by $\hat{F}C = F\tuple{C}{D}$, and by its action on arrows $a: C \to C'$ by $\hat{F}a = F\tuple{a}{\id_D}: F\tuple{C}{D} \to F\tuple{C'}{D}$. This notion is extended from binary to \(n\)-ary functors, by implying that all arguments other than the one for which we study functoriality are fixed. A functor is functorial in all its arguments, and conversely a mapping that is functorial in all its arguments is a functor.
+In the context of \(n\)-ary functors, we can refer to the property of being *functorial in an argument*. When saying that a functor $F: \cat{C} \times \cat{D} \to \cat{B}$ is /functorial in $\cat{C}$/, we mean that fixing any object $D$ of $\cat{D}$ gives rise to a functor $\hat{F}: \cat{C} \to \cat{B}$, which is defined by its action on objects $C$ of $\cat{C}$ by $\hat{F}C = F\tuple{C}{D}$, and by its action on arrows $a: C \to C'$ by $\hat{F}a = F\tuple{a}{\id_D}: F\tuple{C}{D} \to F\tuple{C'}{D}$. This notion is extended from binary to \(n\)-ary functors, by implying that all arguments other than the one for which we check for functoriality are fixed. A functor is functorial in all its arguments, and conversely a mapping that is functorial in all its arguments is a functor.
 
-An important functor we will use is the *$\Hom$ functor*, $\hom{\_}{\_}: \op{\cat{C}} \times \cat{C} \to \Set$, which to every pair of objects $X$ and $Y$ in $\cat{C}$ assigns their \(\Hom\)-set $\hom{X}{Y}$. Functoriality in the second argument means that for every arrow $a: Y \to Y'$, we can find an arrow $\hom{\id_X, a}: \hom{X}{Y} \to \hom{X}{Y'}$. Since the objects of $\Set$ are sets, and the arrows are functions on sets, we can show this action on elements of the \(\Hom\)-sets. An element of the set $\hom{X}{Y}$ is an arrow $a: X \to Y$, and we need to transform it into an arrow $\hom{\id_X}{f}: X \to Y$, which is easily done by post-composition with $f$, because for every arrow $a: X \to Y$, there is an arrow $f \comp a: X \to Y'$.
+An important functor we will use is the *$\Hom$ functor*, $\hom{\_}{\_}: \op{\cat{C}} \times \cat{C} \to \Set$, which to every pair of objects $X$ and $Y$ in $\cat{C}$ assigns their \(\Hom\)-set $\hom{X}{Y}$. Functoriality in the second argument means that for every arrow $a: Y \to Y'$, we can find an arrow $\hom{\id_X}{a}: \hom{X}{Y} \to \hom{X}{Y'}$. Since the objects of $\Set$ are sets, and the arrows are functions on sets, we can show this action on elements of the \(\Hom\)-sets. An element of the set $\hom{X}{Y}$ is an arrow $a: X \to Y$, and we need to transform it into an arrow $\hom{\id_X}{f}: X \to Y$, which is easily done by post-composition with $f$, because for every arrow $a: X \to Y$, there is an arrow $f \comp a: X \to Y'$.
 
 Functoriality in the first argument requires that it be from the opposite category, $\op{\cat{C}}$. Only in this way can we define the action on arrows as pre-composition, analogously to functoriality in the second argument. We know that every arrow $f: X \to X'$ in $\op{\cat{C}}$ is the arrow $f: X' \to X$ in $\cat{C}$. Then, finding the arrow $\hom{f}{\id_Y}: \hom{X}{Y} \to \hom{X'}{Y}$ is as easy as taking an element of the set $\hom{X}{Y}$, which is an arrow $a: X \to Y$ in $\cat{C}$, and pre-composing it with the arrow $f: X' \to X$ in $\cat{C}$, to obtain the arrow $a \comp f: X' \to Y$, which is an element of the set $\hom{X'}{Y}$.
 
@@ -1497,37 +1497,40 @@ GX \arrow[r, "Gf"] & GY
 \end{tikzcd}
 #+end_center
 
-When all the components of a natural transformation are isomorphisms, we call it a *natural isomorphism*.
+When all the components of a natural transformation $\varphi$ are isomorphisms, we call $\varphi$ a *natural isomorphism*.
 
-Similarly to functoriality in an argument, we can talk about *naturality in an argument* when \(n\)-ary functors are involved. (TODO: wording "Given a family of arrows") The definition is also analogous \mdash given two functors $F, G: \cat{C} \times \cat{D} \to \cat{B}$, a natural transformation $\varphi: \nat{F}{G}$ is /natural in $\cat{C}$/ if fixing any object $D$ in $\cat{D}$ gives rise to a natural transformation $\hat{\varphi}: \nat{F}{G}$, which is given by its components $\hat{\varphi}_C = \varphi_{\tuple{C}{D}}$. The naturality property is expressed by the following diagram, which uses functoriality of $F$ and $G$ in $\cat{C}$
+Similarly to functoriality in an argument, we can talk about *naturality in an argument* when \(n\)-ary functors are involved. Given two functors $F, G: \cat{C} \times \cat{D} \to \cat{B}$, a family of arrows $\varphi_{C, D}: F(C, D) \to G(C, D)$, indexed by objects of $\cat{C}$ and $\cat{D}$, is natural in $C$ for a fixed object $D$ in $\cat{D}$ if the family $\varphi_{C, D}: F(C, D) \to G(C, D)$, indexed by /only the objects/ $C$ of $\cat{C}$, is a natural transformation from $F(\_, D): \cat{C} \to \cat{B}$ to $G(\_, D): \cat{C} \to \cat{B}$, that is if the diagram
 #+begin_center
 \begin{tikzcd}
 F\tuple{C}{D} \arrow[r, "F\tuple{f}{\id_D}"] \arrow[d, "\hat{\varphi}_C"] & F\tuple{C'}{D} \arrow[d, "\hat{\varphi}_{C'}"] \\
 G\tuple{C}{D} \arrow[r, "G\tuple{f}{\id_D}"] & G\tuple{C'}{D}
 \end{tikzcd}
 #+end_center
+commutes for all arrows $f: C \to C'$ in $\cat{C}$.
+
 Naturality of natural transformations between \(n\)-ary functors is defined in the obvious way, by asserting that fixing all arguments except the one of interest yields a natural transformation. A natural transformation is natural in all its arguments, and a mapping between functors that is natural in all arguments is a natural transformation.
 
 The last tool in the basic categorical toolbox are *adjunctions*. While natural transformations represented a mapping between two parallel functors, an adjunction describes a correspondence between functors going in opposing directions. Given two categories $\cat{C}$ and $\cat{D}$, and functors $F: \cat{C} \to \cat{D}$ and $G: \cat{D} \to \cat{C}$, we say that $F$ is *left adjoint* to $G$ (or equivalently that $G$ is *right adjoint* to $F$) if there is a bijection between \(\Hom\)-sets $\psi_{X, Y}: \hom{FX}{Y} \to \hom{X}{GY}$ for all objects $X$ in $\cat{C}$ and $Y$ in $\cat{D}$, such that it is natural in $X$ and $Y$. This relationship is written $F \dashv G$.
 
-Naturality in $X$ gives rise to the diagram
+Naturality in $X$ means that for any arrow $a: X' \to X$ in $\cat{C}$, the following diagram
 #+begin_center
 \begin{tikzcd}
 \hom{FX}{Y} \arrow[r, "\hom{Fa}{Y}"] \arrow[d, "\psi_{X, Y}"'] & \hom{FX'}{Y} \arrow[d, "\psi_{X', Y}"] \\
 \hom{X}{GY} \arrow[r, "\hom{a}{GY}"] & \hom{X'}{GY}
 \end{tikzcd}
 #+end_center
-while naturality in $Y$ is represented by the diagram
+commutes, while naturality in $Y$ means that for any arrow $a: Y \to Y'$ in $\cat{D}$, the diagram
 #+begin_center
 \begin{tikzcd}
 \hom{FX}{Y} \arrow[r, "\hom{FX}{a}"] \arrow[d, "\psi_{X, Y}"] & \hom{FX}{Y'} \arrow[d, "\psi_{X, Y'}"] \\
 \hom{X}{GY} \arrow[r, "\hom{X}{Ga}"] & \hom{X}{GY'}
 \end{tikzcd}
 #+end_center
+commutes.
 
-There are other, equivalent, definitions of adjunct functors. We present one of them here, because the text to follow uses properties of the definition above as well as the one listed below. We leave out the proof that these two definitions are equivalent, since this work has been done already for example in \cite{MacLane1998}.
+There are other, equivalent, definitions of adjoint functors. We present one of them here, because the text to follow uses properties of the definition above as well as the one listed below. We leave out the standard proof that these two definitions are equivalent, referring to \cite{MacLane1998}.
 
-An adjunction is also determined by a functor $F: \cat{C} \to \cat{D}$ and for every object $D$ in $\cat{D}$, an object $G_0D$ in $\cat{C}$ with an arrow $\epsilon_D: FG_0D \to D$, such that for every arrow $f: FC \to D$ in $\cat{D}$, there is a unique arrow $f^{\flat}: C \to G_0D$, such that the following diagram commutes
+An adjunction is also determined by a functor $F: \cat{C} \to \cat{D}$ and by the existence of "cofree" objects: for every object $D$ in $\cat{D}$, there exists an object $G_0D$ in $\cat{C}$ together with an arrow $\epsilon_D: FG_0D \to D$, such that for every arrow $f: FC \to D$ in $\cat{D}$, there is a unique arrow $f^{\flat}: C \to G_0D$, making the following diagram commute
 #+begin_center
 \begin{tikzcd}
 D & FG_0D \arrow[l, "\epsilon_D"'] \\
@@ -1537,11 +1540,11 @@ D & FG_0D \arrow[l, "\epsilon_D"'] \\
 
 ** Models of intuitionistic programs
 
-For modeling the simply typed \lambda-calculus, we need a way to interpret types, contexts and programs, and in such a way that the interpretation preserves \beta and \eta equivalences.
+For modeling the simply typed \lambda-calculus, we need to interpret types, contexts and programs of STLC, in a way that the interpretation preserves \beta and \eta equivalences.
 
-The types and contexts are represented by objects in a category, and programs are interpreted as arrows from context objects to target type objects \mdash thus to interpret a contextualized type judgment $\Gamma \vdash t: A$, we first need an object $\CatTrans{\Gamma}$, then an object $\CatTrans{A}$, and then find an appropriate arrow $\CatTrans{t}: \CatTrans{\Gamma} \to \CatTrans{A}$. Because the semantic brackets hinder readability of diagrams significantly, we choose to use the same name for a meta object in type theory and its categorical interpretation, so the above example will be henceforth written as $t: \Gamma \to A$ or @@latex:\begin{tikzcd}[cramped,column sep=normal]B \arrow[r, "t"] & A\end{tikzcd}@@.
+The types and contexts are represented by objects in a category, and programs are interpreted as arrows from context objects to target type objects \mdash thus to interpret a contextualized type judgment $\Gamma \vdash t: A$, we first need an object $\CatTrans{\Gamma}$, an object $\CatTrans{A}$, and then an appropriate arrow $\CatTrans{t}: \CatTrans{\Gamma} \to \CatTrans{A}$. Because the semantic brackets hinder readability of diagrams significantly, we choose to use the same name for a meta object in type theory and its categorical interpretation, so the above example will be henceforth written as $t: \Gamma \to A$ or @@latex:\begin{tikzcd}[cramped,column sep=normal]B \arrow[r, "t"] & A\end{tikzcd}@@.
 
-The category for interpreting STLC needs to be equipped with additional structure. We begin by introducing the *product* in a category (which is different from a product of categories), which is a generalization of the Cartesian product from set theory. A product of two object $X$ and $Y$, usually denoted $X \times Y$, is another object in the same category equipped with two arrows, $\pi_1: X \times Y \to X$ and $\pi_2: X \times Y \to Y$, such that for all other objects $W$ and arrows $p: W \to X$ and $q: W \to Y$, there is a unique arrow $m: W \to X \times Y$, called the *factoring arrow*, satisfying the equations $p = \pi_1 \comp m$ and $q: \pi_2 \comp m$. This property is captured in the commuting diagram
+The category for interpreting STLC needs to be equipped with additional structure. We begin by introducing the *product* in a category (which is different from a product of categories), a notion generalizing the Cartesian product from set theory. A product of two objects $X$ and $Y$, usually denoted $X \times Y$, is another object in the same category equipped with two arrows, $\pi_1: X \times Y \to X$ and $\pi_2: X \times Y \to Y$, such that for all other objects $W$ and arrows $p: W \to X$ and $q: W \to Y$, there is a unique arrow $m: W \to X \times Y$, called the *factoring arrow*, satisfying the equations $p = \pi_1 \comp m$ and $q: \pi_2 \comp m$. This property is captured in the commuting diagram
 #+begin_center
 \begin{tikzcd}
 & W \arrow[ld, "p"'] \arrow[rd, "q"] \arrow[d, dashrightarrow, "m"] & \\
@@ -1559,7 +1562,7 @@ We focus on categories that have all binary products, which means that the produ
 #+end_center
 The symmetric isomorphism $\One \times X \cong X$ is provable in the same manner.
 
-Categories with all binary products come equipped with a *product functor* $\_ \times \_: \cat{C} \times \cat{C} \to \cat{C}$, which to each pair of objects $\tuple{C}{D}$ associates their product $C \times D$.
+Categories with all binary products come equipped with a *product functor* $\_ \times \_: \cat{C} \times \cat{C} \to \cat{C}$, which to each pair of objects $\tuple{C}{D}$ associates their product $C \times D$, and acts on arrows in the obvious way.
 
 This structure is enough for us to model contexts. Interpretation of the empty context is the unit $\One$, and context concatenation $\Gamma, A$ is interpreted as the product $\CatTrans{\Gamma} \times A$. Since the product is associative, we omit parentheses.
 
@@ -1572,7 +1575,7 @@ $$
 {A \xrightarrow{\id_A} A}
 $$
 
-The exchange rule is satisfied by the symmetry of the product \mdash there is an isomorphism $p_{X, Y}: X \times Y \to Y \times X$ for all objects $X$ and $Y$, satisfying the property $p_{Y, X} \comp p_{X, Y} = \id_{X \times Y}$.
+The exchange rule is modeled by the symmetry of the product \mdash there is an isomorphism $p_{X, Y}: X \times Y \to Y \times X$ for all objects $X$ and $Y$, satisfying the property $p_{Y, X} \comp p_{X, Y} = \id_{X \times Y}$.
 $$
 \prftree[r]{Exchange}
 {\Gamma \times A \times B \times \Delta \xrightarrow{s} B}
@@ -1585,11 +1588,10 @@ $$
 {\Gamma \times A \times A \xrightarrow{s} B}
 {\Gamma \times A \xrightarrow{\id_\Gamma \times \prodar{\id_A}{\id_A}} \Gamma \times A \times A \xrightarrow{s} B}
 $$
-This association is uniquely determined, because the identity arrows are unique, and so is the arrow $\prodar{\id_A}{\id_A}$.
 
-We can represent this rule, as well as all other deduction rules, via a natural transformation \cite{Benton1993Re}. We choose to present the premises and the conclusion of a rule with appropriate functors, whose arguments are the parts of the rule that "don't change" during the application of the rule, and which are parameterized by the objects that change. Specifically for the contraction rule, we choose the family of functors $P_A, C_A: \op{\cat{C}} \times \cat{C} \to \Set$ (for /premise functor/ and /conclusion functor/), which are parameterized by the object $A$, and functorial in the objects $\Gamma$ and $B$. The premise functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A \times A}{B}$, and the conclusion functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A}{B}$. The family of natural transformations $\varphi^A$ have for components the arrows $\varphi^A_{\Gamma, B}: P_A\tuple{\Gamma}{B} \to C_A\tuple{\Gamma}{B}$.
+We can represent contraction, as well as all other deduction rules, via a natural transformation \cite{Benton1993Re}. We choose to present the premises and the conclusion of a rule with appropriate functors, whose arguments are the parts of the rule that "do not change" during the application of the rule, and which are parameterized by the objects that change. Specifically for the contraction rule, we choose the family of functors $P_A, C_A: \op{\cat{C}} \times \cat{C} \to \Set$ (for /premise functor/ and /conclusion functor/), which are parameterized by the object $A$, and functorial in the objects $\Gamma$ and $B$. The premise functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A \times A}{B}$, and the conclusion functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A}{B}$. The family of natural transformations $\varphi^A$ have for components the arrows $\varphi^A_{\Gamma, B}: P_A\tuple{\Gamma}{B} \to C_A\tuple{\Gamma}{B}$.
 
-This formulation gives rise to two naturality diagrams, one for the naturality in $\Gamma$ and one for the naturality in $B$. In all natural transformations describing derivation rules, the naturality in context objects corresponds to the ability of replacing variables with expressions of the same type. We give a worked example for the contraction rule, and we don't describe the naturality in context objects for other rules.
+This formulation gives rise to two naturality diagrams, one for the naturality in $\Gamma$ and one for the naturality in $B$. In all natural transformations describing derivation rules, the naturality in context objects corresponds to the ability of replacing variables with expressions of the same type. We give a worked example for the contraction rule, and we do not describe the naturality in context objects for other rules.
 
 Naturality in $\Gamma$ is expressed by the following diagram
 #+begin_center
@@ -1634,7 +1636,7 @@ $$
 {\Gamma \xrightarrow{s} A \times B}
 {\Gamma \xrightarrow{s} A \times B \xrightarrow{\pi_2} A}
 $$
-the family of functors indexed by $A$ and $B$ being $P_{A,B}, C_{A, B}: \op{\cat{C}} \to \Set$ defined by $P_{A, B}\Gamma = \hom{\Gamma}{A \times B}$ and $C_{A, B}\Gamma = \hom{\Gamma}{A}$, and analogously for the other component. The functors only take one argument, the context.
+the family of functors indexed by $A$ and $B$ being $P_{A,B}, C_{A, B}: \op{\cat{C}} \to \Set$ defined by $P_{A, B}(\Gamma) = \hom{\Gamma}{A \times B}$ and $C_{A, B}(\Gamma) = \hom{\Gamma}{A}$, and analogously for the other component. The functors only take one argument, the context.
 
 The product introduction is formulated in terms of the factoring arrow, with the deduction
 $$
@@ -1644,7 +1646,7 @@ $$
 {\Gamma \xrightarrow{t} B}
 {\Gamma \xrightarrow{\prodar{s}{t}} A \times B}
 $$
-and functors $P_{A, B}, C_{A, B}: \op{\cat{C}} \to \Set$ defined by $P_{A, B}\Gamma = \hom{\Gamma}{A} \times \hom{\Gamma}{B}$ and $C_{A, B}\Gamma = \hom{\Gamma}{A \times B}$.
+and functors $P_{A, B}, C_{A, B}: \op{\cat{C}} \to \Set$ defined by $P_{A, B}(\Gamma) = \hom{\Gamma}{A} \times \hom{\Gamma}{B}$ and $C_{A, B}(\Gamma) = \hom{\Gamma}{A \times B}$.
 
 Equations are modeled with commutative diagrams. The \beta-reductions correspond exactly to the product property
 #+begin_center
@@ -1686,7 +1688,7 @@ $$
 {\Gamma \times A \xrightarrow{s} B}
 {\Gamma \xrightarrow{s^{\flat}} B^A}
 $$
-with the natural transformation between $P_{A,B}\Gamma = \hom{\Gamma \times A}{B}$ and $C_{A, B}\Gamma = \hom{\Gamma}{B^A}$ being the natural isomorphism with \(\Hom\)-set bijections for components.
+with the natural transformation between $P_{A,B}(\Gamma) = \hom{\Gamma \times A}{B}$ and $C_{A, B}(\Gamma) = \hom{\Gamma}{B^A}$ being the natural isomorphism with \(\Hom\)-set bijections for components.
 
 The $\Elim{\to}$ rule uses the $\epsilon$ evaluator
 $$
@@ -1727,11 +1729,13 @@ As such, we are able to interpret types, programs and equations of the simply ty
 
 ** Models of linear programs
 
-We stated multiple times that the intuitionistic product corresponds to the linear $\with$ product. However, modeling linear contexts as $\with$ products is not desirable, because that would require unnecessary structure \mdash specifically, there is no point in requiring arrows $\pi_1: A \times B \to A$ for all objects $A$ and $B$ when we cannot produce well-typed programs $\Lin{x: A}, \Lin{y: B} \vdash s: A$ for all types $A$ and $B$, and analogously for the second component. Instead, we introduce a more general concept of a *symmetrically monoidal category*, which is used for modeling context concatenation and the $\tens$ product.
+When modeling linear programs, we limit ourselves to programs containing only linear variables \mdash that is, we do not attempt to give interpretations to the $\Intro{\bang}$ and $\Elim{\bang}$ rules, which only make sense in the presence of intuitionistic variables, as the difficulty of this problem is far beyond the level of a bachelor's thesis. An interested reader may take a look at the survey \cite{DePaiva2014}.
 
-A symmetrically monoidal category is a category $\cat{C}$ with a symmetric monoidal structure, represented by a functor $\tens: \cat{C} \times \cat{C} \to \cat{C}$, called the *tensor product*, a specific object $1$ from $\cat{C}$, called the *unit object*, four natural isomorphisms and four commuting diagrams, listed below.
+We stated multiple times that the intuitionistic product corresponds to the linear $\with$ product. However, modeling linear contexts as $\with$ products is not desirable, because that would require unnecessary structure \mdash specifically, there is no point in requiring arrows $\pi_1: A \times B \to A$ for all objects $A$ and $B$ when we cannot produce well-typed programs $\Lin{x: A}, \Lin{y: B} \vdash s: A$ for all types $A$ and $B$, and analogously for the second component. Instead, we introduce a more general concept of a *symmetrically monoidal category*, which is used for modeling context concatenation and the $\tens$ product.
 
-The first natural isomorphism is the *associator* $\assoc{X}{Y}{Z}: (X \tens Y) \tens Z \to X \tens (Y \tens Z)$, which represents associativity of the tensor product. Second and third are the *left* and *right unitor*, written $\lambda_X: \One \tens X \to X$ and $\rho_X: X \tens \One \to X$, respectively. These represent the fact that $\One$ is the left and right unit of the tensor product. The fourth isomorphism is the *braiding* $B_{X, Y}: X \tens Y \to Y \tens X$, which provides the symmetry of the tensor product.
+A symmetrically monoidal category is a category $\cat{C}$ with a symmetric monoidal structure, represented by a functor $\tens: \cat{C} \times \cat{C} \to \cat{C}$, called the *tensor product*, a specific object $\One_{\tens}$ from $\cat{C}$, called the *unit object*, four natural isomorphisms and four kinds of commuting diagrams, listed below.
+
+The first natural isomorphism is the *associator* $\assoc{X}{Y}{Z}: (X \tens Y) \tens Z \to X \tens (Y \tens Z)$, which represents associativity of the tensor product. Second and third are the *left* and *right unitor*, written $\lambda_X: \One_{\tens} \tens X \to X$ and $\rho_X: X \tens \One_{\tens} \to X$, respectively. These represent the fact that $\One_{\tens}$ is the left and right unit of the tensor product. The fourth isomorphism is the *braiding* $B_{X, Y}: X \tens Y \to Y \tens X$, which provides the symmetry of the tensor product.
 
 The commuting diagrams enforce that the natural isomorphisms obey our intuitive expectations. The first one is the pentagon identity
 #+begin_center
@@ -1743,7 +1747,7 @@ The commuting diagrams enforce that the natural isomorphisms obey our intuitive 
 followed by the triangle identity
 #+begin_center
 \begin{tikzcd}
-(X \tens \One) \tens Y \arrow[rr, "\assoc{X}{\One}{Y}"] \arrow[rd, "\rho_X \tens \id"'] & & X \tens (\One \tens Y) \arrow[ld, "\id \tens \lambda_Y"] \\
+(X \tens \One_{\tens}) \tens Y \arrow[rr, "\assoc{X}{\One_{\tens}}{Y}"] \arrow[rd, "\rho_X \tens \id"'] & & X \tens (\One_{\tens} \tens Y) \arrow[ld, "\id \tens \lambda_Y"] \\
 & X \tens Y &
 \end{tikzcd}
 #+end_center
@@ -1761,7 +1765,57 @@ X \tens Y \arrow[r, "B_{X, Y}"] \arrow[rd, "\id"'] & Y \tens X \arrow[d, "B_{Y, 
 & X \tens Y
 \end{tikzcd}
 #+end_center
+holding for all objects $X$, $Y$, $Z$ and $W$ of $\cat{C}$.
 
+This structure gives us enough power to express both context concatenation in LLC, in the same way that Cartesian products interpreted context concatenation in STLC, and the $\tens$ product.
+
+We begin with the linear identity axiom, which is interpreted by the identity arrow
+$$
+\prftree[r]{$\Lin{\mathrm{Id}}$}
+{A \xrightarrow{\id_A} A}
+$$
+
+Programs with only linear variables are closed under substitution, because there is no risk of performing a substitution resulting in a linear variable being used multiple times \mdash that would require substituting for intuitionistic variables, which are not present. Therefore, we can interpret substitution with composition, where the program $t[x:=s]$ is composed of a term $t: B$ with a free linear variable $x: A$ and possibly others, and a term $s: A$ with possibly free linear variables. The interpretation of $t$ is $\Gamma \tens A \tens \Delta \xrightarrow{t} B$, the program $s$ is interpreted as $\Theta \xrightarrow{s} A$, and their composition is $\Gamma \tens \Theta \tens \Delta \xrightarrow{\id_\Gamma \tens s \tens \id_\Delta} \Gamma \tens A \tens \Delta \xrightarrow{t} B$.
+
+From the structural rules, only exchange can be interpreted without intuitionistic variables, and it is satisfied by the symmetry of the tensor product, provided by the isomorphism $B_{A, B}$
+$$
+\prftree[r]{Exchange}
+{\Gamma \tens A \tens B \tens \Delta \xrightarrow{s} C}
+{\Gamma \tens B \tens A \tens \Delta \underset{B_{A, B}}{\cong} \Gamma \tens A \tens B \tens \Delta \xrightarrow{s} C}
+$$
+
+The tensor product functor is used also as interpretation for the $\tens$ product. The $\Intro{\tens}$ rule is obvious from the functorial structure
+$$
+\prftree[r]{$\Intro{\tens}$}
+{\Gamma \xrightarrow{s} A}
+{\Delta \xrightarrow{t} B}
+{\Gamma \tens \Delta \xrightarrow{s \tens t} A \tens B}
+$$
+where the premise functor $P_{A, B}: \op{\cat{C}} \times \op{\cat{C}} \to \Set$ is given by $P_{A, B}\tuple{\Gamma}{\Delta} = \hom{\Gamma}{A} \times \hom{\Delta}{B}$ and the conclusion functor is given by $C_{A, B}\tuple{\Gamma}{\Delta} = \hom{\Gamma \tens \Delta}{A \tens B}$. Naturality of the transformation from $P_{A, B}$ to $C_{A, B}$ again corresponds to the ability to do substitution in the contexts $\Gamma$ and $\Delta$.
+
+The $\Elim{\tens}$ rule has a more interesting structure \mdash for once, the premise and conclusion functors take more than context arguments
+$$
+\prftree[r]{$\Elim{\tens}$}
+{\Gamma \tens A \tens B \xrightarrow{s} C}
+{\Delta \xrightarrow{t} A \tens B}
+{\Gamma \tens \Delta \xrightarrow{\id_\Gamma \tens t} \Gamma \tens A \xrightarrow{s} C}
+$$
+The corresponding functors take $C$ as one of their parameters \mdash the premise functor is defined as $P_{A, B}: \op{\cat{C}} \times \op{\cat{C}} \times \cat{C} \to \Set$ by $P_{A, B}(\Gamma, \Delta, C) = \hom{\Gamma \tens A \tens B}{C} \times \hom{\Delta}{A \tens B}$, and the conclusion functor is $C_{A, B}(\Gamma, \Delta, C) = \hom{\Gamma \tens \Delta}{C}$. Chasing an element of $P_{A, B}(\Gamma, \Delta, C)$ through the diagram of naturality in $C$, we obtain the equation $\tenscase{t}{x}{y}{f[u:=s]} \equiv f[u:=\tenscase{t}{x}{y}{s}]$, which is one of the commuting conversions. Note that this substitution is performed only on programs that only contain linear variables, so the substitution corresponds to filling a term-with-holes that was used without the constructs $\bangcase{C[\_]}{x}{s}$ and $\bangcase{s}{x}{C[\_]}$. Therefore naturality in $C$ recovers the commuting conversion.
+
+For interpreting linear functions, we need a similar structure to exponents in Cartesian closed categories. There, the exponent functors are right adjoint to the Cartesian product, because that is how context concatenation in STLC is interpreted. In LLC, context concatenation is interpreted with the tensor product, so we need a right adjoint of that.
+
+We require a functor $\_ \loli \_: \op{\cat{C}} \times \cat{C} \to \cat{C}$, which for any object $A$ in $\cat{C}$ gives a right adjoint to the tensor product, written $\_ \tens A \dashv A \loli \_$.
+
+Then, the $\loli$ rules and equations are interpreted exactly the same as the $\to$ rules and equations, except the Cartesian product is replaced with the tensor product. This is possible because none of the $\to$ rules and equations considered the projection arrows, instead they are purely based on the adjunction structure. For example, the $\Intro{\loli}$ rule is interpreted by the rule
+$$
+\prftree[r]{$\Intro{\loli}$}
+{\Gamma \tens A \xrightarrow{s} B}
+{\Gamma \xrightarrow{s^{\flat}} (A \loli B)}
+$$
+
+A symmetric monoidal category with the $\loli$ functor described above is called a *symmetric monoidal closed category*, and its structure reflects the multiplicative fragment of intuitionistic linear logic \mdash that is only the proofs (or programs) consisting of linear variables and the $\tens$ and $\loli$ types.
+
+If we additionally equip the category with a Cartesian product, and include the interpretation of the $\times$ product from STLC, we obtain a Cartesian symmetric monoidal closed category, which is able to interpret all programs from LLC that only use linear variables.
 
 #+begin_export latex
 \chapter*{References}
@@ -1769,6 +1823,14 @@ X \tens Y \arrow[r, "B_{X, Y}"] \arrow[rd, "\id"'] & Y \tens X \arrow[d, "B_{Y, 
 \bibliographystyle{apacite}
 \bibliography{ComputationalTrinitarianism}
 #+end_export
+
+* COMMENT Topic
+
+Computational trinitarianism describes the intimate relationship between logic, category theory and type theory. This relationship identifies propositions of a logic with a type of a corresponding type system, and also establishes a correspondence between a proof of a proposition, a term (program) of a given type, and a generalized element of an object in a category.
+A linear type system is a special kind of a substructural type system with important applications in computer science. An advantage of a linear type system resides in its ability to place constraints on the usage of (or access to) variables (resources).
+The aim of the bachelor thesis is to describe linear logic as an example of a substructural logic, to construct a linear type system stemming from that logic, and to give their categorical semantics via categories with structure.
+The style and presentation of the thesis will be theoretical.
+
 
 * Footnotes
 
@@ -1781,5 +1843,5 @@ X \tens Y \arrow[r, "B_{X, Y}"] \arrow[rd, "\id"'] & Y \tens X \arrow[d, "B_{Y, 
 [fn:1] The notation is borrowed from Gentzen's other proof calculus, the sequent calculus. To prevent confusion of the two systems, we prefer the term /contextualized judgment/ to Gentzen's /sequent/.
 
 # Local Variables:
-# org-latex-classes: (("book" "\\documentclass[11pt,twoside,a4paper]{book}" ("\\chapter{%s}" . "\\chapter*{%s}") ("\\section{%s}" . "\\section*{%s}") ("\\subsection{%s}" . "\\subsection*{%s}")))
+# org-latex-classes: (("book" "\\documentclass[11pt,twoside,a4paper]{book}" ("\\chapter{%s}" . "\\chapter*{%s}") ("\\section{%s}" . "\\section*{%s}") ("\\paragraph{%s}" . "\\paragraph*{%s}")))
 # End:
