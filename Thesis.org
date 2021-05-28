@@ -6,6 +6,7 @@
 #+latex_header: \usepackage{stmaryrd}
 #+latex_header: \usepackage{mathtools}
 #+latex_header: \usepackage{tikz-cd}
+#+latex_header: \usepackage{rotating}
 #+latex_header: \tikzcdset{every label/.append style={font=\small}}
 #+latex_header: \tikzcdset{every diagram/.append style={row sep={4em}, column sep={4em}}}
 #+latex_header: \usepackage{apacite}
@@ -73,9 +74,20 @@
 # Examples
 #+latex_header: \newcommand{\Set}{\mathbf{Set}}
 #+latex_header: \newcommand{\Grp}{\mathbf{Grp}}
+#+latex_header: \newcommand{\op}[1]{#1^{\mathsf{op}}}
 
 # Natural transformations
 #+latex_header: \newcommand{\nat}[2]{#1 \Rightarrow #2}
+
+# Interpretation
+#+latex_header: \newcommand{\CatTrans}[1]{\left\llbracket #1 \right\rrbracket_C}
+
+# Products
+#+latex_header: \newcommand{\prodar}[2]{\left\langle #1, #2 \right\rangle}
+
+# Monoidal structure
+#+latex_header: \newcommand{\One}{\mathsf{1}}
+#+latex_header: \newcommand{\assoc}[3]{\alpha_{#1, #2, #3}}
 
 #+latex_header: \newcommand\WorkTitle{Computational trinitarianism and Linear types}
 #+latex_header: \newcommand\FirstandFamilyName{Vojtěch Štěpančík}
@@ -867,7 +879,7 @@ Objects of STLC are *well-typed* terms of the untyped \lambda-calculus. A well-t
 
 Analogues to the structural rules from intuitionistic logic exist for STLC. The only difference is that the type-theoretical variants provide additional information on their action on terms. All three rules are listed in Figure [[fig:stlc_struct]], along with the identity axiom.
 
-The exchange rules remains mostly unchanged. It asserts that changing the order of variable typings in the context has no effect on neither the typed term nor its type.
+The exchange rule remains mostly unchanged. It asserts that changing the order of variable typings in the context has no effect on either the typed term or its type.
 
 The weakening rule plays the same role as logical weakening, but it also states that the conclusion deduces the same term of the same type as the premise. As stated above, there is an implicit assumption that the variable $x$ is not contained in the context $\Gamma$.
 
@@ -939,7 +951,7 @@ $$
 \end{align*}
 #+end_figure
 
-On the other hand, the induction and elimination rules for product types looks exactly like logical conjunction. Previously, we saw that conjunction in intuitionistic logic encodes the availability of proofs of both of its constituents, and this notion is made explicit as the product involves storing both terms. The elimination rules with \beta-reduction say that either of the two original terms may be recovered, and the reductions correspond to proof reduction of intuitionistic conjunction. The \eta-conversion for product types fulfills the same role as the one for function types \mdash we see that every object of a product type is equivalent to a term constructed with the $\Intro{\times}$ rule. The rules and equations are listed in Figure [[fig:stlc_prod]].
+On the other hand, the introduction and elimination rules for product types looks exactly like the ones for logical conjunction. Previously, we saw that conjunction in intuitionistic logic encodes the availability of proofs of both of its constituents, and this notion is made explicit as the product involves storing both terms. The elimination rules with \beta-reduction say that either of the two original terms may be recovered, and the reductions correspond to proof reduction of intuitionistic conjunction. The \eta-conversion for product types fulfills the same role as the one for function types \mdash we see that every object of a product type is equivalent to a term constructed with the $\Intro{\times}$ rule. The rules and equations are listed in Figure [[fig:stlc_prod]].
 
 #+name: fig:stlc_prod
 #+caption: Rules and equations of the product type
@@ -988,11 +1000,11 @@ Lastly, the \beta-reduction rules, which are computational in nature, correspond
 
 Given the correspondence between intuitionistic logic and the simply typed \lambda-calculus, we might wonder if there is a programming language corresponding to linear logic, and indeed there is.
 
-In this section, we introduce a programming language called /linear \lambda-calculus/, or LLC. Its form is given by assigning terms to the logical deduction rules of linear logic.
+In this section, we introduce a programming language called /linear \lambda-calculus/, or LLC. Its form is given by assigning terms to the logical deduction rules of linear logic. The syntax was influenced by \cite{Wadler1993} and \cite{Barber1996}.
 
 The context of contextualized judgments in LLC is a list of type judgments, each of which is enclosed in either square brackets $\Int{\_}$, indicating an intuitionistic assumption, or angle brackets $\Lin{\_}$, indicating a linear assumption. As with STLC, the terms typed in assumptions must be variables, and each variable can appear in the context at most once.
 
-The type system includes two axioms, one for every assumption kind, and they are used for introducing variables. The structural rules are almost identical to the ones of STLC, with the exception that they only act on intuitionistic assumptions. The axioms and structural rules are listed in Figure [[fig:llc_struct]]. The Exchange rule does not show any brackets around its assumptions, which is done to indicate that any two assumptions can be exchanged. This syntactic deviation is made in the name of not having to specify four separate exchange rules, one for each combination of an intuitionistic/linear pair.
+The type system includes two axioms, one for every kind of assumption, and they are used for introducing variables. The structural rules are almost identical to the ones of STLC, with the exception that they only act on intuitionistic assumptions. The axioms and structural rules are listed in Figure [[fig:llc_struct]]. The Exchange rule does not show any brackets around its assumptions, which is done to indicate that any two assumptions can be exchanged. This syntactic deviation is made in the name of not having to specify four separate exchange rules, one for each combination of an intuitionistic/linear pair.
 
 We can see how the contraction rule allows an intuitionistic variable to be used more than once in a proof \mdash instances of two separate intuitionistic assumptions of the same type can be replaced by one variable.
 
@@ -1024,7 +1036,7 @@ $$
 $$
 #+end_figure
 
-The rules of linear functions assign terms to $\loli$ introduction and elimination, producing linear abstraction and linear application. As a consequence of $\lambda$ expression being formed strictly by binding linear variables, we can conclude that every variable bound by a $\lambda$ expression is used exactly once in its body. Therefore, the \beta-reduction is correct, meaning that the expression $t$ being substituted will end up being used exactly once. Both rules and equations for linear functions are listed in Figure [[fig:llc_fun]].
+The rules of linear functions assign terms to $\loli$ introduction and elimination, producing linear abstraction and linear application. As a consequence of $\lambda$-terms being formed strictly by binding linear variables, we can conclude that every variable bound by a $\lambda$-term is used exactly once in its body. Therefore, the \beta-reduction is correct, meaning that the term $t$ being substituted will end up being used exactly once. Both rules and equations for linear functions are listed in Figure [[fig:llc_fun]].
 
 #+name: fig:llc_fun
 #+caption: Rules and equations for the $\loli$ function type
@@ -1094,7 +1106,7 @@ $$
    {\Lin{x: A}, \Lin{y: B} \vdash \tenstup{x}{y}: (A \tens B)}}
  {\Gamma \vdash \tenscase{s}{x}{y}{\tenstup{x}{y}}: (A \tens B)}}
 $$
-We can see that the order of introduction/elimination is reversed for this conversion. Note, however, that this proof tree is not subject to \beta-reduction, because the introduction and elimination rules act on different instances of the connective \mdash we introduce the term $\tenstup{x}{y}$, but eliminate the term $s$. The reason for this pattern change is that the $\tens$ product has a different /polarity/. While all the previous types were negative types, the $\tens$ product is positive. Intuitively, positive types encode structure, while negative types encode behavior. Exploration of type polarity is, however, out of scope for this thesis, therefore the interested reader may consult \cite{Zeilberger2009}.
+We can see that the order of introduction/elimination is reversed for this conversion. Note, however, that this proof tree is not subject to \beta-reduction, because the introduction and elimination rules act on different instances of the connective \mdash we introduce the term $\tenstup{x}{y}$, but eliminate the term $s$. The reason for this pattern change is that the $\tens$ product has a different /polarity/. While all the previous types were /negative types/, the $\tens$ product is /positive/. Intuitively, positive types encode structure, while negative types encode behavior. Exploration of type polarity is, however, out of scope for this thesis, therefore the interested reader may consult \cite{Zeilberger2009}.
 
 #+name: fig:llc_tens
 #+caption: Rules and equations for the $\tens$ product type
@@ -1201,7 +1213,7 @@ C[\_], D[\_] &::=\ &&\_ \\
 \end{alignat*}
 for $x$ and $y$ ranging over variables and $s$ ranging over terms of LLC.
 
-In effect, a term-with-holes is a program constructed without the use of the $\Intro{\bang}$ rule, with a subexpression replaced by '_', called a hole. Note that a term-with-holes $C[\_]$ uses exactly one hole. Emphasis is once again on the terminology "uses", because multiple holes may appear in a term-with-holes, if it was constructed using the $\tuple{C[\_]}{D[\_]}$ rule. Next, we provide a way to fill the hole \mdash $C[s]$ is defined as the term $C[\_]$ with the hole replaced by the term $s$.
+In effect, a term-with-holes is a program constructed without the use of the $\Intro{\bang}$ rule, with a subterm replaced by '_', called a hole. Note that a term-with-holes $C[\_]$ uses exactly one hole. Emphasis is once again on the terminology "uses", because multiple holes may appear in a term-with-holes, if it was constructed using the $\tuple{C[\_]}{D[\_]}$ rule. Next, we provide a way to fill the hole \mdash $C[s]$ is defined as the term $C[\_]$ with the hole replaced by the term $s$.
 
 The commuting conversions are listed in Figure [[fig:comm_conv]]. The motivating example mentioned above is an application of the first commuting conversion, with the term-with-holes $C[\_]$ being equal to $(f\ \_)$, and the term $s$ being equal to $\tenstup{x}{y}$.
 
@@ -1225,7 +1237,7 @@ $$
    {\Theta, \Delta \vdash \tenscase{s}{x}{y}{t}: E}}
  {\Gamma, \Theta, \Delta \vdash C[\tenscase{s}{x}{y}{t}]: D}
 $$
-Since the first derivation contains the context $\Gamma, \Theta, \Lin{x: A}, \Lin{y: B}$, we know that neither $x$ or $y$ may appear in $\Gamma$, which contains the free variables of $C[\_]$. The second condition specifies that the $x$ and $y$ that are free in $t$ are the same $x$ and $y$ that are bound by the pattern matching in the final term. The only way to make them differ would be if the proof tree of $C[\_]$ first bound them for $t$, and then introduced them as new variables. For example, the term-with-hole
+Since the first derivation contains the context $\Gamma, \Theta, \Lin{x: A}, \Lin{y: B}$, we know that neither $x$ nor $y$ may appear in $\Gamma$, which contains the free variables of $C[\_]$. The second condition specifies that the $x$ and $y$ that are free in $t$ are the same $x$ and $y$ that are bound by the pattern matching in the final term. The only way to make them differ would be if the proof tree of $C[\_]$ first bound them for $t$, and then introduced them as new variables. For example, the term-with-hole
 $$
 (((\lambda y. (\lambda x. \_))\ x)\ y)
 $$
@@ -1245,7 +1257,7 @@ Similar reasoning is used for obtaining the conditions of the second commuting c
 #+end_figure
 
 ** Rationale for kinded assumptions
-Equipped with an explicit notation for proof terms, we can see why this system distinguishes between intuitionistic assumptions and exponential types as two representations of free resources. While intuitionistic assumptions can only represent /variables/, objects of exponential types can be entire programs, containing linear variables. One might be tempted to simplify LLC by removing intuitionistic assumptions and replacing them with assumptions of exponential types, for example giving rise to the alternative rule for contraction:
+Equipped with an explicit notation for terms, representing proofs, we can see why this system distinguishes between intuitionistic assumptions and exponential types as two representations of free resources. While intuitionistic assumptions can be only /variables/, objects of exponential types can be entire programs, containing linear variables. One might be tempted to simplify LLC by removing intuitionistic assumptions and replacing them with assumptions of exponential types, for example giving rise to the alternative rule for contraction:
 $$
 \prftree[r]{$\bang{\text{Contraction}}$}
  {\Gamma, x: \bang{A}, y: \bang{A} \vdash s: B}
@@ -1338,9 +1350,9 @@ For the induction step, we assume that the property holds for every subterm, and
 &= \LinTrans{(\lambda y. t)}[x:=\LinTrans{s}] \\
 \LinTrans{(t\ u)[x:=s]}
 &= \LinTrans{(t[x:=s]\ u[x:=s])} \\
-&= \LinTrans{t[x:=s]}\ \bang{\LinTrans{u[x:=s]}} \\
-&= \LinTrans{t}[x:=\LinTrans{s}]\ \bang{\LinTrans{u}[x:=\LinTrans{s}]} \\
-&= \LinTrans{t}\ \bang{\LinTrans{u}}[x:=\LinTrans{s}] \\
+&= (\LinTrans{t[x:=s]}\ \bang{\LinTrans{u[x:=s]}}) \\
+&= (\LinTrans{t}[x:=\LinTrans{s}]\ \bang{\LinTrans{u}[x:=\LinTrans{s}]}) \\
+&= (\LinTrans{t}\ \bang{\LinTrans{u}})[x:=\LinTrans{s}] \\
 &= \LinTrans{(t\ u)}[x:=\LinTrans{s}] \\
 \LinTrans{\tuple{t}{u}[x:=s]}
 &= \LinTrans{\tuple{t[x:=s]}{u[x:=s]}} \\
@@ -1353,7 +1365,7 @@ For the induction step, we assume that the property holds for every subterm, and
 &= \fst{\LinTrans{t[x:=s]}} \\
 &= \fst{\LinTrans{t}[x:=\LinTrans{s}]} \\
 &= \fst{\LinTrans{t}}[x:=\LinTrans{s}] \\
-&= \LinTrans{\fst{t}}[x:=\LinTrans{x}] \\
+&= \LinTrans{\fst{t}}[x:=\LinTrans{s}] \\
 \LinTrans{\snd{t}[x:=s]}
 &= \LinTrans{\snd{t[x:=s]}} \\
 &= \snd{\LinTrans{t[x:=s]}} \\
@@ -1402,41 +1414,38 @@ Since we covered all equations from STLC, we can conclude that equivalent progra
 
 Category theory is the study of categories, which allow for expressing many mathematical structures and properties via diagrams of arrows between abstract objects \cite{MacLane1998}. Categorical semantics, as opposed to the traditional set-theoretical interpretations, have the advantage of being defined with more general structures, not limiting oneself to sets specifically \cite[pp.129--132]{Crole1993}.
 
-This chapter introduces only those categorical concepts that are necessary for giving categorical semantics to the linear lambda calculus. For a broader introduction to category theory, see \cite{MacLane1998} or \cite{Adamek1990}. The ultimate objective is to represent types as objects in a category, programs as arrows from a context object to a target object, and type constructors as functors.
+This chapter introduces only those categorical concepts that are necessary for giving categorical semantics to the linear lambda calculus, and it only gives a bird-eye view. For a broader introduction to category theory, see \cite{MacLane1998} or \cite{Adamek1990}. The ultimate objective is to represent types as objects in a category, programs as arrows from a context object to a target object, type constructors as functors and rules as natural transformations.
 
-A *category* is composed of two collections, the *objects* and the *arrows*, two operations on any arrow, the *source* and the *target*, and two properties, the *arrow composition* operator and the existence of *identity arrows*, which are the left and right identity for the composition.
+A *category* is composed of two collections, the *objects* and the *arrows*, two operations on any arrow, the *source* and the *target*, and additional structure, specifically the *arrow composition* operator and the existence of *identity arrows*, which are the left and right identity for the composition.
 
-The source and target operations, written $\Src$ and $\Tar$, respectively, each associates an object to an arrow \mdash an arrow $a$ with $\src{a} = X$ and $\tar{a} = Y$ is written graphically as $a: X \to Y$. The collection of arrows between objects $X$ and $Y$ is written $\hom{X}{Y}$.
+The source and target operations are written $\Src$ and $\Tar$, respectively, and each associates an object to an arrow \mdash an arrow $a$ with $\src{a} = X$ and $\tar{a} = Y$ is written graphically as $a: X \to Y$ or $X \xrightarrow{a} Y$. The collection of arrows between objects $X$ and $Y$ is written $\hom{X}{Y}$.
 
-The composition operator asserts that for any two arrows with matching ends, for example $a: X \to Y$ and $b: Y \to Z$, there exists an arrow $b \comp a: X \to Z$. This composition is associative, that is the following equality holds for any three arrows $a: X \to Y$, $b: Y \to Z$, $c: Z \to W$ for any four objects $X$, $Y$, $Z$ and $W$
+The composition operator asserts that for any two arrows with matching ends, for example $a: X \to Y$ and $b: Y \to Z$, there exists an arrow $b \comp a: X \to Z$. This composition is associative, that is, the following equality holds for any three arrows $a: X \to Y$, $b: Y \to Z$, $c: Z \to W$ for any four objects $X$, $Y$, $Z$ and $W$
 $$
 c \comp (b \comp a) = (c \comp b) \comp a
 $$
 
-The property of identity arrows asserts that every object $X$ is equipped with the identity arrow $\id_X: X \to X$. In situations where the object is apparent from context, we choose to omit the subscript and simply write $\id$. The identity arrows serve as identities for composition, which is described by the equations
+Every object $X$ is equipped with the identity arrow $\id_X: X \to X$. The identity arrows serve as identities for composition, which is described by the equations
 \begin{align*}
 \id_{\tar{a}} \comp a &= a \\
 a \comp \id_{\src{a}} &= a
 \end{align*}
+In situations where the object is apparent from context, we choose to omit the subscript and simply write $\id$.
 
 Examples of categories include $\Set$, which is the category with all sets for objects and functions for arrows, or $\Grp$, the category of all groups and homomorphisms between them.
+
+For every category $\cat{C}$, there exists the *opposite category* $\op{\cat{C}}$. The opposite category has the exact same objects and identity arrows as the original category, but the arrows are reversed \mdash the collection of arrows $\hom{X}{Y}$ in $\cat{C}$ corresponds to the collection of arrows $\hom{Y}{X}$ in $\op{\cat{C}}$.
 
 An important tool of category theory are commutative diagrams. A commutative diagram is a diagram for which commutativity is either assumed or proven. Such a diagram contains nodes, which represent objects, and directed edges, which represent arrows. For example, we can construct a commutative diagram which represents the property of the identity arrow being the identity of arrow composition.
 #+begin_center
 \begin{tikzcd}
-X \arrow[r, "a"] \arrow[rd, "a"] & Y \arrow[d, "\id_Y"] \arrow[rd, "b"] & \\
+X \arrow[r, "a"] \arrow[dr, "a"] & Y \arrow[d, "\id_Y"] \arrow[rd, "b"] & \\
 & Y \arrow[r, "b"] & Z
 \end{tikzcd}
 #+end_center
 This diagram commutes when the two triangles commute, and we can see that the left triangle expresses the equality $\id_Y \comp a = a$, and the right one $b \comp \id_Y = b$.
 
-An arrow $a: X \to Y$ is an *isomorphism* if there is another arrow $a^{-1}: Y \to X$ such that the diagram
-#+begin_center
-\begin{tikzcd}
-X \arrow[loop, "\id_X"', distance=2em, in=215, out=145] \arrow[r, shift left, "a"] & Y \arrow[loop, "\id_Y"', distance=2em, in=35, out=325] \arrow[l, shift left, "a^{-1}"]
-\end{tikzcd}
-#+end_center
-commutes. Commutativity with the identity arrows is automatic, so the information provided by the diagram are the equations $a^{-1} \comp a = \id_X$ and $a \comp a^{-1} = \id_Y$. Isomorphisms are also called invertible arrows.
+An arrow $a: X \to Y$ is an *isomorphism* if there is another arrow $a^{-1}: Y \to X$ such that the equations $a^{-1} \comp a = \id_X$ and $a \comp a^{-1} = \id_Y$ hold. Isomorphisms are also called /invertible/ arrows.
 
 In the remainder of this thesis, we will only consider *locally small categories*, which have the property that for every two objects $X$ and $Y$, the collection $\hom{X}{Y}$ is a set. For example the category *Set* is locally small, because although the objects form a proper class, there is only a set of functions between any two given sets.
 
@@ -1448,22 +1457,14 @@ In other words, a functor $F: \cat{C} \to \cat{D}$ consists of a mapping from ob
 #+caption: Functor laws
 #+begin_figure
 #+begin_center
-\begin{tikzcd}
-X \arrow[d, "a"] \\
-Y
-\end{tikzcd}
-$\Rightarrow$
-\begin{tikzcd}
-FX \arrow[d, "Fa"] \\
-FY
-\end{tikzcd}
 \hspace{2em}
 \begin{tikzcd}
 X \arrow[loop, "\id_X"', distance=2em, in=305, out=235]
 \end{tikzcd}
 $\Rightarrow$
 \begin{tikzcd}
-FX \arrow[loop, "F\id_X"', distance=2em, in=305, out=235] \arrow[loop, "\id_{FX}", distance=2em, in=55, out=125]
+FX \arrow[d, "F\id_X", shift left] \arrow [d, "\id_{FX}"', shift right] \\
+FX
 \end{tikzcd}
 \hspace{2em}
 \begin{tikzcd}
@@ -1480,9 +1481,13 @@ FX \arrow[r, "Fa"] \arrow[dr, "F(b \comp a)"'] & FY \arrow[d, "Fb"] \\
 
 Because we are interested in functors with multiple parameters, we also need to describe the concept of a *product category*. Given two categories $\cat{C}$ and $\cat{D}$, their product is the category $\cat{C} \times \cat{D}$. Objects of this category are ordered pairs $\tuple{C}{D}$, where $C$ is an object of $\cat{C}$ and $D$ is an object of $\cat{D}$, and arrows of this category are ordered pairs $\tuple{f}{g}: \tuple{C}{D} \to~\tuple{C'}{D'}$, where $f: C \to C'$ and $g: D \to D'$ are arrows of $\cat{C}$ and $\cat{D}$, respectively. Identity and composition are defined in the obvious way, the identity arrow being $\id_{\tuple{C}{D}} = \tuple{\id_C}{\id_D}$ and composition being $\tuple{f'}{g'} \comp \tuple{f}{g} = \tuple{f' \comp f}{g' \comp g}$.
 
-A functor $F: \cat{C} \times \cat{D} \to \cat{B}$ can be regarded as a mapping with two arguments, one from $\cat{C}$ and one from $\cat{D}$. For example, we can define the Cartesian product on sets as a functor $\_ \times \_: \Set \times \Set \to \Set$. It takes a pair of two sets, $\tuple{A}{B}$, and maps it to the Cartesian product $A \times B$, which is itself a set. The action on arrows is defined element-wise. When the domain of a functor is not a binary product category, but a more general n-ary product category, then we talk about n-ary functors.
+A functor $F: \cat{C} \times \cat{D} \to \cat{B}$ can be regarded as a mapping with two arguments, one from $\cat{C}$ and one from $\cat{D}$. For example, we can define the Cartesian product on sets as a functor $\_ \times \_: \Set \times \Set \to \Set$. It takes a pair of two sets, $\tuple{A}{B}$, and maps it to the Cartesian product $A \times B$, which is itself a set. The action on arrows is defined element-wise. When the domain of a functor is not a binary product category, but a more general \(n\)-ary product category, then we talk about \(n\)-ary functors.
 
-In the context of n-ary functors, we can refer to the property of being *functorial in an argument*. When saying that a functor $F: \cat{C} \times \cat{D} \to \cat{B}$ is /functorial in $\cat{C}$/, we mean that fixing an object $D$ of $\cat{D}$ gives rise to a functor $\hat{F}: \cat{C} \to \cat{B}$, which is defined by its action on objects $C$ of $\cat{C}$ by $\hat{F}C = F\tuple{C}{D}$, and by its action on arrows $a: C \to C'$ by $\hat{F}a = F\tuple{a}{\id_D}: F\tuple{C}{D} \to F\tuple{C'}{D}$. This notion is extended from binary to n-ary functors, by implying that all arguments other than the one for which we study functoriality are fixed. A functor is functorial in all its arguments, and conversely a mapping that is functorial in all its arguments is a functor.
+In the context of \(n\)-ary functors, we can refer to the property of being *functorial in an argument*. When saying that a functor $F: \cat{C} \times \cat{D} \to \cat{B}$ is /functorial in $\cat{C}$/, we mean that fixing any object $D$ of $\cat{D}$ gives rise to a functor $\hat{F}: \cat{C} \to \cat{B}$, which is defined by its action on objects $C$ of $\cat{C}$ by $\hat{F}C = F\tuple{C}{D}$, and by its action on arrows $a: C \to C'$ by $\hat{F}a = F\tuple{a}{\id_D}: F\tuple{C}{D} \to F\tuple{C'}{D}$. This notion is extended from binary to \(n\)-ary functors, by implying that all arguments other than the one for which we study functoriality are fixed. A functor is functorial in all its arguments, and conversely a mapping that is functorial in all its arguments is a functor.
+
+An important functor we will use is the *$\Hom$ functor*, $\hom{\_}{\_}: \op{\cat{C}} \times \cat{C} \to \Set$, which to every pair of objects $X$ and $Y$ in $\cat{C}$ assigns their \(\Hom\)-set $\hom{X}{Y}$. Functoriality in the second argument means that for every arrow $a: Y \to Y'$, we can find an arrow $\hom{\id_X, a}: \hom{X}{Y} \to \hom{X}{Y'}$. Since the objects of $\Set$ are sets, and the arrows are functions on sets, we can show this action on elements of the \(\Hom\)-sets. An element of the set $\hom{X}{Y}$ is an arrow $a: X \to Y$, and we need to transform it into an arrow $\hom{\id_X}{f}: X \to Y$, which is easily done by post-composition with $f$, because for every arrow $a: X \to Y$, there is an arrow $f \comp a: X \to Y'$.
+
+Functoriality in the first argument requires that it be from the opposite category, $\op{\cat{C}}$. Only in this way can we define the action on arrows as pre-composition, analogously to functoriality in the second argument. We know that every arrow $f: X \to X'$ in $\op{\cat{C}}$ is the arrow $f: X' \to X$ in $\cat{C}$. Then, finding the arrow $\hom{f}{\id_Y}: \hom{X}{Y} \to \hom{X'}{Y}$ is as easy as taking an element of the set $\hom{X}{Y}$, which is an arrow $a: X \to Y$ in $\cat{C}$, and pre-composing it with the arrow $f: X' \to X$ in $\cat{C}$, to obtain the arrow $a \comp f: X' \to Y$, which is an element of the set $\hom{X'}{Y}$.
 
 Furthermore, we will work with mappings between functors, called *natural transformations*. Given two categories $\cat{C}$ and $\cat{D}$, and two functors $F, G: \cat{C} \to \cat{D}$, a natural transformation $\varphi: \nat{F}{G}$ consists of a family of arrows $\varphi_C: FC \to GC$ (its *components*), indexed by objects of $\cat{C}$, such that the following diagram commutes for all objects $X$ and $Y$, all arrows $f: X \to Y$ from $\cat{C}$.
 #+begin_center
@@ -1492,16 +1497,139 @@ GX \arrow[r, "Gf"] & GY
 \end{tikzcd}
 #+end_center
 
-When all the components of a natural transformation are isomorphisms, we talk call it a *natural isomorphism*.
+When all the components of a natural transformation are isomorphisms, we call it a *natural isomorphism*.
 
-Similarly to functoriality in an argument, we can talk about *naturality in an argument* when n-ary functors are involved. The definition is also analogous \mdash provided two functors $F, G: \cat{C} \times \cat{D} \to \cat{B}$, a natural transformation $\varphi: \nat{F}{G}$ is /natural in $\cat{C}$/ if fixing an object $D$ in $\cat{D}$ gives rise to a natural transformation $\hat{\varphi}: \nat{F}{G}$, which is given by its components $\hat{\varphi}_C = \varphi_{\tuple{C}{D}}$. The naturality property is expressed by the following diagram, which uses functoriality of $F$ and $G$ in $\cat{C}$
+Similarly to functoriality in an argument, we can talk about *naturality in an argument* when \(n\)-ary functors are involved. (TODO: wording "Given a family of arrows") The definition is also analogous \mdash given two functors $F, G: \cat{C} \times \cat{D} \to \cat{B}$, a natural transformation $\varphi: \nat{F}{G}$ is /natural in $\cat{C}$/ if fixing any object $D$ in $\cat{D}$ gives rise to a natural transformation $\hat{\varphi}: \nat{F}{G}$, which is given by its components $\hat{\varphi}_C = \varphi_{\tuple{C}{D}}$. The naturality property is expressed by the following diagram, which uses functoriality of $F$ and $G$ in $\cat{C}$
 #+begin_center
 \begin{tikzcd}
 F\tuple{C}{D} \arrow[r, "F\tuple{f}{\id_D}"] \arrow[d, "\hat{\varphi}_C"] & F\tuple{C'}{D} \arrow[d, "\hat{\varphi}_{C'}"] \\
 G\tuple{C}{D} \arrow[r, "G\tuple{f}{\id_D}"] & G\tuple{C'}{D}
 \end{tikzcd}
 #+end_center
-Naturality of natural transformations between n-ary functors is defined in the obvious way, by asserting that fixing all arguments except the one of interest yields a natural transformation. A natural transformation is natural in all its arguments, and a mapping between functors that is natural in all arguments is a natural transformation.
+Naturality of natural transformations between \(n\)-ary functors is defined in the obvious way, by asserting that fixing all arguments except the one of interest yields a natural transformation. A natural transformation is natural in all its arguments, and a mapping between functors that is natural in all arguments is a natural transformation.
+
+The last tool in the basic categorical toolbox are *adjunctions*. While natural transformations represented a mapping between two parallel functors, an adjunction describes a correspondence between functors going in opposing directions. Given two categories $\cat{C}$ and $\cat{D}$, and functors $F: \cat{C} \to \cat{D}$ and $G: \cat{D} \to \cat{C}$, we say that $F$ is *left adjoint* to $G$ (or equivalently that $G$ is *right adjoint* to $F$) if there is a bijection between \(\Hom\)-sets $\psi_{X, Y}: \hom{FX}{Y} \to \hom{X}{GY}$ for all objects $X$ in $\cat{C}$ and $Y$ in $\cat{D}$, such that it is natural in $X$ and $Y$. This relationship is written $F \dashv G$.
+
+Naturality in $X$ gives rise to the diagram
+#+begin_center
+\begin{tikzcd}
+\hom{FX}{Y} \arrow[r, "\hom{Fa}{Y}"] \arrow[d, "\psi_{X, Y}"'] & \hom{FX'}{Y} \arrow[d, "\psi_{X', Y}"] \\
+\hom{X}{GY} \arrow[r, "\hom{a}{GY}"] & \hom{X'}{GY}
+\end{tikzcd}
+#+end_center
+while naturality in $Y$ is represented by the diagram
+#+begin_center
+\begin{tikzcd}
+\hom{FX}{Y} \arrow[r, "\hom{FX}{a}"] \arrow[d, "\psi_{X, Y}"] & \hom{FX}{Y'} \arrow[d, "\psi_{X, Y'}"] \\
+\hom{X}{GY} \arrow[r, "\hom{X}{Ga}"] & \hom{X}{GY'}
+\end{tikzcd}
+#+end_center
+
+** Models of intuitionistic programs
+
+For modeling the simply typed \lambda-calculus, we need a way to interpret types, contexts and programs, and in such a way that the interpretation preserves \beta and \eta equivalences.
+
+The types and contexts are represented by objects in a category, and programs are interpreted as arrows from context objects to target type objects \mdash thus to interpret a contextualized type judgment $\Gamma \vdash t: A$, we first need an object $\CatTrans{\Gamma}$, then an object $\CatTrans{A}$, and then find an appropriate arrow $\CatTrans{t}: \CatTrans{\Gamma} \to \CatTrans{A}$. Because the semantic brackets hinder readability of diagrams significantly, we choose to use the same name for a meta object in type theory and its categorical interpretation, so the above example will be henceforth written as $t: \Gamma \to A$ or @@latex:\begin{tikzcd}[cramped,column sep=normal]B \arrow[r, "t"] & A\end{tikzcd}@@.
+
+The category for interpreting STLC needs to be equipped with additional structure. We begin by introducing the *product* in a category (which is different from a product of categories), which is a generalization of the Cartesian product from set theory. A product of two object $X$ and $Y$, usually denoted $X \times Y$, is another object in the same category equipped with two arrows, $\pi_1: X \times Y \to X$ and $\pi_2: X \times Y \to Y$, such that for all other objects $W$ and arrows $p: W \to X$ and $q: W \to Y$, there is a unique arrow $m: W \to X \times Y$ satisfying the equations $p = \pi_1 \comp m$ and $q: \pi_2 \comp m$. This property is captured in the commuting diagram
+#+begin_center
+\begin{tikzcd}
+& W \arrow[ld, "p"'] \arrow[rd, "q"] \arrow[d, dashrightarrow, "m"] & \\
+X & X \times Y \arrow[l, "\pi_1"] \arrow[r, "\pi_2"'] & Y
+\end{tikzcd}
+#+end_center
+and the arrow $m$ is also denoted $\prodar{p}{q}$.
+
+We focus on categories that have all binary products, which means that the product $X \times Y$ exists for all objects $X$ and $Y$ of the category. We also require presence of the product unit \mdash an object $\One$ in the same category, with the property that for every other object $Z$ in the category, there exists a unique arrow $\One_Z: Z \to \One$. With this property alone, we can show that there is an isomorphism between the objects $X \times \One$ and $X$, since $X$ can be shown to manifest the product property \mdash for every other object $W$, there is only one arrow from it to $\One$, specifically $\One_W$, and then given an arrow $a: W \to X$, there is indeed only one arrow that is equal to $\id \comp a$, and that is $a$ itself.
+#+begin_center
+\begin{tikzcd}
+& W \arrow[ld, "\One_W"'] \arrow[rd, "a"] \arrow[d, dashrightarrow, "a"] & \\
+\One & X \arrow[l, "\One_X"] \arrow[r, "\id"] & X
+\end{tikzcd}
+#+end_center
+The symmetric isomorphism $\One \times X \cong X$ is provable in the same manner.
+
+This structure is enough for us to model contexts. Interpretation of the empty context is the unit $\One$, and context concatenation $\Gamma, A$ is interpreted as the product $\CatTrans{\Gamma} \times A$. Since the product is associative, we omit parentheses.
+
+Composition of arrows reflects substitution \mdash two arrows $s: A \to B$ and $t: B \to C$ represent two programs, the first program $x: A \vdash s: B$ possibly having a free variable of type $A$, and the second program $y: B \vdash t: C$ possibly having a free variable of type $B$. The "possibly" indicates that these variables might not appear in the program if they were introduced via weakening. Upon carefully choosing variable names to prevent accidental captures and conflicts, we interpret the substitution $x: A \vdash t[y:=s]: C$ as the composition $t \comp s: A \to C$.
+
+We proceed to give interpretations to the rules of STLC. The identity axiom requires that every object is equipped with an arrow going to itself, and this arrow is guaranteed to exist by the identity arrow property of all categories. Visually, we represent this rule as
+$$
+\prftree[r]{Id}
+{}
+{A \xrightarrow{\id_A} A}
+$$
+
+The exchange rule is satisfied by the symmetry of the product \mdash there is an isomorphism $p_{X, Y}: X \times Y \to Y \times X$ for all objects $X$ and $Y$, satisfying the property $p_{Y, X} \comp p_{X, Y} = \id_{X \times Y}$.
+
+The contraction rule is given interpretation via the $\prodar{\id_A}{\id_A}: A \to A \times A$.
+$$
+\prftree[r]{Contraction}
+{\Gamma \times A \times A \xrightarrow{s} B}
+{\Gamma \times A \xrightarrow{\id_\Gamma \times \prodar{\id_A}{\id_A}} \Gamma \times A \times A \xrightarrow{s} B}
+$$
+We can represent this rule, as well as all other deduction rules, via a natural transformation \cite{Benton1993Re}. We choose to present the premises and the conclusion of a rule with appropriate functors, whose arguments are the parts of the rule that "don't change" during the application of the rule, and which are parameterized by the objects that change. Specifically for the contraction rule, we choose the family of functors $P_A, C_A: \op{\cat{C}} \times \cat{C} \to \Set$, which are parameterized by the object $A$, and functorial in the objects $\Gamma$ and $B$. The premise functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A \times A}{B}$, and the conclusion functors map the tuple $\tuple{\Gamma}{B}$ to the \(\Hom\)-set $\hom{\Gamma \times A}{B}$. The family of natural transformations $\varphi^A$ have for components the arrows $\varphi^A_{\Gamma, B}: P_A\tuple{\Gamma}{B} \to C_A\tuple{\Gamma}{B}$.
+
+This formulation gives rise to two naturality diagrams, one for the naturality in $\Gamma$ and one for the naturality in $B$. In all natural transformations describing derivation rules, the naturality in context objects corresponds to the ability of replacing variables with expressions of the same type. We give a worked example for the contraction rule, and we don't describe the naturality in context objects for other rules.
+
+Naturality in $\Gamma$ is expressed by the following diagram
+#+begin_center
+\begin{tikzcd}[column sep=8em]
+\hom{\Gamma \times A \times A}{B} \arrow[r, "P_A\tuple{f}{\id_B}"] \arrow[d, "\varphi^A_{\Gamma, B}"] & \hom{\Gamma' \times A}{B} \arrow[d, "\varphi^A_{\Gamma', B}"] \\
+\hom{\Gamma \times A}{B} \arrow[r, "C_A\tuple{f}{\id_B}"] & \hom{\Gamma' \times A}{B}
+\end{tikzcd}
+#+end_center
+Because the components of $\varphi^A$ are arrows in the category $\Set$, we know that they correspond to functions between sets, so we can observe their action on elements of the sets. This action on elements is described in an /element chasing/ diagram, shown in Figure [[fig:ccc_contr]].
+
+#+name: fig:ccc_contr
+#+caption: Element chasing for the naturality diagram of \(\varphi^A_{\_, B}\)
+#+begin_sidewaysfigure
+\begin{tikzcd}
+(\Gamma \times A \times A \xrightarrow{s} B) \arrow[r, mapsto, "P_A\tuple{f}{\id_B}"] \arrow[dd, mapsto, "\varphi^A_{\Gamma, B}"] & (\Gamma' \times A \times A \xrightarrow{f \times \id_{A \times A}} \Gamma \times A \times A \xrightarrow{s} B) \arrow[d, mapsto, "\varphi^A_{\Gamma', B}"] \\
+& \Gamma' \times A \xrightarrow{\id_{\Gamma'} \times \prodar{\id_A}{\id_A}} \Gamma' \times A \times A \xrightarrow{f \times \id_{A \times A}} \Gamma \times A \times A \xrightarrow{s} B \arrow[d, phantom, "=" description] \\
+(\Gamma \times A \xrightarrow{\id_\Gamma \times \prodar{\id_A}{\id_A}} \Gamma \times A \times A \xrightarrow{s} B) \arrow[r, mapsto, "C_A\tuple{f}{\id_B}"] & (\Gamma' \times A \xrightarrow{f \times \id_A} \Gamma \times A \xrightarrow{\id_\Gamma \times \prodar{\id_A}{\id_A}} \Gamma \times A \times A \xrightarrow{s} B)
+\end{tikzcd}
+#+end_sidewaysfigure
+
+The arrow in the upper left corner represents a program with possibly three free variables, one of the type $\Gamma$, and two of the type $A$. For explanation's sake we assign names to the variables, but keep in mind that the names can always be chosen to avoid accidental capture and conflicts. We say that the arrow $s$ is an interpretation of a program $u: \Gamma, x: A, y: A \vdash s: B$. Following this program to the right, we pre-compose the arrow $f: \Gamma' \to \Gamma$, which represents a program $w: \Gamma' \vdash f: \Gamma$. Composition corresponds to substitution, so the program represented by the arrow in the upper right is $w: \Gamma', x: A, y: A \vdash s[u:=f]: B$. Chasing the programs vertically, we apply the contraction rule, so the bottom left arrow is the program $u: \Gamma, z: A \vdash s[x:=z][y:=z]$, and the bottom right arrow is the program $w: \Gamma', z: A \vdash (s[u:=f])[x:=z][y:=z]$. However, the importance of the naturality property is that the bottom right program must be the same irrespective of the choice of the path. Transporting the bottom left arrow to the right, we obtain the program $w: \Gamma', z: A \vdash (s[x:=z][y:=z])[u:=f]$, and the equation $(s[u:=f])[x:=z][y:=z] = (s[x:=z][y:=z])[u:=f]$.
+
+** Models of linear programs
+
+We stated multiple times that the intuitionistic product corresponds to the linear $\with$ product. However, modeling linear contexts as $\with$ products is not desirable, because that would require unnecessary structure \mdash specifically, there is no point in requiring arrows $\pi_1: A \times B \to A$ for all objects $A$ and $B$ when we cannot produce well-typed programs $\Lin{x: A}, \Lin{y: B} \vdash s: A$ for all types $A$ and $B$, and analogously for the second component. Instead, we introduce a more general concept of a *symmetrically monoidal category*, which is used for modeling context concatenation and the $\tens$ product.
+
+A symmetrically monoidal category is a category $\cat{C}$ with a symmetric monoidal structure, represented by a functor $\tens: \cat{C} \times \cat{C} \to \cat{C}$, called the *tensor product*, a specific object $1$ from $\cat{C}$, called the *unit object*, four natural isomorphisms and four commuting diagrams, listed below.
+
+The first natural isomorphism is the *associator* $\assoc{X}{Y}{Z}: (X \tens Y) \tens Z \to X \tens (Y \tens Z)$, which represents associativity of the tensor product. Second and third are the *left* and *right unitor*, written $\lambda_X: \One \tens X \to X$ and $\rho_X: X \tens \One \to X$, respectively. These represent the fact that $\One$ is the left and right unit of the tensor product. The fourth isomorphism is the *braiding* $B_{X, Y}: X \tens Y \to Y \tens X$, which provides the symmetry of the tensor product.
+
+The commuting diagrams enforce that the natural isomorphisms obey our intuitive expectations. The first one is the pentagon identity
+#+begin_center
+\begin{tikzcd}
+((X \tens Y) \tens Z) \tens W \arrow[r, "\assoc{X \tens Y}{Z}{W}"] \arrow[d, "\assoc{X}{Y}{Z} \tens \id"] & (X \tens Y) \tens (Z \tens W) \arrow [r, "\assoc{X}{Y}{Z \tens W}"] & X \tens (Y \tens (Z \tens W)) \\
+(X \tens (Y \tens Z)) \tens W \arrow [rr, "\assoc{X}{Y \tens Z}{W}"] & & X \tens ((Y \tens Z) \tens W) \arrow[u, "\id \tens \assoc{Y}{Z}{W}"]
+\end{tikzcd}
+#+end_center
+followed by the triangle identity
+#+begin_center
+\begin{tikzcd}
+(X \tens \One) \tens Y \arrow[rr, "\assoc{X}{\One}{Y}"] \arrow[rd, "\rho_X \tens \id"'] & & X \tens (\One \tens Y) \arrow[ld, "\id \tens \lambda_Y"] \\
+& X \tens Y &
+\end{tikzcd}
+#+end_center
+then the hexagon identity
+#+begin_center
+\begin{tikzcd}
+(X \tens Y) \tens Z \arrow[r, "\assoc{X}{Y}{Z}"] \arrow[d, "B_{X, Y} \times Z"] & X \tens (Y \tens Z) \arrow[r, "B_{X, Y \tens Z}"] & (Y \tens Z) \tens X \arrow[d, "\assoc{Y}{Z}{X}"] \\
+(Y \tens X) \tens Z \arrow[r, "\assoc{Y}{X}{Z}"] & Y \tens (X \tens Z) \arrow[r, "\id \tens B_{X, Z}"] & Y \tens (Z \tens X)
+\end{tikzcd}
+#+end_center
+and finally the symmetry condition
+#+begin_center
+\begin{tikzcd}
+X \tens Y \arrow[r, "B_{X, Y}"] \arrow[rd, "\id"'] & Y \tens X \arrow[d, "B_{Y, X}"] \\
+& X \tens Y
+\end{tikzcd}
+#+end_center
+
 
 * References
 #+begin_export latex
