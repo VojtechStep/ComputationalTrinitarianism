@@ -390,7 +390,7 @@ The introduction of unbound resources necessitates differentiating between two k
 
 Contraction and weakening are now limited to only intuitionistic assumptions, meaning that judgments can be linearly assumed multiple times. These new rules lead to a general context $\Gamma$ behaving like a multiset. Every intuitionistic judgment can be made to have a multiplicity of one (using the new contraction and weakening), and multiplicity of linear assumptions is given by their usage in the conclusion.
 
-Similarly to the intuitionistic case, a shorthand notation for contextualized judgments is used \mdash writing $\Gamma \vdash_R A$, the context \Gamma is a list of /propositions/ in square or angle brackets, such as $\Lin{B}$ or $\Int{C \loli D}$, and $A$ is a proposition. This is shorthand for a contextualized judgment whose context is a list containing one occurrence of the judgment $\Lin{B\ avail}$ for every proposition $B$ in angle brackets in \Gamma, and one occurrence of the judgment $\Int{C\ avail}$ for every proposition $C$ in square brackets in \Gamma. The conclusion of this contextualized judgment is the judgment $A\ avail$, where $A$ is the proposition on the right of the turnstile in the shorthand.
+Similarly to the intuitionistic case, a shorthand notation for contextualized judgments is used \mdash writing $\Gamma \vdash_R A$, the context \Gamma is a list of /propositions/ in square or angle brackets, such as $\Lin{B}$ or $\Int{C \loli D}$, and $A$ is a proposition (the index $R$ indicates that we make judgments about resources). This is shorthand for a contextualized judgment whose context is a list containing one occurrence of the judgment $\Lin{B\ avail}$ for every proposition $B$ in angle brackets in \Gamma, and one occurrence of the judgment $\Int{C\ avail}$ for every proposition $C$ in square brackets in \Gamma. The conclusion of this contextualized judgment is the judgment $A\ avail$, where $A$ is the proposition on the right of the turnstile in the shorthand.
 
 A general context \Gamma can contain assumptions of both kinds, linear and intuitionistic, but an /intuitionistic context/, denoted by $\Int{\Gamma}$, is a context that only contains intuitionistic assumptions, if any.
 
@@ -400,7 +400,7 @@ The new implication connective is historically called "lollipop", and it's writt
 
 Interestingly, there are two conjunction connectives \mdash the "tensor", written $A \tens B$, and the "with", written $A \with B$. The tensor represents a conjunction "containing" /both/ resources $A$ and $B$, while the "with" lists two resources that are both available, but not at the same time \mdash the recipient of such a resource needs to choose either $A$ or $B$.
 
-The last connective is a new concept entirely. The exponential operator $\bang{A}$, pronounced "of course", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\ avail}$ and why they are both necessary once we take a look at program evaluation in [[*Type theory][Part III]].
+The last connective is a new concept entirely. The exponential operator $\bang{A}$, pronounced "bang", allows one to represent an infinite amount of a resource. We will see how this connective differs from the intuitionistic assumption $\Int{A\ avail}$ and why they are both necessary once we take a look at program evaluation in [[*Type theory][Part III]].
 
 The propositions of this logic can also be described by the simple grammar
 $$
@@ -576,7 +576,7 @@ $$
 
 #+end_figure
 
-The $\bang$ ("of course") connective is supposed to extend the expressive power of linear logic to reason about free resources. A judgment of the form /$\bang{A}$ avail/ does not represent an instance of the resource $A$, but rather /a source of/[fn:3] these resources. The idea is that a resource $A$ can be pulled out from this source at any time, or even never at all, allowing us to model free resources \mdash the judgment /$\bang{A}$ avail/ serves as a statement that $A$ is a free resource.
+The $\bang$ ("bang") connective is supposed to extend the expressive power of linear logic to reason about free resources. A judgment of the form /$\bang{A}$ avail/ does not represent an instance of the resource $A$, but rather /a source of/[fn:3] these resources. The idea is that a resource $A$ can be pulled out from this source at any time, or even never at all, allowing us to model free resources \mdash the judgment /$\bang{A}$ avail/ serves as a statement that $A$ is a free resource.
 
 To produce one of these sources, the introduction rule provides us with a way of extending proofs based on only intuitionistic assumptions. Intuitionistic assumptions are another way of modeling free resources, so the essence of the introduction rule is an observation that, given a recipe of creating one unit of a resource $A$ from free ingredients $\Int{\Gamma}$, we can duplicate those free ingredients however many times is necessary to supply more instances of the resource, and that we don't mind throwing the ingredients away in the case that there is no demand for it.
 
