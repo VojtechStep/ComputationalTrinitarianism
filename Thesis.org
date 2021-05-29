@@ -141,6 +141,18 @@ Dále popisujeme vnoření intuicionistické logiky do lineární logiky, a anal
 :UNNUMBERED: t
 :END:
 
+This thesis explores the idea of /computational trinitarianism/, which presents a correspondence between concepts from logic, type theory and category theory.
+
+The Curry-Howard correspondence gives an isomorphism between propositions of intuitionistic logic and types of the simply typed \lambda-calculus, and this notion is extended into objects of an appropriate category.
+
+We present an extension of this correspondence, by replacing intuitionistic logic with linear logic. The type system stemming from linear logic has important applications in computer science \mdash it allows the programmer to constrain the usage of variables, representing resources.
+
+[[*Logic][Chapter 1]] deals with logic. Namely we study fragments of intuitionistic and linear logic, and explain the sense in which the latter can be called substructural. We describe a way in which intuitionistic logic can be embedded into linear logic.
+
+In [[*Type theory][Chapter 2]] we introduce the basics of type theory. Two rudimentary programming languages are introduced: the well-known simply typed \lambda-calculus and the lesser-known linear \lambda-calculus. Their relation to the logics introduced in Chapter 1 is explained and an embedding of programs from the simply typed \lambda-calculus into programs from linear \lambda-calculus is given.
+
+Further in [[*Category theory][Chapter 3]], we give an overview of category theory, specifically the parts necessary for explaining the semantics of the two languages in terms of categories with structure, and proceed to present the semantics.
+
 * Logic
 
 Mathematical logic is logic treated by mathematical methods. However, such studies of different kinds of logic often use logical and deductive thinking themselves. To separate the logic observed from the logic used to make the observations, we consider them to be two separate systems. The language of the logic studied is referred to as the *object language*, while the language of the logic used for doing the observing is called the *metalanguage* \cite{Kleene1966}.
