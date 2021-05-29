@@ -104,8 +104,12 @@
 \coverpagestarts
 \includepdf[pages=-]{assignment}
 \acknowledgements
-...
-\declaration{In Prague on ... ... 2021}
+I would like to thank my family for their continued support, and my supervisor Matěj Dostál for mentoring me during the writing of this thesis.
+
+I am also very thankful to Jiří Velebil, for his lectures on category theory and feedback on preprints of this work.
+
+I appreciate the discussions with my colleagues Max Hollmann, Matěj Kafka, Jakub Dupák and Jáchym Herynek, which lead to all of us striving to produce the best work we can.
+\declaration{In Prague on May 28th, 2021}
 \abstractpage
 
 This thesis focuses on extending the Curry-Howard correspondence into a linear setting. Instead of the traditional equivalence of intuitionistic logic and simply typed $\lambda$-calculus, we present a formulation of linear logic, which corresponds to a language referred to as \textit{linear $\lambda$-calculus}. We show the correspondence on three levels --- types as propositions, programs as proofs and computation as reduction.
