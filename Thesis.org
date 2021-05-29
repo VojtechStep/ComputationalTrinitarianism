@@ -181,7 +181,7 @@ $$
 $$
 where the label $\Intro{\land}$ is an abbreviation for "conjunction introduction".
 
-Gentzen used the concept of assumptions to formulate the rules for implication. If, given that /$A$ true/, we could sequence the deduction rules in such a way that we get the judgement /$B$ true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure\nbsp[[fig:localized_hyp]]\nbsp(left). The symbol $\vdots$ stands for a sequence of deduction rules that can derive the judgement /$B$ true/ from the judgement /$A$ true/.
+Gentzen used the concept of assumptions to formulate the rules for implication. If, given that /$A$ true/, we could sequence the deduction rules in such a way that we get the judgement /$B$ true/, we can abstract this dependency on a hypothetical $A$ into an implication. Gentzen used $[A]$ to denote the *assumption* of the judgement /$A$ true/, and this assumption needs to be later *discharged* by abstracting it into an appropriate implication via a corresponding implication introduction. The formulation of the $\Intro{\to}$ rule can be seen in Figure\nbsp[[fig:localized_hyp]]\nbsp(left).
 #+name: fig:localized_hyp
 #+caption: Gentzen's assumption notation (left) and notation for localized assumptions (right)
 #+attr_latex: :options [!h]
@@ -199,11 +199,13 @@ $$
 $$
 #+end_figure
 
+The symbol $\vdots$ stands for a sequence of deduction rules that can derive the judgement /$B$ true/ from the judgement /$A$ true/.
+
 A proof in natural deduction is tree-like, with the judgement to be proven at the root, assumptions at the leaves, and deduction rules between the nodes. It is not a proper tree, because it needs to keep track of which implication introductions discharge which assumptions, so additional structure to manage backreferences is necessary.
 
 In this notation, assumptions are /global/ to the proof. We can change the notation to be able to reason about assumptions locally, allowing us to degenerate the proof structure to a proper tree. We say that a *contextualized judgement*[fn:1] has the form $\Gamma \vdash J$, where \Gamma is a sequence of zero or more assumptions, called the *context*, and $J$ is the judgement. An example of rewriting a proof from Gentzen's notation to the context notation is shown in Figure\nbsp[[fig:localized_hyp]]. Note that the context can also be empty. Assumptions can be added to the context via a comma: $\Gamma, S$ is a new context, which includes all the assumptions from \Gamma, and the assumption $S$. This concatenation is extended in the obvious way to merging of two contexts, so $\Gamma, \Delta$ is a context that includes all the assumptions from \Gamma, and all the assumptions from \Delta \cite{Pfenning2004}. In this new notation, deduction rules have contextualized judgements for premises and conclusion.
 
-The behaviour of the context is specified in the metalanguage, using deduction rules. (TODO: deduction rules are not structural rules) These rules are called *structural rules*, and usually include Weakening, Contraction, and Exchange, which are listed in Figure\nbsp[[fig:structural]]. These three rules encode semantics similar to those of a finite set.
+The behaviour of the context is specified in the metalanguage, using deduction rules. These rules, acting on the context, are called *structural rules*, and usually include Weakening, Contraction, and Exchange, which are listed in Figure\nbsp[[fig:structural]]. These three rules encode semantics similar to those of a finite set.
 
 Weakening allows one to add arbitrary assumptions to the context without invalidating the derived judgement. Contraction states that assumptions may be used multiple times. Exchange asserts that the order in which assumptions appear in the context is irrelevant.
 
@@ -231,27 +233,25 @@ $$
 $$
 #+end_figure
 
-Apart from the structural rules, the logic also specifies *logical rules*. These describe how the logical connectives participate in derivations. (TODO: wording) Conventionally, they come in pairs of introduction and elimination, the former defining how a proposition containing the connective is created, and the latter defining how such a proposition is "used" and split apart.
+Apart from the structural rules, the logic also specifies *logical rules*. These describe how the logical connectives participate in derivations. Conventionally, they come in pairs of introduction and elimination, the former defining how a proposition containing the connective is created, and the latter defining how such a proposition is "used" and split apart.
 
 Just as there can be zero assumptions in a contextualized judgement, there can be zero premises in a deduction rule. Such rules are called *axioms*, and the judgments in their conclusions are always derivable.
 
 A proof in this updated notation is now a proper tree, with a contextualized judgement at the root, contextualized judgements in the inner nodes, axioms at the leaves, and deduction rules connecting the nodes.
 
-When composing deductions, we sometimes produce (TODO: proofs with?) redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*. These rules must preserve well-formedness of the proof, meaning that the proof after a reduction must still consist only of derivations specified for the logic. This condition is called /local soundness/ \cite{Pfenning2004}.
-
-(TODO: "material is standard, my contribution can be found...")
+When composing deductions, we sometimes produce proofs with redundancies. Namely when a rule for introducing a connective is immediately followed by a rule for eliminating it, the proof can be simplified via rewriting rules called *proof-reductions*. These rules must preserve well-formedness of the proof, meaning that the proof after a reduction must still consist only of derivations specified for the logic. This condition is called /local soundness/ \cite{Pfenning2004}.
 
 ** Intuitionistic logic
 
 Intuitionistic logic is the logic of constructive mathematics \mdash the only axiom in the system is $A\ true \vdash A\ true$, in other words, any judgement can be made assuming itself. This is in contrast with classical logic, which also axiomatizes the law of excluded middle, $\vdash (A \lor \lnot A)\ true$. The philosophical difference between classical and intuitionistic logic is that classical logic is content with knowing whether a proposition is true or whether it is false. After all, those are the only options. Intuitionistic logic, on the other hand, requires a constructive proof \mdash a "recipe", turning the assumptions into the conclusion. The law of excluded middle allows for proofs where one judges a proposition to be true, just because it cannot be false. This goes against the intuitionistic line of reasoning, because merely showing that something has to exists does not provide the mathematician with a way to construct it. In intuitionistic logic, the judgement /$(A \lor \lnot A)$ true/ can still be made, but it needs to be accompanied with either a proof of /$A$ true/ or /$\lnot A$ true/ \cite{Sorensen2006}.
 
-Since intuitionistic logic is an example of a (TODO: is it?) traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth"). For example, the formula $A, B \vdash_T C$ is short for $A\ true, B\ true \vdash C\ true$. This notation will be used exclusively in the diagrams to prevent them from spreading too wide, and we will use the full form in the body of the thesis.
+Since intuitionistic logic is an example of a traditional logic, the basic judgement that can be made about a proposition stays the same, /$A$ true/. Because this is the only judgment we will be using in the proofs[fn:2], we define a shorthand notation, $\Gamma \vdash_T A$, where \Gamma is a list of /propositions/, and $A$ is a proposition, and we take it to mean the contextualized judgment where the context is a list of judgments /$P$ true/ for every proposition $P$ in \Gamma, and where the conclusion is the judgment /$A$ true/ (the index $T$ stands for "truth"). For example, the formula $A, B \vdash_T C$ is short for $A\ true, B\ true \vdash C\ true$. This notation will be used exclusively in the diagrams to prevent them from spreading too wide, and we will use the full form in the body of the thesis.
 
 The logic studied in this section is the meet-implicative fragment of propositional intuitionistic logic \mdash that is to say, we only concern ourselves with propositions created using the connectives $\land$ and $\to$. The propositions of this fragment can be described by the following Backus-Naur form:
 $$
 A, B ::= X \binor (A \to B) \binor (A \land B)
 $$
-for X ranging over atomic propositions. The rules (TODO: for?) of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
+for X ranging over atomic propositions. The rules of this fragment are given in Figure\nbsp[[fig:intuit_deduct]].
 
 #+name: fig:intuit_deduct
 #+caption: Deduction rules for the meet-implicative fragment of propositional intuitionistic logic
@@ -310,7 +310,7 @@ The rules consist of the one axiom Id mentioned above, the three structural rule
 
 /Conjunction introduction/, labeled $\Intro{\land}$ in the deduction rules, states that given a proof of /$A$ true/ and a proof of /$B$ true/, the two proofs combined give a proof of /$(A \land B$) true/. The respective elimination rules allow one to extract one of the proofs of /$A$ true/ or /$B$ true/ from /$(A \land B)$ true/, even after they were combined.
 
-When formulating the proof reduction rule for a particular connective, one needs to look at a generic example of a reducible proof. For sequencing a conjunction introduction and a conjunction elimination, we need to represent generic proofs of the premises, then apply the two rules in succession, and finally justify an alternative path to reach the conclusion. We can represent the generic proofs with the symbol $\vdots$, (TODO: wording) much like how Gentzen formulated assumptions. For the conjunction reduction, the generic schema looks like the following tree, with the subproofs labeled $s$ and $t$.
+When formulating the proof reduction rule for a particular connective, one needs to look at a generic example of a reducible proof. For sequencing a conjunction introduction and a conjunction elimination, we need to represent generic proofs of the premises, then apply the two rules in succession, and finally justify an alternative path to reach the conclusion. We can represent the generic proofs with the symbol $\vdots$, much like how Gentzen formulated assumptions. For the conjunction reduction, the generic schema looks like the following tree, with the subproofs labeled $s$ and $t$.
 $$
 \prftree[r]{$\Elim{\land}_1$}
  {\prftree[r]{$\Intro{\land}$}
@@ -343,7 +343,7 @@ $$
 
 The proof reduction rule must take into account that the judgment /\(A\)\nbsp{}true/ might have been assumed zero or multiple times in the proof of /$B$ true/, and the context later modified with contractions or weakenings to reach the contextualized judgment $\Gamma, A\ true \vdash B\ true$. Every assumption of /$A$ true/ that is used in the proof must have been introduced by the identity rule, and the ones that are not used were introduced by weakening. As shown in \cite{Wadler1993}, applications of structural and logic rules commute, so for every proof where contraction and weakening are used, there is an equivalent proof with all the contractions and weakenings pushed to the root of the proof tree. In other words, for every proof of $\Gamma, J_1 \vdash J_2$, where $J_1$ and $J_2$ stand for arbitrary judgments, there is an equivalent proof which consists of a contraction- and weakening-less subproof of $\Gamma, J_1 \cdots \vdash J_2$, followed by applications of contraction and weakening to accommodate the context, where the ellipsis indicates zero or more assumptions of $J_1$. The final applications of contraction and weakening are represented by a doubled derivation line, to indicate that it's multiple steps shown as one.
 
-(TODO: wording) The role of the proof reduction is then to take the proof of $\Delta \vdash A\ true$, and replace with it the instances of $A\ true \vdash A\ true$ in the proof of $\Gamma, A\ true \vdash B\ true$. The full proof reduction rule is shown in Figure\nbsp[[fig:intuit_impl_red]].
+The role of the proof reduction is then to take the proof of $\Delta \vdash A\ true$, and replace with it the instances of $A\ true \vdash A\ true$ in the proof of $\Gamma, A\ true \vdash B\ true$. The full proof reduction rule is shown in Figure\nbsp[[fig:intuit_impl_red]].
 
 #+name: fig:intuit_impl_red
 #+caption: Implication proof reduction
@@ -627,7 +627,7 @@ $$
 
 We claimed that every intuitionistic proof can be translated to an equivalent linear proof. To verify this statement, two steps are necessary. First, we need to show how to translate the three primitive constructs: propositions, judgments, and contextualized judgments. Secondly, we need to show that this translation preserves deduction rules and proof reductions. That is to say, for every intuitionistic deduction rule or proof reduction, there is a corresponding linear deduction or reduction taking the translated premises to the translated conclusion.
 
-The intuitionistic propositions come in three flavors: base propositions, conjunctions and implications. We define a translation operator $\LinTrans{\_}$, and its action on propositions is given by the equations
+The intuitionistic propositions come in three flavors: base propositions, conjunctions and implications. We define a translation operator $\LinTrans{\_}$, and its action on propositions is given by the equations, following \cite{Wadler1993},
 \begin{align*}
   \LinTrans{X} & = X \\
   \LinTrans{A \land B} & = \LinTrans{A} \with \LinTrans{B} \\
@@ -635,7 +635,7 @@ The intuitionistic propositions come in three flavors: base propositions, conjun
 \end{align*}
 where $X$ stands for an atomic proposition, and $A$ and $B$ stand for arbitrary intuitionistic propositions.
 
-On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. (TODO: wording) When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
+On a formal level, this mapping is justified by showing that it preserves deduction and reduction, which is done later in the chapter. On an intuitive level, we appeal to the interpretation of the connectives. When looking at an atomic proposition in isolation, the intuitionistic and linear interpretation is the same, because differences arise only when talking about more complex propositions, and how they relate to each other, for example how are the two sides of a conjunction used, or how is the input to an implication used. The intuitionistic conjunction gives access to each of its constituents, but only one can be extracted, behaving the same as the $\with$ conjunction. Finally, the intuitionistic implication gives no guarantees about the use of its hypothesis, therefore it is necessary to mark the hypothesis with a bang, and promote it to a source in the linear interpretation.
 
 There are only two judgments in intuitionistic logic, and these are /$A$ prop/ and /$A$ true/ for an intuitionistic proposition $A$. These are interpreted as /$A$ prop/ and /$A$ avail/, respectively, defining the action of the translation operator on judgments.
 \begin{align*}
@@ -694,7 +694,7 @@ The axiom of intuitionistic logic is translated into the intuitionistic axiom of
 \end{align*}
 \newpage
 
-Translation of the intuitionistic conjunction is defined in terms of the $\with$ conjunction, so it is expected that the deduction rules of one will correspond to the deduction rules of the other.(TODO: wording) That is indeed the case, as the translation is given below. It uses the equality $\LinTrans{A \land B} = \LinTrans{A} \with \LinTrans{B}$.
+Translation of the intuitionistic conjunction is defined in terms of the $\with$ conjunction, so it is expected that the deduction rules of one will correspond to the deduction rules of the other. That is indeed the case, as the translation is given below. It uses the equality $\LinTrans{A \land B} = \LinTrans{A} \with \LinTrans{B}$.
 \begin{align*}
 \LinTrans{\vcenter{\prftree[r]{$\Intro{\land}$}
     {\Gamma \vdash_T A}
@@ -1052,7 +1052,7 @@ $$
 $$
 #+end_figure
 
-The rules of linear functions assign terms to $\loli$ introduction and elimination, producing linear abstraction and linear application. As a consequence of $\lambda$-terms being formed strictly by binding linear variables, we can conclude that every variable bound by a $\lambda$-term is used exactly once in its body. Therefore, the \beta-reduction is correct, meaning that the term $t$ being substituted will end up being used exactly once. Both rules and equations for linear functions are listed in Figure [[fig:llc_fun]].
+The rules of linear functions assign terms to $\loli$ introduction and elimination, producing linear abstraction and linear application. As a consequence of \(\lambda\)-terms being formed strictly by binding linear variables, we can conclude that every variable bound by a \(\lambda\)-term is used exactly once in its body. Therefore, the \beta-reduction is correct, meaning that the term $t$ being substituted will end up being used exactly once. Both rules and equations for linear functions are listed in Figure [[fig:llc_fun]].
 
 #+name: fig:llc_fun
 #+caption: Rules and equations for the $\loli$ function type
@@ -1313,7 +1313,7 @@ Flavors of linear logic and their term assignments without intuitionistic assump
 
 ** Intuitionistic embedding, revisited
 
-Type theory extends the proof-theoretical point of view through programs encoding proofs. Since we are able to embed intuitionistic logic into linear logic, we want to also embed STLC into LLC, and this embedding needs to follow two conditions. First, it needs to agree with the Curry-Howard correspondence \mdash that is to say, embedding of types must behave the same as embedding of propositions, embedding of programs must behave the same as embedding of proofs and embedding of computations must behave the same as embedding of proof reductions. Secondly, equivalent programs in STLC must translate to equivalent programs in LLC.
+Type theory extends the proof-theoretical point of view through programs encoding proofs. Since we are able to embed intuitionistic logic into linear logic, we want to also embed STLC into LLC, and this embedding needs to follow two conditions. First, it needs to agree with the Curry-Howard correspondence \mdash that is to say, embedding of types must behave the same as embedding of propositions, embedding of programs must behave the same as embedding of proofs and embedding of computations must behave the same as embedding of proof reductions. Secondly, equivalent programs in STLC must translate to equivalent programs in LLC. The term correspondence is done following \cite{Wadler1993}, and we present its inner working in detail.
 
 The first condition is satisfied rudimentarily \mdash we define the translations of types, programs and computations by adding terms to the proof trees used in defining their logical counterparts. Then, agreement with the Curry-Howard correspondence is reached by definition.
 
@@ -1428,7 +1428,7 @@ We have not specified what \eta-conversions correspond to in logic, so the verif
 
 Since we covered all equations from STLC, we can conclude that equivalent programs translate to equivalent programs.
 
-* TODO Category theory
+* Category theory
 
 Category theory is the study of categories, which allow for expressing many mathematical structures and properties via diagrams of arrows between abstract objects \cite{MacLane1998}. Categorical semantics, as opposed to the traditional set-theoretical interpretations, have the advantage of being defined with more general structures, not limiting oneself to sets specifically \cite[pp.129--132]{Crole1993}.
 
@@ -1749,9 +1749,9 @@ As such, we are able to interpret types, programs and equations of the simply ty
 
 When modeling linear programs, we limit ourselves to programs containing only linear variables \mdash that is, we do not attempt to give interpretations to the $\Intro{\bang}$ and $\Elim{\bang}$ rules, which only make sense in the presence of intuitionistic variables, as the difficulty of this problem is far beyond the level of a bachelor's thesis. An interested reader may take a look at the survey \cite{DePaiva2014}.
 
-We stated multiple times that the intuitionistic product corresponds to the linear $\with$ product. However, modeling linear contexts as $\with$ products is not desirable, because that would require unnecessary structure \mdash specifically, there is no point in requiring arrows $\pi_1: A \times B \to A$ for all objects $A$ and $B$ when we cannot produce well-typed programs $\Lin{x: A}, \Lin{y: B} \vdash s: A$ for all types $A$ and $B$, and analogously for the second component. Instead, we introduce a more general concept of a *symmetrically monoidal category*, which is used for modeling context concatenation and the $\tens$ product.
+We stated multiple times that the intuitionistic product corresponds to the linear $\with$ product. However, modeling linear contexts as $\with$ products is not desirable, because that would require unnecessary structure \mdash specifically, there is no point in requiring arrows $\pi_1: A \times B \to A$ for all objects $A$ and $B$ when we cannot produce well-typed programs $\Lin{x: A}, \Lin{y: B} \vdash s: A$ for all types $A$ and $B$, and analogously for the second component. Instead, we introduce a more general concept of a *symmetric monoidal category*, which is used for modeling context concatenation and the $\tens$ product.
 
-A symmetrically monoidal category is a category $\cat{C}$ with a symmetric monoidal structure, represented by a functor $\tens: \cat{C} \times \cat{C} \to \cat{C}$, called the *tensor product*, a specific object $\One_{\tens}$ from $\cat{C}$, called the *unit object*, four natural isomorphisms and four kinds of commuting diagrams, listed below.
+A symmetric monoidal category is a category $\cat{C}$ with a symmetric monoidal structure, represented by a functor $\tens: \cat{C} \times \cat{C} \to \cat{C}$, called the *tensor product*, a specific object $\One_{\tens}$ from $\cat{C}$, called the *unit object*, four natural isomorphisms and four kinds of commuting diagrams, listed below.
 
 The first natural isomorphism is the *associator* $\assoc{X}{Y}{Z}: (X \tens Y) \tens Z \to X \tens (Y \tens Z)$, which represents associativity of the tensor product. Second and third are the *left* and *right unitor*, written $\lambda_X: \One_{\tens} \tens X \to X$ and $\rho_X: X \tens \One_{\tens} \to X$, respectively. These represent the fact that $\One_{\tens}$ is the left and right unit of the tensor product. The fourth isomorphism is the *braiding* $B_{X, Y}: X \tens Y \to Y \tens X$, which provides the symmetry of the tensor product.
 
@@ -1785,7 +1785,7 @@ X \tens Y \arrow[r, "B_{X, Y}"] \arrow[rd, "\id"'] & Y \tens X \arrow[d, "B_{Y, 
 #+end_center
 holding for all objects $X$, $Y$, $Z$ and $W$ of $\cat{C}$.
 
-This structure gives us enough power to express both context concatenation in LLC, in the same way that Cartesian products interpreted context concatenation in STLC, and the $\tens$ product.
+A symmetric monoidal category gives us enough structure to express both context concatenation in LLC (in the same way that Cartesian products interpret context concatenation in STLC) and the $\tens$ product.
 
 We begin with the linear identity axiom, which is interpreted by the identity arrow
 $$
@@ -1793,7 +1793,7 @@ $$
 {A \xrightarrow{\id_A} A}
 $$
 
-Programs with only linear variables are closed under substitution, because there is no risk of performing a substitution resulting in a linear variable being used multiple times \mdash that would require substituting for intuitionistic variables, which are not present. Therefore, we can interpret substitution with composition, where the program $t[x:=s]$ is composed of a term $t: B$ with a free linear variable $x: A$ and possibly others, and a term $s: A$ with possibly free linear variables. The interpretation of $t$ is $\Gamma \tens A \tens \Delta \xrightarrow{t} B$, the program $s$ is interpreted as $\Theta \xrightarrow{s} A$, and their composition is $\Gamma \tens \Theta \tens \Delta \xrightarrow{\id_\Gamma \tens s \tens \id_\Delta} \Gamma \tens A \tens \Delta \xrightarrow{t} B$.
+Programs using only linear variables are closed under substitution, because there is no risk of performing a substitution resulting in a linear variable being used multiple times \mdash that would require substituting for intuitionistic variables, which are not present. Therefore, we can interpret substitution with composition, where the program $t[x:=s]$ is composed of a term $t: B$ with a free linear variable $x: A$ and possibly others, and a term $s: A$ with possibly free linear variables. The interpretation of $t$ is $\Gamma \tens A \tens \Delta \xrightarrow{t} B$, the program $s$ is interpreted as $\Theta \xrightarrow{s} A$, and their composition is $\Gamma \tens \Theta \tens \Delta \xrightarrow{\id_\Gamma \tens s \tens \id_\Delta} \Gamma \tens A \tens \Delta \xrightarrow{t} B$.
 
 From the structural rules, only exchange can be interpreted without intuitionistic variables, and it is satisfied by the symmetry of the tensor product, provided by the isomorphism $B_{A, B}$
 $$
@@ -1811,29 +1811,27 @@ $$
 $$
 where the premise functor $P_{A, B}: \op{\cat{C}} \times \op{\cat{C}} \to \Set$ is given by $P_{A, B}\tuple{\Gamma}{\Delta} = \hom{\Gamma}{A} \times \hom{\Delta}{B}$ and the conclusion functor is given by $C_{A, B}\tuple{\Gamma}{\Delta} = \hom{\Gamma \tens \Delta}{A \tens B}$. Naturality of the transformation from $P_{A, B}$ to $C_{A, B}$ again corresponds to the ability to do substitution in the contexts $\Gamma$ and $\Delta$.
 
-The $\Elim{\tens}$ rule has a more interesting structure \mdash for once, the premise and conclusion functors take more than context arguments
+The $\Elim{\tens}$ rule has a more interesting structure \mdash for once, the premise and conclusion functors take arguments other than ones interpreting variable contexts:
 $$
 \prftree[r]{$\Elim{\tens}$}
 {\Gamma \tens A \tens B \xrightarrow{s} C}
 {\Delta \xrightarrow{t} A \tens B}
 {\Gamma \tens \Delta \xrightarrow{\id_\Gamma \tens t} \Gamma \tens A \xrightarrow{s} C}
 $$
-The corresponding functors take $C$ as one of their parameters \mdash the premise functor is defined as $P_{A, B}: \op{\cat{C}} \times \op{\cat{C}} \times \cat{C} \to \Set$ by $P_{A, B}(\Gamma, \Delta, C) = \hom{\Gamma \tens A \tens B}{C} \times \hom{\Delta}{A \tens B}$, and the conclusion functor is $C_{A, B}(\Gamma, \Delta, C) = \hom{\Gamma \tens \Delta}{C}$. Chasing an element of $P_{A, B}(\Gamma, \Delta, C)$ through the diagram of naturality in $C$, we obtain the equation $\tenscase{t}{x}{y}{f[u:=s]} \equiv f[u:=\tenscase{t}{x}{y}{s}]$, which is one of the commuting conversions. Note that this substitution is performed only on programs that only contain linear variables, so the substitution corresponds to filling a term-with-holes that was used without the constructs $\bangcase{C[\_]}{x}{s}$ and $\bangcase{s}{x}{C[\_]}$. Therefore naturality in $C$ recovers the commuting conversion.
+The corresponding functors take $C$ as one of their parameters \mdash the premise functor $P_{A, B}: \op{\cat{C}} \times \op{\cat{C}} \times \cat{C} \to \Set$ is defined by $P_{A, B}(\Gamma, \Delta, C) = \hom{\Gamma \tens A \tens B}{C} \times \hom{\Delta}{A \tens B}$, and the conclusion functor is defined by $C_{A, B}(\Gamma, \Delta, C) = \hom{\Gamma \tens \Delta}{C}$. Chasing an element of $P_{A, B}(\Gamma, \Delta, C)$ through the diagram of naturality in $C$, we obtain the equation $\tenscase{t}{x}{y}{f[u:=s]} \equiv f[u:=\tenscase{t}{x}{y}{s}]$, which is one of the commuting conversions. Note that this substitution is performed only on programs that only contain linear variables, so the substitution corresponds to filling a term-with-holes that was used without the constructs $\bangcase{C[\_]}{x}{s}$ and $\bangcase{s}{x}{C[\_]}$. Therefore naturality in $C$ recovers the commuting conversion.
 
-For interpreting linear functions, we need a similar structure to exponents in Cartesian closed categories. There, the exponent functors are right adjoint to the Cartesian product, because that is how context concatenation in STLC is interpreted. In LLC, context concatenation is interpreted with the tensor product, so we need a right adjoint of that.
+For interpreting linear functions, we need a structure similar to exponents in Cartesian closed categories. There, the exponent functors are right adjoint to the Cartesian product, because that is how context concatenation in STLC is interpreted. In LLC, context concatenation is interpreted with the tensor product, thus we require a functor $\_ \loli \_: \op{\cat{C}} \times \cat{C} \to \cat{C}$, which for any object $A$ in $\cat{C}$ gives a right adjoint to the tensor product, written $\_ \tens A \dashv A \loli \_$.
 
-We require a functor $\_ \loli \_: \op{\cat{C}} \times \cat{C} \to \cat{C}$, which for any object $A$ in $\cat{C}$ gives a right adjoint to the tensor product, written $\_ \tens A \dashv A \loli \_$.
-
-Then, the $\loli$ rules and equations are interpreted exactly the same as the $\to$ rules and equations, except the Cartesian product is replaced with the tensor product. This is possible because none of the $\to$ rules and equations considered the projection arrows, instead they are purely based on the adjunction structure. For example, the $\Intro{\loli}$ rule is interpreted by the rule
+Then, the $\loli$ rules and equations are interpreted exactly the same as the $\to$ rules and equations, except the Cartesian product is replaced with the tensor product. This is possible because none of the $\to$ rules and equations use the projection arrows. Instead they are purely based on the adjunction structure. For example, the $\Intro{\loli}$ rule is interpreted by the rule
 $$
 \prftree[r]{$\Intro{\loli}$}
 {\Gamma \tens A \xrightarrow{s} B}
 {\Gamma \xrightarrow{s^{\flat}} (A \loli B)}
 $$
 
-A symmetric monoidal category with the $\loli$ functor described above is called a *symmetric monoidal closed category*, and its structure reflects the multiplicative fragment of intuitionistic linear logic \mdash that is only the proofs (or programs) consisting of linear variables and the $\tens$ and $\loli$ types.
+A symmetric monoidal category equipped with the $\loli$ functor described above is called a *symmetric monoidal closed category*, and its structure reflects the multiplicative fragment of intuitionistic linear logic \mdash that is only the proofs (or programs) consisting of linear variables and the $\tens$ and $\loli$ types.
 
-If we additionally equip the category with a Cartesian product, and include the interpretation of the $\times$ product from STLC, we obtain a Cartesian symmetric monoidal closed category, which is able to interpret all programs from LLC that only use linear variables.
+If we additionally equip the category with finite Cartesian products and include the interpretation of the $\times$ product from STLC, we obtain a Cartesian symmetric monoidal closed category, which is able to interpret all programs from LLC that only use linear variables.
 
 #+begin_export latex
 \chapter*{References}
